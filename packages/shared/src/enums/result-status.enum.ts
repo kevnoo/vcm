@@ -1,0 +1,6 @@
+export enum ResultStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  DISPUTED = 'DISPUTED',
+  RESOLVED = 'RESOLVED',
+}

@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Users ───────────────────────────────────────────────
+model User {
+  id              String   @id @default(uuid())
+  discordId       String   @unique
+  discordUsername  String
+  discordAvatar   String?
+  role            Role     @default(OWNER)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  ownedTeams       Team[]
+  submittedResults Result[] @relation("SubmittedBy")
+  disputedResults  Result[] @relation("DisputedBy")
+  resolvedResults  Result[] @relation("ResolvedBy")
+}
+
+enum Role {
+  ADMIN
+  OWNER
+}
+
+// ─── Teams ───────────────────────────────────────────────
+model Team {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  logoUrl   String?
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner            User              @relation(fields: [ownerId], references: [id])
+  competitionTeams CompetitionTeam[]
+  homeMatches      Match[]           @relation("HomeTeam")
+  awayMatches      Match[]           @relation("AwayTeam")
+}
+
+// ─── Competitions ────────────────────────────────────────
+model Competition {
+  id        String            @id @default(uuid())
+  name      String
+  type      CompetitionType
+  status    CompetitionStatus @default(DRAFT)
+  config    Json?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  teams  CompetitionTeam[]
+  rounds Round[]
+}
+
+enum CompetitionType {
+  DOUBLE_ROUND_ROBIN
+  SINGLE_ROUND_ROBIN
+  KNOCKOUT_CUP
+  PLAYOFF
+}
+
+enum CompetitionStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+}
+
+// ─── Junction: Competition <-> Team ──────────────────────
+model CompetitionTeam {
+  id            String @id @default(uuid())
+  competitionId String
+  teamId        String
+  seed          Int?
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  team        Team        @relation(fields: [teamId], references: [id])
+
+  @@unique([competitionId, teamId])
+}
+
+// ─── Rounds ──────────────────────────────────────────────
+model Round {
+  id            String   @id @default(uuid())
+  competitionId String
+  roundNumber   Int
+  name          String?
+  createdAt     DateTime @default(now())
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  matches     Match[]
+
+  @@unique([competitionId, roundNumber])
+}
+
+// ─── Matches ─────────────────────────────────────────────
+model Match {
+  id          String      @id @default(uuid())
+  roundId     String
+  homeTeamId  String
+  awayTeamId  String
+  matchNumber Int?
+  scheduledAt DateTime?
+  status      MatchStatus @default(SCHEDULED)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  round    Round   @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  homeTeam Team    @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam Team    @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  result   Result?
+}
+
+enum MatchStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ─── Results ─────────────────────────────────────────────
+model Result {
+  id             String       @id @default(uuid())
+  matchId        String       @unique
+  homeScore      Int
+  awayScore      Int
+  status         ResultStatus @default(PENDING)
+  submittedById  String
+  disputedById   String?
+  resolvedById   String?
+  disputeReason  String?
+  resolutionNote String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  match       Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  submittedBy User  @relation("SubmittedBy", fields: [submittedById], references: [id])
+  disputedBy  User? @relation("DisputedBy", fields: [disputedById], references: [id])
+  resolvedBy  User? @relation("ResolvedBy", fields: [resolvedById], references: [id])
+}
+
+enum ResultStatus {
+  PENDING
+  CONFIRMED
+  DISPUTED
+  RESOLVED
+}

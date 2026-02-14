@@ -1,0 +1,24 @@
+{
+  "name": "vcm",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel -r run dev",
+    "dev:api": "pnpm --filter @vcm/api run dev",
+    "dev:web": "pnpm --filter @vcm/web run dev",
+    "build": "pnpm -r run build",
+    "build:shared": "pnpm --filter @vcm/shared run build",
+    "db:migrate": "pnpm --filter @vcm/api run db:migrate",
+    "db:seed": "pnpm --filter @vcm/api run db:seed",
+    "db:generate": "pnpm --filter @vcm/api run db:generate"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
