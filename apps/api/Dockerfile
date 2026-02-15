@@ -18,6 +18,7 @@ CMD ["pnpm", "--filter", "@vcm/api", "run", "dev"]
 
 # ─── Build ────────────────────────────────────────────
 FROM deps AS build
+ARG DATABASE_URL
 COPY . .
 RUN pnpm --filter @vcm/shared run build
 RUN pnpm --filter @vcm/api run db:generate
