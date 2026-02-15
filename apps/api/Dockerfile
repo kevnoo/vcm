@@ -36,4 +36,4 @@ COPY --from=build /app/apps/api/src/prisma/schema.prisma ./prisma/schema.prisma
 COPY --from=build /app/apps/api/src/prisma/migrations ./prisma/migrations
 COPY --from=build /app/node_modules ./node_modules
 EXPOSE 3000
-CMD ["pnpm", "run", "start:prod"]
+CMD ["node", "dist/main.js"]
