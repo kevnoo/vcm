@@ -50,6 +50,9 @@ importers:
       class-validator:
         specifier: ^0.14.1
         version: 0.14.3
+      dotenv:
+        specifier: ^16.6.1
+        version: 16.6.1
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -84,9 +87,6 @@ importers:
       '@types/passport-jwt':
         specifier: ^4.0.1
         version: 4.0.1
-      dotenv:
-        specifier: ^16.6.1
-        version: 16.6.1
       prisma:
         specifier: ^7.4.0
         version: 7.4.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)

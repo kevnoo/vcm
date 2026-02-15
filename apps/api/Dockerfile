@@ -31,7 +31,7 @@ WORKDIR /app
 ENV DATABASE_URL $DATABASE_URL
 COPY --from=build /app/apps/api/dist ./dist
 COPY --from=build /app/apps/api/package.json ./
-COPY --from=build /app/apps/api/prisma.config.ts ./
+COPY --from=build /app/apps/api/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/apps/api/src/prisma/schema.prisma ./prisma/schema.prisma
 COPY --from=build /app/apps/api/src/prisma/migrations ./prisma/migrations
 COPY --from=build /app/node_modules ./node_modules
