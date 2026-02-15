@@ -19,6 +19,7 @@ CMD ["pnpm", "--filter", "@vcm/api", "run", "dev"]
 # ─── Build ────────────────────────────────────────────
 FROM deps AS build
 ARG DATABASE_URL
+ENV DATABASE_URL $DATABASE_URL
 COPY . .
 RUN pnpm --filter @vcm/shared run build
 RUN pnpm --filter @vcm/api run db:generate
@@ -27,6 +28,7 @@ RUN pnpm --filter @vcm/api run build
 # ─── Production ───────────────────────────────────────
 FROM node:20-alpine AS production
 WORKDIR /app
+ENV DATABASE_URL $DATABASE_URL
 COPY --from=build /app/apps/api/dist ./dist
 COPY --from=build /app/apps/api/package.json ./
 COPY --from=build /app/apps/api/src/prisma/schema.prisma ./prisma/schema.prisma
