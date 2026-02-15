@@ -12,5 +12,8 @@
     "declaration": false,
     "declarationMap": false
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "prisma.config.ts"
+  ]
 }
