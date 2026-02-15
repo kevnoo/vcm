@@ -26,6 +26,9 @@ jobs:
       - name: Build shared package
         run: pnpm --filter @vcm/shared run build
 
+      - name: Generate Prisma client
+        run: pnpm --filter @vcm/api run db:generate
+
       - name: Build API
         run: pnpm --filter @vcm/api run build
 
