@@ -3,3 +3,6 @@ export { CompetitionType } from './competition-type.enum';
 export { CompetitionStatus } from './competition-status.enum';
 export { MatchStatus } from './match-status.enum';
 export { ResultStatus } from './result-status.enum';
+export { Position } from './position.enum';
+export { RoleLevel } from './role-level.enum';
+export { PlayStyleLevel } from './play-style-level.enum';

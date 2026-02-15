@@ -41,6 +41,7 @@ model Team {
   competitionTeams CompetitionTeam[]
   homeMatches      Match[]           @relation("HomeTeam")
   awayMatches      Match[]           @relation("AwayTeam")
+  players          Player[]
 }
 
 // ─── Competitions ────────────────────────────────────────
@@ -148,4 +149,140 @@ enum ResultStatus {
   CONFIRMED
   DISPUTED
   RESOLVED
+}
+
+// ─── Player Enums ───────────────────────────────────────
+enum Position {
+  GK
+  RB
+  CB
+  LB
+  CDM
+  CM
+  CAM
+  RM
+  LM
+  RW
+  LW
+  CF
+  ST
+}
+
+enum RoleLevel {
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum PlayStyleLevel {
+  BASIC
+  ADVANCED
+}
+
+// ─── Skill Groups & Definitions ─────────────────────────
+model SkillGroup {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  skills SkillDefinition[]
+}
+
+model SkillDefinition {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  skillGroupId String
+  defaultValue Int      @default(50)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  skillGroup   SkillGroup    @relation(fields: [skillGroupId], references: [id], onDelete: Cascade)
+  playerSkills PlayerSkill[]
+}
+
+// ─── Player Role & Play Style Definitions ───────────────
+model PlayerRoleDefinition {
+  id          String   @id @default(uuid())
+  name        String
+  position    Position
+  description String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignments PlayerRoleAssignment[]
+
+  @@unique([name, position])
+}
+
+model PlayStyleDefinition {
+  id          String   @id @default(uuid())
+  name        String
+  position    Position
+  iconUrl     String?
+  description String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignments PlayerPlayStyleAssignment[]
+
+  @@unique([name, position])
+}
+
+// ─── Players ────────────────────────────────────────────
+model Player {
+  id              String   @id @default(uuid())
+  firstName       String
+  lastName        String
+  age             Int
+  primaryPosition Position
+  teamId          String?
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  team       Team?                       @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  skills     PlayerSkill[]
+  roles      PlayerRoleAssignment[]
+  playStyles PlayerPlayStyleAssignment[]
+}
+
+model PlayerSkill {
+  id                String @id @default(uuid())
+  playerId          String
+  skillDefinitionId String
+  value             Int
+
+  player          Player          @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  skillDefinition SkillDefinition @relation(fields: [skillDefinitionId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, skillDefinitionId])
+}
+
+model PlayerRoleAssignment {
+  id                     String    @id @default(uuid())
+  playerId               String
+  playerRoleDefinitionId String
+  level                  RoleLevel
+
+  player     Player               @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  roleDefinition PlayerRoleDefinition @relation(fields: [playerRoleDefinitionId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, playerRoleDefinitionId])
+}
+
+model PlayerPlayStyleAssignment {
+  id                    String         @id @default(uuid())
+  playerId              String
+  playStyleDefinitionId String
+  level                 PlayStyleLevel
+
+  player              Player              @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  playStyleDefinition PlayStyleDefinition @relation(fields: [playStyleDefinitionId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, playStyleDefinitionId])
 }

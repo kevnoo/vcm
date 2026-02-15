@@ -1,0 +1,15 @@
+export enum Position {
+  GK = 'GK',
+  RB = 'RB',
+  CB = 'CB',
+  LB = 'LB',
+  CDM = 'CDM',
+  CM = 'CM',
+  CAM = 'CAM',
+  RM = 'RM',
+  LM = 'LM',
+  RW = 'RW',
+  LW = 'LW',
+  CF = 'CF',
+  ST = 'ST',
+}

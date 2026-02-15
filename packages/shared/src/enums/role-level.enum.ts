@@ -1,0 +1,5 @@
+export enum RoleLevel {
+  BASIC = 'BASIC',
+  INTERMEDIATE = 'INTERMEDIATE',
+  ADVANCED = 'ADVANCED',
+}

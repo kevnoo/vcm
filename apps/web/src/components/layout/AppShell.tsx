@@ -4,10 +4,14 @@ import { useAuthStore } from '../../stores/auth.store';
 const navItems = [
   { to: '/', label: 'Dashboard' },
   { to: '/teams', label: 'Teams' },
+  { to: '/players', label: 'Players' },
   { to: '/competitions', label: 'Competitions' },
 ];
 
-const adminItems = [{ to: '/admin/disputes', label: 'Disputes' }];
+const adminItems = [
+  { to: '/admin/disputes', label: 'Disputes' },
+  { to: '/admin/reference-data', label: 'Reference Data' },
+];
 
 export function AppShell() {
   const { user, clearAuth, isAdmin } = useAuthStore();

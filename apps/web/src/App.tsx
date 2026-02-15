@@ -11,7 +11,11 @@ import { TeamDetailPage } from './routes/teams/detail';
 import { CompetitionsPage } from './routes/competitions/index';
 import { CreateCompetitionPage } from './routes/competitions/create';
 import { CompetitionDetailPage } from './routes/competitions/detail';
+import { PlayersPage } from './routes/players/index';
+import { CreatePlayerPage } from './routes/players/create';
+import { PlayerDetailPage } from './routes/players/detail';
 import { DisputesPage } from './routes/admin/disputes';
+import { ReferenceDataPage } from './routes/admin/reference-data';
 import { ScheduleGeneratorPage } from './routes/tools/schedule-generator';
 import { useCurrentUser } from './hooks/useAuth';
 
@@ -45,6 +49,17 @@ export function App() {
         />
         <Route path="teams/:id" element={<TeamDetailPage />} />
 
+        <Route path="players" element={<PlayersPage />} />
+        <Route
+          path="players/create"
+          element={
+            <AdminRoute>
+              <CreatePlayerPage />
+            </AdminRoute>
+          }
+        />
+        <Route path="players/:id" element={<PlayerDetailPage />} />
+
         <Route path="competitions" element={<CompetitionsPage />} />
         <Route
           path="competitions/create"
@@ -61,6 +76,14 @@ export function App() {
           element={
             <AdminRoute>
               <DisputesPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/reference-data"
+          element={
+            <AdminRoute>
+              <ReferenceDataPage />
             </AdminRoute>
           }
         />
