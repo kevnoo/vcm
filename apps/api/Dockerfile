@@ -35,7 +35,5 @@ COPY --from=build /app/apps/api/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/apps/api/src/prisma/schema.prisma ./prisma/schema.prisma
 COPY --from=build /app/apps/api/src/prisma/migrations ./prisma/migrations
 COPY --from=build /app/node_modules ./node_modules
-COPY apps/api/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
 EXPOSE 3000
-CMD ["./entrypoint.sh"]
+CMD ["pnpm", "run", "start:prod"]
