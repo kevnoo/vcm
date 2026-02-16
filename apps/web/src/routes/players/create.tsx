@@ -15,8 +15,15 @@ export function CreatePlayerPage() {
   const [lastName, setLastName] = useState('');
   const [age, setAge] = useState('');
   const [primaryPosition, setPrimaryPosition] = useState<Position | ''>('');
+  const [alternativePositions, setAlternativePositions] = useState<Position[]>([]);
   const [teamId, setTeamId] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+
+  const toggleAltPosition = (pos: Position) => {
+    setAlternativePositions((prev) =>
+      prev.includes(pos) ? prev.filter((p) => p !== pos) : [...prev, pos],
+    );
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +35,7 @@ export function CreatePlayerPage() {
         lastName,
         age: parseInt(age, 10),
         primaryPosition,
+        alternativePositions: alternativePositions.length > 0 ? alternativePositions : undefined,
         teamId: teamId || undefined,
         imageUrl: imageUrl || undefined,
       },
@@ -87,7 +95,11 @@ export function CreatePlayerPage() {
           </label>
           <select
             value={primaryPosition}
-            onChange={(e) => setPrimaryPosition(e.target.value as Position)}
+            onChange={(e) => {
+              const newPos = e.target.value as Position;
+              setPrimaryPosition(newPos);
+              setAlternativePositions((prev) => prev.filter((p) => p !== newPos));
+            }}
             required
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
@@ -99,6 +111,30 @@ export function CreatePlayerPage() {
             ))}
           </select>
         </div>
+
+        {primaryPosition && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Alternative Positions (optional)
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {POSITIONS.filter((pos) => pos !== primaryPosition).map((pos) => (
+                <button
+                  key={pos}
+                  type="button"
+                  onClick={() => toggleAltPosition(pos)}
+                  className={`text-xs font-medium px-2.5 py-1 rounded border transition-colors ${
+                    alternativePositions.includes(pos)
+                      ? 'bg-indigo-100 text-indigo-800 border-indigo-300'
+                      : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                  }`}
+                >
+                  {pos}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -20,6 +20,7 @@ import { UpdatePlayerDto } from './dto/update-player.dto';
 import { SetPlayerSkillsDto } from './dto/set-player-skills.dto';
 import { AssignPlayerRolesDto } from './dto/assign-player-roles.dto';
 import { AssignPlayerPlayStylesDto } from './dto/assign-player-play-styles.dto';
+import { SetPlayerPositionsDto } from './dto/set-player-positions.dto';
 import type { Position } from '../generated/prisma/client';
 
 @Controller('players')
@@ -87,5 +88,11 @@ export class PlayersController {
   @Roles('ADMIN')
   assignPlayStyles(@Param('id') id: string, @Body() dto: AssignPlayerPlayStylesDto) {
     return this.playersService.assignPlayStyles(id, dto);
+  }
+
+  @Put(':id/positions')
+  @Roles('ADMIN')
+  setPositions(@Param('id') id: string, @Body() dto: SetPlayerPositionsDto) {
+    return this.playersService.setPositions(id, dto);
   }
 }

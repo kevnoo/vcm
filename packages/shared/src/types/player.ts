@@ -53,12 +53,21 @@ export interface Player {
   imageUrl: string | null;
   team?: Team | null;
   skills?: PlayerSkill[];
-  roles?: PlayerRoleAssignment[];
+  positions?: PlayerPosition[];
   playStyles?: PlayerPlayStyleAssignment[];
   computedValue?: number;
   valueBreakdown?: PlayerValueBreakdown;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface PlayerPosition {
+  id: string;
+  playerId: string;
+  position: Position;
+  isPrimary: boolean;
+  roles?: PlayerRoleAssignment[];
+  createdAt: string;
 }
 
 export interface PlayerSkill {
@@ -71,7 +80,7 @@ export interface PlayerSkill {
 
 export interface PlayerRoleAssignment {
   id: string;
-  playerId: string;
+  playerPositionId: string;
   playerRoleDefinitionId: string;
   level: RoleLevel;
   roleDefinition?: PlayerRoleDefinition;
@@ -91,6 +100,7 @@ export interface CreatePlayerDto {
   lastName: string;
   age: number;
   primaryPosition: Position;
+  alternativePositions?: Position[];
   teamId?: string;
   imageUrl?: string;
 }
@@ -100,6 +110,7 @@ export interface UpdatePlayerDto {
   lastName?: string;
   age?: number;
   primaryPosition?: Position;
+  alternativePositions?: Position[];
   teamId?: string | null;
   imageUrl?: string | null;
 }
@@ -109,7 +120,14 @@ export interface SetPlayerSkillsDto {
 }
 
 export interface AssignPlayerRolesDto {
-  roles: { playerRoleDefinitionId: string; level: RoleLevel }[];
+  positionRoles: {
+    position: Position;
+    roles: { playerRoleDefinitionId: string; level: RoleLevel }[];
+  }[];
+}
+
+export interface SetPlayerPositionsDto {
+  alternativePositions: Position[];
 }
 
 export interface AssignPlayerPlayStylesDto {

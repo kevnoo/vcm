@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsArray, IsEnum, IsUUID, ValidateNested } from 'class-validator';
-import { RoleLevel } from '../../generated/prisma/client';
+import { Position, RoleLevel } from '../../generated/prisma/client';
 
 class RoleAssignmentDto {
   @IsUUID()
@@ -10,9 +10,19 @@ class RoleAssignmentDto {
   level: RoleLevel;
 }
 
-export class AssignPlayerRolesDto {
+class PositionRolesDto {
+  @IsEnum(Position)
+  position: Position;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => RoleAssignmentDto)
   roles: RoleAssignmentDto[];
+}
+
+export class AssignPlayerRolesDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PositionRolesDto)
+  positionRoles: PositionRolesDto[];
 }

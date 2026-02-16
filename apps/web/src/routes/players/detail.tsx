@@ -40,6 +40,7 @@ export function PlayerDetailPage() {
     lastName: '',
     age: '',
     primaryPosition: '' as Position | '',
+    alternativePositions: [] as Position[],
     teamId: '',
     imageUrl: '',
   });
@@ -47,12 +48,15 @@ export function PlayerDetailPage() {
   if (isLoading) return <p className="text-gray-500">Loading...</p>;
   if (!player) return <p className="text-gray-500">Player not found.</p>;
 
+  const altPositions = player.positions?.filter((p) => !p.isPrimary) ?? [];
+
   const startEditingInfo = () => {
     setEditForm({
       firstName: player.firstName,
       lastName: player.lastName,
       age: String(player.age),
       primaryPosition: player.primaryPosition,
+      alternativePositions: altPositions.map((p) => p.position),
       teamId: player.teamId ?? '',
       imageUrl: player.imageUrl ?? '',
     });
@@ -68,6 +72,7 @@ export function PlayerDetailPage() {
         lastName: editForm.lastName,
         age: parseInt(editForm.age, 10),
         primaryPosition: editForm.primaryPosition,
+        alternativePositions: editForm.alternativePositions,
         teamId: editForm.teamId || null,
         imageUrl: editForm.imageUrl || null,
       },
@@ -80,6 +85,15 @@ export function PlayerDetailPage() {
     deletePlayer.mutate(player.id, {
       onSuccess: () => navigate('/players'),
     });
+  };
+
+  const toggleAltPosition = (pos: Position) => {
+    setEditForm((f) => ({
+      ...f,
+      alternativePositions: f.alternativePositions.includes(pos)
+        ? f.alternativePositions.filter((p) => p !== pos)
+        : [...f.alternativePositions, pos],
+    }));
   };
 
   return (
@@ -105,10 +119,18 @@ export function PlayerDetailPage() {
                 <h1 className="text-2xl font-bold text-gray-900">
                   {player.firstName} {player.lastName}
                 </h1>
-                <div className="flex items-center gap-3 mt-1">
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
                   <span className="inline-block bg-indigo-100 text-indigo-800 text-sm font-medium px-2.5 py-0.5 rounded">
                     {player.primaryPosition}
                   </span>
+                  {altPositions.map((p) => (
+                    <span
+                      key={p.id}
+                      className="inline-block bg-gray-100 text-gray-700 text-sm font-medium px-2.5 py-0.5 rounded"
+                    >
+                      {p.position}
+                    </span>
+                  ))}
                   <span className="text-gray-500">Age {player.age}</span>
                   <PlayerValueBadge value={playerValue?.totalValue} size="md" />
                 </div>
@@ -163,6 +185,9 @@ export function PlayerDetailPage() {
                       setEditForm((f) => ({
                         ...f,
                         primaryPosition: e.target.value as Position,
+                        alternativePositions: f.alternativePositions.filter(
+                          (p) => p !== e.target.value,
+                        ),
                       }))
                     }
                     className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -187,6 +212,30 @@ export function PlayerDetailPage() {
                       </option>
                     ))}
                   </select>
+                </div>
+                {/* Alternative Positions */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Alternative Positions
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {POSITIONS.filter((pos) => pos !== editForm.primaryPosition).map(
+                      (pos) => (
+                        <button
+                          key={pos}
+                          type="button"
+                          onClick={() => toggleAltPosition(pos)}
+                          className={`text-xs font-medium px-2.5 py-1 rounded border transition-colors ${
+                            editForm.alternativePositions.includes(pos)
+                              ? 'bg-indigo-100 text-indigo-800 border-indigo-300'
+                              : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                          }`}
+                        >
+                          {pos}
+                        </button>
+                      ),
+                    )}
+                  </div>
                 </div>
                 <input
                   type="url"
@@ -244,8 +293,7 @@ export function PlayerDetailPage() {
       {/* Roles */}
       <PlayerRolesPanel
         playerId={player.id}
-        playerPosition={player.primaryPosition}
-        roles={player.roles ?? []}
+        positions={player.positions ?? []}
         isAdmin={isAdmin()}
       />
 

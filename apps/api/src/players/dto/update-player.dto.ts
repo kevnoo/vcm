@@ -1,4 +1,4 @@
-import { IsEnum, IsInt, IsOptional, IsString, IsUUID, Min } from 'class-validator';
+import { IsArray, IsEnum, IsInt, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 import { Position } from '../../generated/prisma/client';
 
 export class UpdatePlayerDto {
@@ -18,6 +18,11 @@ export class UpdatePlayerDto {
   @IsEnum(Position)
   @IsOptional()
   primaryPosition?: Position;
+
+  @IsArray()
+  @IsEnum(Position, { each: true })
+  @IsOptional()
+  alternativePositions?: Position[];
 
   @IsUUID()
   @IsOptional()

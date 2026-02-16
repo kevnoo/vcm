@@ -42,7 +42,9 @@ export class PlayerValueService {
         skills: {
           include: { skillDefinition: { include: { skillGroup: true } } },
         },
-        roles: true,
+        positions: {
+          include: { roles: true },
+        },
         playStyles: true,
       },
     });
@@ -56,7 +58,7 @@ export class PlayerValueService {
       value: number;
       skillDefinition: { skillGroup: { name: string } };
     }>;
-    roles: Array<{ level: string }>;
+    positions: Array<{ roles: Array<{ level: string }> }>;
     playStyles: Array<{ level: string }>;
   }) {
     const weights = POSITION_WEIGHTS[player.primaryPosition];
@@ -84,10 +86,12 @@ export class PlayerValueService {
     weightedScore = Math.round(weightedScore * 100) / 100;
     const baseValue = Math.round(weightedScore * 100);
 
-    // Role bonuses
+    // Role bonuses - aggregate across all positions
     let roleBonuses = 0;
-    for (const role of player.roles) {
-      roleBonuses += ROLE_BONUSES[role.level] ?? 0;
+    for (const position of player.positions) {
+      for (const role of position.roles) {
+        roleBonuses += ROLE_BONUSES[role.level] ?? 0;
+      }
     }
 
     // Play style bonuses

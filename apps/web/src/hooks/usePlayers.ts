@@ -7,6 +7,7 @@ import type {
   SetPlayerSkillsDto,
   AssignPlayerRolesDto,
   AssignPlayerPlayStylesDto,
+  SetPlayerPositionsDto,
 } from '@vcm/shared';
 import type { Position } from '@vcm/shared';
 
@@ -86,6 +87,15 @@ export function useAssignPlayerPlayStyles(playerId: string) {
   return useMutation({
     mutationFn: (data: AssignPlayerPlayStylesDto) =>
       api.put(`/players/${playerId}/play-styles`, data).then((r) => r.data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['players', playerId] }),
+  });
+}
+
+export function useSetPlayerPositions(playerId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: SetPlayerPositionsDto) =>
+      api.put(`/players/${playerId}/positions`, data).then((r) => r.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['players', playerId] }),
   });
 }

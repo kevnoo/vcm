@@ -126,10 +126,20 @@ export function TeamDetailPage() {
                       {player.firstName} {player.lastName}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
                       {player.primaryPosition}
                     </span>
+                    {player.positions
+                      ?.filter((p) => !p.isPrimary)
+                      .map((p) => (
+                        <span
+                          key={p.id}
+                          className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded"
+                        >
+                          {p.position}
+                        </span>
+                      ))}
                     <span className="text-xs text-gray-500">Age {player.age}</span>
                   </div>
                 </Link>

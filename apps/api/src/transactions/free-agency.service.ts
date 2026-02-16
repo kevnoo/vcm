@@ -19,7 +19,7 @@ export class FreeAgencyService {
         skills: {
           include: { skillDefinition: { include: { skillGroup: true } } },
         },
-        roles: true,
+        positions: { include: { roles: true } },
         playStyles: true,
       },
       orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
@@ -54,7 +54,7 @@ export class FreeAgencyService {
           skills: {
             include: { skillDefinition: { include: { skillGroup: true } } },
           },
-          roles: true,
+          positions: { include: { roles: true } },
           playStyles: true,
         },
       });

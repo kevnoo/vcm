@@ -285,11 +285,24 @@ model Player {
 
   team         Team?                       @relation(fields: [teamId], references: [id], onDelete: SetNull)
   skills       PlayerSkill[]
-  roles        PlayerRoleAssignment[]
+  positions    PlayerPosition[]
   playStyles   PlayerPlayStyleAssignment[]
   tradePlayers TradeOfferPlayer[]
   waiverWires  WaiverWire[]
   transactions Transaction[]
+}
+
+model PlayerPosition {
+  id        String   @id @default(uuid())
+  playerId  String
+  position  Position
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  player Player               @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  roles  PlayerRoleAssignment[]
+
+  @@unique([playerId, position])
 }
 
 model PlayerSkill {
@@ -306,14 +319,14 @@ model PlayerSkill {
 
 model PlayerRoleAssignment {
   id                     String    @id @default(uuid())
-  playerId               String
+  playerPositionId       String
   playerRoleDefinitionId String
   level                  RoleLevel
 
-  player     Player               @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  playerPosition PlayerPosition       @relation(fields: [playerPositionId], references: [id], onDelete: Cascade)
   roleDefinition PlayerRoleDefinition @relation(fields: [playerRoleDefinitionId], references: [id], onDelete: Cascade)
 
-  @@unique([playerId, playerRoleDefinitionId])
+  @@unique([playerPositionId, playerRoleDefinitionId])
 }
 
 model PlayerPlayStyleAssignment {

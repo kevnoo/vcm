@@ -1,4 +1,4 @@
-import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, IsUUID, Min } from 'class-validator';
+import { IsArray, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 import { Position } from '../../generated/prisma/client';
 
 export class CreatePlayerDto {
@@ -16,6 +16,11 @@ export class CreatePlayerDto {
 
   @IsEnum(Position)
   primaryPosition: Position;
+
+  @IsArray()
+  @IsEnum(Position, { each: true })
+  @IsOptional()
+  alternativePositions?: Position[];
 
   @IsUUID()
   @IsOptional()
