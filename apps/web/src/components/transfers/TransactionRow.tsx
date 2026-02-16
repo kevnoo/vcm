@@ -27,7 +27,7 @@ interface TransactionRowProps {
 
 export function TransactionRow({ transaction }: TransactionRowProps) {
   return (
-    <div className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded hover:bg-gray-100 transition-colors">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3 px-4 bg-gray-50 rounded hover:bg-gray-100 transition-colors">
       <div className="flex items-center gap-3">
         <span className={`text-xs font-medium px-2 py-0.5 rounded ${TYPE_COLORS[transaction.type] ?? 'bg-gray-100 text-gray-800'}`}>
           {TYPE_LABELS[transaction.type] ?? transaction.type}

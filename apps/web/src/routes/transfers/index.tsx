@@ -12,7 +12,7 @@ export function TransfersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-2xl font-bold text-gray-900">Transfers</h1>
         <Link
           to="/transfers/create-trade"
@@ -24,7 +24,7 @@ export function TransfersPage() {
 
       {/* Tabs */}
       <div className="border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8">
+        <nav className="-mb-px flex space-x-2 sm:space-x-6">
           {TABS.map((tab) => (
             <button
               key={tab}

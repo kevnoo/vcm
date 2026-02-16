@@ -127,7 +127,7 @@ export function PlayerDetailPage() {
               </div>
             ) : (
               <div className="space-y-3 flex-1">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
                     type="text"
                     value={editForm.firstName}
@@ -147,7 +147,7 @@ export function PlayerDetailPage() {
                     className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <input
                     type="number"
                     value={editForm.age}
@@ -216,7 +216,7 @@ export function PlayerDetailPage() {
             )}
           </div>
           {isAdmin() && !editingInfo && (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={startEditingInfo}
                 className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"

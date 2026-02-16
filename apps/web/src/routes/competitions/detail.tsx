@@ -34,7 +34,7 @@ export function CompetitionDetailPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
             {competition.name}
@@ -94,7 +94,7 @@ export function CompetitionDetailPage() {
                   Array.from(e.target.selectedOptions, (o) => o.value),
                 )
               }
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm min-w-48"
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm w-full sm:w-auto"
             >
               {availableTeams.map((team) => (
                 <option key={team.id} value={team.id}>
@@ -167,19 +167,19 @@ function MatchRow({ match }: { match: Match }) {
     <div className="px-4 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
-          <span className="text-sm font-medium text-gray-900 w-32 text-right">
+          <span className="text-sm font-medium text-gray-900 flex-1 min-w-0 truncate text-right">
             {match.homeTeam?.name ?? 'TBD'}
           </span>
 
           {hasResult ? (
-            <span className="text-lg font-bold text-gray-900 w-16 text-center">
+            <span className="text-lg font-bold text-gray-900 w-8 text-center shrink-0">
               {match.result!.homeScore} - {match.result!.awayScore}
             </span>
           ) : (
-            <span className="text-sm text-gray-400 w-16 text-center">vs</span>
+            <span className="text-sm text-gray-400 w-8 text-center shrink-0">vs</span>
           )}
 
-          <span className="text-sm font-medium text-gray-900 w-32">
+          <span className="text-sm font-medium text-gray-900 flex-1 min-w-0 truncate">
             {match.awayTeam?.name ?? 'TBD'}
           </span>
         </div>

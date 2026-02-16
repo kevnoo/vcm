@@ -63,7 +63,7 @@ export function WaiversTab() {
 
               {/* Bid form for team owners */}
               {userTeam && waiver.releasedFromId !== userTeam.id && (
-                <div className="flex items-center gap-2 mt-3">
+                <div className="flex flex-wrap items-center gap-2 mt-3">
                   <input
                     type="number"
                     value={bidAmounts[waiver.id] ?? ''}
@@ -86,7 +86,7 @@ export function WaiversTab() {
 
               {/* Admin actions */}
               {isAdmin() && (
-                <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
                   <button
                     onClick={() => resolveWaiver.mutate(waiver.id)}
                     disabled={resolveWaiver.isPending}

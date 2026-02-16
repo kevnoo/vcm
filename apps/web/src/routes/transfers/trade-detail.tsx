@@ -50,7 +50,7 @@ export function TradeDetailPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
           {/* Initiating team side */}
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-2">

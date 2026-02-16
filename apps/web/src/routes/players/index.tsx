@@ -24,7 +24,7 @@ export function PlayersPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Players</h1>
         {isAdmin() && (
           <Link
@@ -37,11 +37,11 @@ export function PlayersPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
         <select
           value={positionFilter}
           onChange={(e) => setPositionFilter(e.target.value as Position | '')}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full sm:w-auto rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">All Positions</option>
           {POSITIONS.map((pos) => (
@@ -57,7 +57,7 @@ export function PlayersPage() {
             setTeamFilter(e.target.value);
             if (e.target.value) setFreeAgentsOnly(false);
           }}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full sm:w-auto rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">All Teams</option>
           {teams?.map((team) => (

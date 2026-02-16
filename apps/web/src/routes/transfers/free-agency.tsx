@@ -33,7 +33,7 @@ export function FreeAgencyTab() {
           {freeAgents.map((player) => (
             <div
               key={player.id}
-              className="flex items-center justify-between bg-white rounded-lg shadow p-4"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white rounded-lg shadow p-4"
             >
               <div className="flex items-center gap-3">
                 {player.imageUrl ? (

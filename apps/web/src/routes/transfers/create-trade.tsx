@@ -88,7 +88,7 @@ export function CreateTradePage() {
         </div>
 
         {/* Currency */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Currency You Offer
@@ -121,7 +121,7 @@ export function CreateTradePage() {
             Players You Offer ({userTeam.name})
           </label>
           {myPlayers && myPlayers.length > 0 ? (
-            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
               {myPlayers.map((p) => (
                 <label
                   key={p.id}
@@ -154,7 +154,7 @@ export function CreateTradePage() {
               Players You Request
             </label>
             {theirPlayers && theirPlayers.length > 0 ? (
-              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
                 {theirPlayers.map((p) => (
                   <label
                     key={p.id}
