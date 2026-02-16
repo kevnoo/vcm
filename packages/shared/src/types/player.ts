@@ -1,5 +1,6 @@
 import { Position, RoleLevel, PlayStyleLevel } from '../enums';
 import { Team } from './team';
+import type { PlayerValueBreakdown } from './transaction';
 
 export interface SkillGroup {
   id: string;
@@ -54,6 +55,8 @@ export interface Player {
   skills?: PlayerSkill[];
   roles?: PlayerRoleAssignment[];
   playStyles?: PlayerPlayStyleAssignment[];
+  computedValue?: number;
+  valueBreakdown?: PlayerValueBreakdown;
   createdAt: string;
   updatedAt: string;
 }

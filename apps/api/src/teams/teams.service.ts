@@ -39,4 +39,12 @@ export class TeamsService {
   delete(id: string) {
     return this.prisma.team.delete({ where: { id } });
   }
+
+  setBudget(id: string, budget: number) {
+    return this.prisma.team.update({
+      where: { id },
+      data: { budget },
+      include: { owner: true },
+    });
+  }
 }

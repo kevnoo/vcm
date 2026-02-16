@@ -1,5 +1,5 @@
 export type { User } from './user';
-export type { Team, CreateTeamDto, UpdateTeamDto } from './team';
+export type { Team, CreateTeamDto, UpdateTeamDto, SetBudgetDto } from './team';
 export type {
   Competition,
   CompetitionTeam,
@@ -37,3 +37,20 @@ export type {
   CreatePlayStyleDefinitionDto,
   UpdatePlayStyleDefinitionDto,
 } from './player';
+export type {
+  LeagueSetting,
+  UpsertLeagueSettingDto,
+  PlayerValueBreakdown,
+  TradeOffer,
+  TradeOfferPlayer,
+  CreateTradeOfferDto,
+  RespondTradeOfferDto,
+  CounterTradeOfferDto,
+  AdminTradeActionDto,
+  ClaimFreeAgentDto,
+  WaiverWire,
+  WaiverBid,
+  ReleasePlayerDto,
+  PlaceWaiverBidDto,
+  Transaction,
+} from './transaction';

@@ -1,18 +1,42 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router';
-import { useTeam } from '../../hooks/useTeams';
+import { useTeam, useSetTeamBudget } from '../../hooks/useTeams';
 import { usePlayers } from '../../hooks/usePlayers';
+import { useTrades } from '../../hooks/useTrades';
+import { useAuthStore } from '../../stores/auth.store';
+import { TradeOfferCard } from '../../components/transfers/TradeOfferCard';
 
 export function TeamDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: team, isLoading } = useTeam(id!);
   const { data: players, isLoading: playersLoading } = usePlayers({ teamId: id });
+  const { data: pendingTrades } = useTrades({ teamId: id, status: 'PENDING' });
+  const { isAdmin } = useAuthStore();
+  const setBudget = useSetTeamBudget();
+
+  const [editingBudget, setEditingBudget] = useState(false);
+  const [budgetInput, setBudgetInput] = useState('');
 
   if (isLoading) return <p className="text-gray-500">Loading...</p>;
   if (!team) return <p className="text-gray-500">Team not found.</p>;
 
+  const startEditBudget = () => {
+    setBudgetInput(String(team.budget));
+    setEditingBudget(true);
+  };
+
+  const saveBudget = () => {
+    const budget = parseInt(budgetInput, 10);
+    if (isNaN(budget) || budget < 0) return;
+    setBudget.mutate(
+      { id: team.id, budget },
+      { onSuccess: () => setEditingBudget(false) },
+    );
+  };
+
   return (
-    <div>
-      <div className="flex items-center gap-4 mb-6">
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
         {team.logoUrl ? (
           <img
             src={team.logoUrl}
@@ -29,6 +53,43 @@ export function TeamDetailPage() {
           <p className="text-gray-500">
             Owner: {team.owner?.discordUsername ?? 'None'}
           </p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-sm text-gray-600">
+              Budget: <span className="font-medium text-gray-900">{team.budget.toLocaleString()}</span>
+            </span>
+            {isAdmin() && !editingBudget && (
+              <button
+                onClick={startEditBudget}
+                className="text-xs text-indigo-600 hover:text-indigo-700 font-medium"
+              >
+                Set Budget
+              </button>
+            )}
+            {editingBudget && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={budgetInput}
+                  onChange={(e) => setBudgetInput(e.target.value)}
+                  min={0}
+                  className="rounded border border-gray-300 px-2 py-1 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+                <button
+                  onClick={saveBudget}
+                  disabled={setBudget.isPending}
+                  className="text-xs text-green-600 hover:text-green-700 font-medium"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setEditingBudget(false)}
+                  className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -79,6 +140,20 @@ export function TeamDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Pending Trades */}
+      {pendingTrades && pendingTrades.length > 0 && (
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-4 border-b border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900">Pending Trades</h2>
+          </div>
+          <div className="p-4 grid gap-4 md:grid-cols-2">
+            {pendingTrades.map((trade) => (
+              <TradeOfferCard key={trade.id} trade={trade} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,6 +6,12 @@ import { useAuthStore } from '../../stores/auth.store';
 import { PlayerSkillsPanel } from '../../components/players/PlayerSkillsPanel';
 import { PlayerRolesPanel } from '../../components/players/PlayerRolesPanel';
 import { PlayerPlayStylesPanel } from '../../components/players/PlayerPlayStylesPanel';
+import { PlayerValueBadge } from '../../components/transfers/PlayerValueBadge';
+import { TransactionRow } from '../../components/transfers/TransactionRow';
+import { usePlayerValue } from '../../hooks/usePlayerValue';
+import { useTransactions } from '../../hooks/useTransactions';
+import { useReleasePlayer } from '../../hooks/useWaivers';
+import { useClaimFreeAgent } from '../../hooks/useFreeAgency';
 import { Position } from '@vcm/shared';
 
 const POSITIONS = Object.values(Position);
@@ -13,11 +19,20 @@ const POSITIONS = Object.values(Position);
 export function PlayerDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const isAdmin = useAuthStore((s) => s.isAdmin);
+  const { user, isAdmin } = useAuthStore();
   const { data: player, isLoading } = usePlayer(id!);
   const { data: teams } = useTeams();
   const updatePlayer = useUpdatePlayer();
   const deletePlayer = useDeletePlayer();
+  const { data: playerValue } = usePlayerValue(id!);
+  const { data: transactions } = useTransactions({ playerId: id });
+  const releasePlayer = useReleasePlayer();
+  const claimFreeAgent = useClaimFreeAgent();
+
+  const userTeam = teams?.find((t) => t.ownerId === user?.id);
+  const isOnUserTeam = userTeam && player?.teamId === userTeam.id;
+  const isOnAnotherTeam = player?.teamId && !isOnUserTeam;
+  const isFreeAgent = !player?.teamId;
 
   const [editingInfo, setEditingInfo] = useState(false);
   const [editForm, setEditForm] = useState({
@@ -95,6 +110,7 @@ export function PlayerDetailPage() {
                     {player.primaryPosition}
                   </span>
                   <span className="text-gray-500">Age {player.age}</span>
+                  <PlayerValueBadge value={playerValue?.totalValue} size="md" />
                 </div>
                 <p className="text-gray-500 mt-1">
                   {player.team ? (
@@ -240,6 +256,61 @@ export function PlayerDetailPage() {
         playStyles={player.playStyles ?? []}
         isAdmin={isAdmin()}
       />
+
+      {/* Transaction Actions */}
+      {userTeam && !editingInfo && (
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Actions</h2>
+          <div className="flex gap-2">
+            {isOnAnotherTeam && (
+              <Link
+                to={`/transfers/create-trade?teamId=${player.teamId}`}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded"
+              >
+                Make Trade Offer
+              </Link>
+            )}
+            {isFreeAgent && (
+              <button
+                onClick={() => {
+                  if (!confirm('Claim this free agent? 50% of their value will be deducted from your budget.')) return;
+                  claimFreeAgent.mutate({ playerId: player.id, teamId: userTeam.id });
+                }}
+                disabled={claimFreeAgent.isPending}
+                className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded"
+              >
+                Claim Free Agent
+              </button>
+            )}
+            {isOnUserTeam && (
+              <button
+                onClick={() => {
+                  if (!confirm(`Release ${player.firstName} ${player.lastName} to waivers?`)) return;
+                  releasePlayer.mutate(player.id);
+                }}
+                disabled={releasePlayer.isPending}
+                className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded"
+              >
+                Release
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Transaction History */}
+      {transactions && transactions.length > 0 && (
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-4 border-b border-gray-100">
+            <h2 className="text-lg font-semibold text-gray-900">Transaction History</h2>
+          </div>
+          <div className="p-4 space-y-2">
+            {transactions.slice(0, 10).map((tx) => (
+              <TransactionRow key={tx.id} transaction={tx} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

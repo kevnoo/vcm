@@ -5,11 +5,14 @@ const navItems = [
   { to: '/', label: 'Dashboard' },
   { to: '/teams', label: 'Teams' },
   { to: '/players', label: 'Players' },
+  { to: '/transfers', label: 'Transfers' },
   { to: '/competitions', label: 'Competitions' },
 ];
 
 const adminItems = [
   { to: '/admin/disputes', label: 'Disputes' },
+  { to: '/admin/pending-trades', label: 'Pending Trades' },
+  { to: '/admin/league-settings', label: 'League Settings' },
   { to: '/admin/reference-data', label: 'Reference Data' },
 ];
 

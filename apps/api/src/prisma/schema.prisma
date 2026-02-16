@@ -18,9 +18,11 @@ model User {
   updatedAt       DateTime @updatedAt
 
   ownedTeams       Team[]
-  submittedResults Result[] @relation("SubmittedBy")
-  disputedResults  Result[] @relation("DisputedBy")
-  resolvedResults  Result[] @relation("ResolvedBy")
+  submittedResults Result[]      @relation("SubmittedBy")
+  disputedResults  Result[]      @relation("DisputedBy")
+  resolvedResults  Result[]      @relation("ResolvedBy")
+  approvedTrades   TradeOffer[]  @relation("ApprovedBy")
+  executedTransactions Transaction[] @relation("ExecutedBy")
 }
 
 enum Role {
@@ -34,6 +36,7 @@ model Team {
   name      String   @unique
   logoUrl   String?
   ownerId   String
+  budget    Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -42,6 +45,12 @@ model Team {
   homeMatches      Match[]           @relation("HomeTeam")
   awayMatches      Match[]           @relation("AwayTeam")
   players          Player[]
+  initiatedTrades  TradeOffer[]      @relation("InitiatingTeam")
+  receivedTrades   TradeOffer[]      @relation("ReceivingTeam")
+  waiverBids       WaiverBid[]
+  releasedWaivers  WaiverWire[]
+  transactionsFrom Transaction[]     @relation("FromTeam")
+  transactionsTo   Transaction[]     @relation("ToTeam")
 }
 
 // ─── Competitions ────────────────────────────────────────
@@ -179,6 +188,35 @@ enum PlayStyleLevel {
   ADVANCED
 }
 
+// ─── Transaction Enums ──────────────────────────────────
+enum TradeOfferStatus {
+  PENDING
+  PENDING_APPROVAL
+  REJECTED
+  COUNTERED
+  APPROVED
+  DENIED
+  CANCELLED
+  EXPIRED
+}
+
+enum WaiverStatus {
+  ACTIVE
+  CLAIMED
+  CLEARED
+  CANCELLED
+}
+
+enum TransactionType {
+  TRADE
+  FREE_AGENCY
+  WAIVER_CLAIM
+  RELEASED
+  WAIVER_CLEAR
+  ADMIN_ASSIGN
+  ADMIN_RELEASE
+}
+
 // ─── Skill Groups & Definitions ─────────────────────────
 model SkillGroup {
   id        String   @id @default(uuid())
@@ -245,10 +283,13 @@ model Player {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  team       Team?                       @relation(fields: [teamId], references: [id], onDelete: SetNull)
-  skills     PlayerSkill[]
-  roles      PlayerRoleAssignment[]
-  playStyles PlayerPlayStyleAssignment[]
+  team         Team?                       @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  skills       PlayerSkill[]
+  roles        PlayerRoleAssignment[]
+  playStyles   PlayerPlayStyleAssignment[]
+  tradePlayers TradeOfferPlayer[]
+  waiverWires  WaiverWire[]
+  transactions Transaction[]
 }
 
 model PlayerSkill {
@@ -285,4 +326,113 @@ model PlayerPlayStyleAssignment {
   playStyleDefinition PlayStyleDefinition @relation(fields: [playStyleDefinitionId], references: [id], onDelete: Cascade)
 
   @@unique([playerId, playStyleDefinitionId])
+}
+
+// ─── League Settings ────────────────────────────────────
+model LeagueSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Trade Offers ───────────────────────────────────────
+model TradeOffer {
+  id                String           @id @default(uuid())
+  initiatingTeamId  String
+  receivingTeamId   String
+  currencyOffered   Int              @default(0)
+  currencyRequested Int              @default(0)
+  status            TradeOfferStatus @default(PENDING)
+  parentOfferId     String?
+  note              String?
+  responseNote      String?
+  adminNote         String?
+  expiresAt         DateTime?
+  respondedAt       DateTime?
+  approvedById      String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  initiatingTeam TradeOffer?        @relation("CounterOffers", fields: [parentOfferId], references: [id])
+  counterOffers  TradeOffer[]       @relation("CounterOffers")
+  initTeam       Team               @relation("InitiatingTeam", fields: [initiatingTeamId], references: [id])
+  recvTeam       Team               @relation("ReceivingTeam", fields: [receivingTeamId], references: [id])
+  approvedBy     User?              @relation("ApprovedBy", fields: [approvedById], references: [id])
+  offeredPlayers TradeOfferPlayer[] @relation("OfferedIn")
+  requestedPlayers TradeOfferPlayer[] @relation("RequestedIn")
+  transactions   Transaction[]
+
+  @@index([status])
+}
+
+model TradeOfferPlayer {
+  id            String  @id @default(uuid())
+  playerId      String
+  offeredInId   String?
+  requestedInId String?
+
+  player      Player      @relation(fields: [playerId], references: [id])
+  offeredIn   TradeOffer? @relation("OfferedIn", fields: [offeredInId], references: [id], onDelete: Cascade)
+  requestedIn TradeOffer? @relation("RequestedIn", fields: [requestedInId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, offeredInId])
+  @@unique([playerId, requestedInId])
+}
+
+// ─── Waiver Wire ────────────────────────────────────────
+model WaiverWire {
+  id               String       @id @default(uuid())
+  playerId         String
+  releasedFromId   String?
+  status           WaiverStatus @default(ACTIVE)
+  waiverPeriodDays Int
+  expiresAt        DateTime
+  winningBidId     String?      @unique
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  player       Player     @relation(fields: [playerId], references: [id])
+  releasedFrom Team?      @relation(fields: [releasedFromId], references: [id])
+  winningBid   WaiverBid? @relation("WinningBid", fields: [winningBidId], references: [id])
+  bids         WaiverBid[] @relation("WaiverBids")
+  transactions Transaction[]
+}
+
+model WaiverBid {
+  id           String   @id @default(uuid())
+  waiverWireId String
+  teamId       String
+  amount       Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  waiverWire  WaiverWire  @relation("WaiverBids", fields: [waiverWireId], references: [id], onDelete: Cascade)
+  team        Team        @relation(fields: [teamId], references: [id])
+  wonWaiver   WaiverWire? @relation("WinningBid")
+
+  @@unique([waiverWireId, teamId])
+}
+
+// ─── Transaction Log ────────────────────────────────────
+model Transaction {
+  id             String          @id @default(uuid())
+  type           TransactionType
+  playerId       String
+  fromTeamId     String?
+  toTeamId       String?
+  currencyAmount Int?
+  tradeOfferId   String?
+  waiverWireId   String?
+  note           String?
+  executedById   String?
+  createdAt      DateTime        @default(now())
+
+  player     Player      @relation(fields: [playerId], references: [id])
+  fromTeam   Team?       @relation("FromTeam", fields: [fromTeamId], references: [id])
+  toTeam     Team?       @relation("ToTeam", fields: [toTeamId], references: [id])
+  tradeOffer TradeOffer? @relation(fields: [tradeOfferId], references: [id])
+  waiverWire WaiverWire? @relation(fields: [waiverWireId], references: [id])
+  executedBy User?       @relation("ExecutedBy", fields: [executedById], references: [id])
 }

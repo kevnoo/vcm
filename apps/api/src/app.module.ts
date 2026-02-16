@@ -10,6 +10,8 @@ import { MatchesModule } from './matches/matches.module';
 import { ResultsModule } from './results/results.module';
 import { ReferenceDataModule } from './reference-data/reference-data.module';
 import { PlayersModule } from './players/players.module';
+import { LeagueSettingsModule } from './league-settings/league-settings.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { PlayersModule } from './players/players.module';
     ResultsModule,
     ReferenceDataModule,
     PlayersModule,
+    LeagueSettingsModule,
+    TransactionsModule,
   ],
 })
 export class AppModule {}

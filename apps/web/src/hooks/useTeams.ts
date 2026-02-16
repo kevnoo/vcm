@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
-import type { Team, CreateTeamDto, UpdateTeamDto } from '@vcm/shared';
+import type { Team, CreateTeamDto, UpdateTeamDto, SetBudgetDto } from '@vcm/shared';
 
 export function useTeams() {
   return useQuery<Team[]>({
@@ -38,6 +38,15 @@ export function useDeleteTeam() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.delete(`/teams/${id}`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['teams'] }),
+  });
+}
+
+export function useSetTeamBudget() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, budget }: { id: string; budget: number }) =>
+      api.patch(`/teams/${id}/budget`, { budget }).then((r) => r.data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['teams'] }),
   });
 }

@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PlayersService } from './players.service';
+import { PlayerValueService } from './player-value.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -24,7 +25,10 @@ import type { Position } from '../generated/prisma/client';
 @Controller('players')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class PlayersController {
-  constructor(private playersService: PlayersService) {}
+  constructor(
+    private playersService: PlayersService,
+    private playerValueService: PlayerValueService,
+  ) {}
 
   @Get()
   findAll(
@@ -42,6 +46,11 @@ export class PlayersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.playersService.findById(id);
+  }
+
+  @Get(':id/value')
+  getValue(@Param('id') id: string) {
+    return this.playerValueService.computeValue(id);
   }
 
   @Post()

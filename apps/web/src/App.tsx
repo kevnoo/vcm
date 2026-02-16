@@ -14,7 +14,12 @@ import { CompetitionDetailPage } from './routes/competitions/detail';
 import { PlayersPage } from './routes/players/index';
 import { CreatePlayerPage } from './routes/players/create';
 import { PlayerDetailPage } from './routes/players/detail';
+import { TransfersPage } from './routes/transfers/index';
+import { CreateTradePage } from './routes/transfers/create-trade';
+import { TradeDetailPage } from './routes/transfers/trade-detail';
 import { DisputesPage } from './routes/admin/disputes';
+import { PendingTradesPage } from './routes/admin/pending-trades';
+import { LeagueSettingsPage } from './routes/admin/league-settings';
 import { ReferenceDataPage } from './routes/admin/reference-data';
 import { ScheduleGeneratorPage } from './routes/tools/schedule-generator';
 import { useCurrentUser } from './hooks/useAuth';
@@ -60,6 +65,10 @@ export function App() {
         />
         <Route path="players/:id" element={<PlayerDetailPage />} />
 
+        <Route path="transfers" element={<TransfersPage />} />
+        <Route path="transfers/create-trade" element={<CreateTradePage />} />
+        <Route path="transfers/trades/:id" element={<TradeDetailPage />} />
+
         <Route path="competitions" element={<CompetitionsPage />} />
         <Route
           path="competitions/create"
@@ -76,6 +85,22 @@ export function App() {
           element={
             <AdminRoute>
               <DisputesPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/pending-trades"
+          element={
+            <AdminRoute>
+              <PendingTradesPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/league-settings"
+          element={
+            <AdminRoute>
+              <LeagueSettingsPage />
             </AdminRoute>
           }
         />

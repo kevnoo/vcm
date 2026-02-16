@@ -234,6 +234,22 @@ async function main() {
     }
   }
   console.log(`Seeded ${playStyleCount} play style definitions`);
+
+  // Seed League Settings
+  const leagueSettings = [
+    { key: 'waiver_period_days', value: '3' },
+    { key: 'trade_offer_expiry_days', value: '7' },
+    { key: 'free_agency_cost_percent', value: '50' },
+  ];
+
+  for (const setting of leagueSettings) {
+    await prisma.leagueSetting.upsert({
+      where: { key: setting.key },
+      update: {},
+      create: setting,
+    });
+  }
+  console.log(`Seeded ${leagueSettings.length} league settings`);
 }
 
 main()

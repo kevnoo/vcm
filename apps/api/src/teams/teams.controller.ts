@@ -11,6 +11,7 @@ import {
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
+import { SetBudgetDto } from './dto/set-budget.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -46,5 +47,11 @@ export class TeamsController {
   @Roles('ADMIN')
   delete(@Param('id') id: string) {
     return this.teamsService.delete(id);
+  }
+
+  @Patch(':id/budget')
+  @Roles('ADMIN')
+  setBudget(@Param('id') id: string, @Body() dto: SetBudgetDto) {
+    return this.teamsService.setBudget(id, dto.budget);
   }
 }
