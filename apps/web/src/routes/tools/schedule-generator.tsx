@@ -4,6 +4,7 @@ import {
   generateKnockout,
   type GeneratedRound,
 } from '../../lib/schedule';
+import { downloadCSV } from '../../lib/export-csv';
 
 const competitionTypes = [
   { value: 'DOUBLE_ROUND_ROBIN', label: 'Double Round Robin' },
@@ -66,6 +67,18 @@ export function ScheduleGeneratorPage() {
 
   const totalMatches =
     rounds?.reduce((sum, r) => sum + r.matches.length, 0) ?? 0;
+
+  const exportCSV = () => {
+    if (!rounds) return;
+    const rows: string[][] = [['Round', 'Match #', 'Home', 'Away']];
+    let matchNum = 1;
+    for (const round of rounds) {
+      for (const match of round.matches) {
+        rows.push([round.name, String(matchNum++), match.home, match.away]);
+      }
+    }
+    downloadCSV('schedule.csv', rows);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -196,9 +209,17 @@ export function ScheduleGeneratorPage() {
                   <h2 className="text-lg font-semibold text-gray-900">
                     Generated Schedule
                   </h2>
-                  <p className="text-sm text-gray-500">
-                    {rounds.length} rounds &middot; {totalMatches} matches
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-sm text-gray-500">
+                      {rounds.length} rounds &middot; {totalMatches} matches
+                    </p>
+                    <button
+                      onClick={exportCSV}
+                      className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                    >
+                      Export to CSV
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-4">

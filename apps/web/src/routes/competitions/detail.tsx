@@ -10,6 +10,7 @@ import { useTeams } from '../../hooks/useTeams';
 import { useAuthStore } from '../../stores/auth.store';
 import { useSubmitResult } from '../../hooks/useResults';
 import type { Match, Round } from '@vcm/shared';
+import { downloadCSV } from '../../lib/export-csv';
 
 export function CompetitionDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -31,6 +32,23 @@ export function CompetitionDetailPage() {
 
   const isDraft = competition.status === 'DRAFT';
   const hasSchedule = (competition.rounds?.length ?? 0) > 0;
+
+  const exportCSV = () => {
+    if (!competition.rounds) return;
+    const rows: string[][] = [['Round', 'Match #', 'Home', 'Away']];
+    let matchNum = 1;
+    for (const round of competition.rounds) {
+      for (const match of round.matches ?? []) {
+        rows.push([
+          round.name ?? `Round ${round.roundNumber}`,
+          String(matchNum++),
+          match.homeTeam?.name ?? 'TBD',
+          match.awayTeam?.name ?? 'TBD',
+        ]);
+      }
+    }
+    downloadCSV(`${competition.name.replace(/\s+/g, '-').toLowerCase()}-schedule.csv`, rows);
+  };
 
   return (
     <div>
@@ -123,7 +141,15 @@ export function CompetitionDetailPage() {
       {/* Schedule section */}
       {hasSchedule && (
         <section>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Schedule</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-gray-900">Schedule</h2>
+            <button
+              onClick={exportCSV}
+              className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+            >
+              Export to CSV
+            </button>
+          </div>
           {competition.rounds?.map((round) => (
             <RoundSection key={round.id} round={round} />
           ))}
