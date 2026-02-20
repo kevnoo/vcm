@@ -45,8 +45,8 @@ export function PlayerDetailPage() {
     imageUrl: '',
   });
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
-  if (!player) return <p className="text-gray-500">Player not found.</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
+  if (!player) return <p className="text-gray-500 dark:text-gray-400">Player not found.</p>;
 
   const altPositions = player.positions?.filter((p) => !p.isPrimary) ?? [];
 
@@ -99,7 +99,7 @@ export function PlayerDetailPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             {player.imageUrl ? (
@@ -109,32 +109,32 @@ export function PlayerDetailPage() {
                 className="w-20 h-20 rounded-full object-cover"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl font-bold">
+              <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-400 text-2xl font-bold">
                 {player.firstName.charAt(0)}
                 {player.lastName.charAt(0)}
               </div>
             )}
             {!editingInfo ? (
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {player.firstName} {player.lastName}
                 </h1>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <span className="inline-block bg-indigo-100 text-indigo-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                  <span className="inline-block bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 text-sm font-medium px-2.5 py-0.5 rounded">
                     {player.primaryPosition}
                   </span>
                   {altPositions.map((p) => (
                     <span
                       key={p.id}
-                      className="inline-block bg-gray-100 text-gray-700 text-sm font-medium px-2.5 py-0.5 rounded"
+                      className="inline-block bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium px-2.5 py-0.5 rounded"
                     >
                       {p.position}
                     </span>
                   ))}
-                  <span className="text-gray-500">Age {player.age}</span>
+                  <span className="text-gray-500 dark:text-gray-400">Age {player.age}</span>
                   <PlayerValueBadge value={playerValue?.totalValue} size="md" />
                 </div>
-                <p className="text-gray-500 mt-1">
+                <p className="text-gray-500 dark:text-gray-400 mt-1">
                   {player.team ? (
                     <Link
                       to={`/teams/${player.team.id}`}
@@ -215,7 +215,7 @@ export function PlayerDetailPage() {
                 </div>
                 {/* Alternative Positions */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Alternative Positions
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -227,8 +227,8 @@ export function PlayerDetailPage() {
                           onClick={() => toggleAltPosition(pos)}
                           className={`text-xs font-medium px-2.5 py-1 rounded border transition-colors ${
                             editForm.alternativePositions.includes(pos)
-                              ? 'bg-indigo-100 text-indigo-800 border-indigo-300'
-                              : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                              ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 border-indigo-300 dark:border-indigo-700'
+                              : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
                           }`}
                         >
                           {pos}
@@ -256,7 +256,7 @@ export function PlayerDetailPage() {
                   </button>
                   <button
                     onClick={() => setEditingInfo(false)}
-                    className="text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 rounded font-medium"
+                    className="text-sm bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded font-medium"
                   >
                     Cancel
                   </button>
@@ -307,8 +307,8 @@ export function PlayerDetailPage() {
 
       {/* Transaction Actions */}
       {userTeam && !editingInfo && (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Actions</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Actions</h2>
           <div className="flex gap-2">
             {isOnAnotherTeam && (
               <Link
@@ -348,9 +348,9 @@ export function PlayerDetailPage() {
 
       {/* Transaction History */}
       {transactions && transactions.length > 0 && (
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-4 border-b border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-900">Transaction History</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30">
+          <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Transaction History</h2>
           </div>
           <div className="p-4 space-y-2">
             {transactions.slice(0, 10).map((tx) => (

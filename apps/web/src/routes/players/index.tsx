@@ -20,12 +20,12 @@ export function PlayersPage() {
     freeAgents: freeAgentsOnly || undefined,
   });
 
-  if (isLoading) return <p className="text-gray-500">Loading players...</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading players...</p>;
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Players</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Players</h1>
         {isAdmin() && (
           <Link
             to="/players/create"
@@ -67,7 +67,7 @@ export function PlayersPage() {
           ))}
         </select>
 
-        <label className="flex items-center gap-2 text-sm text-gray-700">
+        <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           <input
             type="checkbox"
             checked={freeAgentsOnly}
@@ -87,7 +87,7 @@ export function PlayersPage() {
           <Link
             key={player.id}
             to={`/players/${player.id}`}
-            className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center gap-4">
               {player.imageUrl ? (
@@ -97,22 +97,22 @@ export function PlayersPage() {
                   className="w-12 h-12 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold">
+                <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg font-bold">
                   {player.firstName.charAt(0)}
                   {player.lastName.charAt(0)}
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-gray-900">
+                <p className="font-medium text-gray-900 dark:text-gray-100">
                   {player.firstName} {player.lastName}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
+                  <span className="inline-block bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 text-xs font-medium px-2 py-0.5 rounded">
                     {player.primaryPosition}
                   </span>
-                  <span className="text-sm text-gray-500">Age {player.age}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Age {player.age}</span>
                 </div>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   {player.team ? player.team.name : 'Free Agent'}
                 </p>
               </div>
@@ -122,7 +122,7 @@ export function PlayersPage() {
       </div>
 
       {players?.length === 0 && (
-        <p className="text-gray-500 text-center py-12">
+        <p className="text-gray-500 dark:text-gray-400 text-center py-12">
           No players found. {isAdmin() ? 'Create one to get started.' : ''}
         </p>
       )}

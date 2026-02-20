@@ -57,19 +57,19 @@ export function CreateTradePage() {
   };
 
   if (!userTeam) {
-    return <p className="text-gray-500">You must own a team to create a trade offer.</p>;
+    return <p className="text-gray-500 dark:text-gray-400">You must own a team to create a trade offer.</p>;
   }
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <h1 className="text-2xl font-bold text-gray-900">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
         {counterId ? 'Counter Trade Offer' : 'New Trade Offer'}
       </h1>
 
       {/* Receiving team selection */}
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Receiving Team</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Receiving Team</label>
           <select
             value={receivingTeamId}
             onChange={(e) => {
@@ -90,7 +90,7 @@ export function CreateTradePage() {
         {/* Currency */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Currency You Offer
             </label>
             <input
@@ -102,7 +102,7 @@ export function CreateTradePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Currency You Request
             </label>
             <input
@@ -117,7 +117,7 @@ export function CreateTradePage() {
 
         {/* Players you offer */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Players You Offer ({userTeam.name})
           </label>
           {myPlayers && myPlayers.length > 0 ? (
@@ -126,7 +126,7 @@ export function CreateTradePage() {
                 <label
                   key={p.id}
                   className={`flex items-center gap-2 p-2 rounded border cursor-pointer ${
-                    offeredPlayerIds.includes(p.id) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'
+                    offeredPlayerIds.includes(p.id) ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30' : 'border-gray-200 dark:border-gray-700'
                   }`}
                 >
                   <input
@@ -138,19 +138,19 @@ export function CreateTradePage() {
                   <span className="text-sm">
                     {p.firstName} {p.lastName}
                   </span>
-                  <span className="text-xs text-gray-500">{p.primaryPosition}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{p.primaryPosition}</span>
                 </label>
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-400">No players on your team</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">No players on your team</p>
           )}
         </div>
 
         {/* Players you request */}
         {receivingTeamId && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Players You Request
             </label>
             {theirPlayers && theirPlayers.length > 0 ? (
@@ -159,7 +159,7 @@ export function CreateTradePage() {
                   <label
                     key={p.id}
                     className={`flex items-center gap-2 p-2 rounded border cursor-pointer ${
-                      requestedPlayerIds.includes(p.id) ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'
+                      requestedPlayerIds.includes(p.id) ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30' : 'border-gray-200 dark:border-gray-700'
                     }`}
                   >
                     <input
@@ -171,19 +171,19 @@ export function CreateTradePage() {
                     <span className="text-sm">
                       {p.firstName} {p.lastName}
                     </span>
-                    <span className="text-xs text-gray-500">{p.primaryPosition}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{p.primaryPosition}</span>
                   </label>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-400">No players on this team</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">No players on this team</p>
             )}
           </div>
         )}
 
         {/* Note */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Note (optional)</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Note (optional)</label>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}

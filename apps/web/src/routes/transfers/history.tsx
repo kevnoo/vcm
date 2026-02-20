@@ -25,7 +25,7 @@ export function HistoryTab() {
               className={`text-xs font-medium px-3 py-1.5 rounded-full ${
                 typeFilter === type
                   ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {type.replace(/_/g, ' ')}
@@ -47,7 +47,7 @@ export function HistoryTab() {
       </div>
 
       {isLoading ? (
-        <p className="text-gray-500">Loading transactions...</p>
+        <p className="text-gray-500 dark:text-gray-400">Loading transactions...</p>
       ) : transactions && transactions.length > 0 ? (
         <div className="space-y-2">
           {transactions.map((tx) => (
@@ -55,7 +55,7 @@ export function HistoryTab() {
           ))}
         </div>
       ) : (
-        <p className="text-gray-500 text-sm">No transactions found.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">No transactions found.</p>
       )}
     </div>
   );

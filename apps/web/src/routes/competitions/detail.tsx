@@ -24,8 +24,8 @@ export function CompetitionDetailPage() {
 
   const [selectedTeamIds, setSelectedTeamIds] = useState<string[]>([]);
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
-  if (!competition) return <p className="text-gray-500">Not found.</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
+  if (!competition) return <p className="text-gray-500 dark:text-gray-400">Not found.</p>;
 
   const existingTeamIds = new Set(competition.teams?.map((ct) => ct.teamId));
   const availableTeams =
@@ -55,10 +55,10 @@ export function CompetitionDetailPage() {
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {competition.name}
           </h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             {competition.type.replace(/_/g, ' ')} &middot; {competition.status}
           </p>
         </div>
@@ -93,12 +93,12 @@ export function CompetitionDetailPage() {
 
       {/* Teams section */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">Teams</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Teams</h2>
         <div className="flex flex-wrap gap-2 mb-3">
           {competition.teams?.map((ct) => (
             <span
               key={ct.id}
-              className="bg-white border border-gray-200 rounded-full px-3 py-1 text-sm"
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-3 py-1 text-sm"
             >
               {ct.team?.name}
             </span>
@@ -145,7 +145,7 @@ export function CompetitionDetailPage() {
       {hasSchedule && (
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-gray-900">Schedule</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Schedule</h2>
             <button
               onClick={exportCSV}
               className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
@@ -175,10 +175,10 @@ function RoundSection({
 }) {
   return (
     <div className="mb-6">
-      <h3 className="text-sm font-medium text-gray-500 mb-2">
+      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
         {round.name ?? `Round ${round.roundNumber}`}
       </h3>
-      <div className="bg-white rounded-lg shadow divide-y">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 divide-y dark:divide-gray-700">
         {round.matches?.map((match) => (
           <MatchRow
             key={match.id}
@@ -236,26 +236,26 @@ function MatchRow({
     <div className="px-4 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
-          <span className="text-sm font-medium text-gray-900 flex-1 min-w-0 truncate text-right">
+          <span className="text-sm font-medium text-gray-900 dark:text-gray-100 flex-1 min-w-0 truncate text-right">
             {match.homeTeam?.name ?? 'TBD'}
           </span>
 
           {hasResult ? (
-            <span className="text-lg font-bold text-gray-900 w-8 text-center shrink-0">
+            <span className="text-lg font-bold text-gray-900 dark:text-gray-100 w-8 text-center shrink-0">
               {match.result!.homeScore} - {match.result!.awayScore}
             </span>
           ) : (
-            <span className="text-sm text-gray-400 w-8 text-center shrink-0">vs</span>
+            <span className="text-sm text-gray-400 dark:text-gray-500 w-8 text-center shrink-0">vs</span>
           )}
 
-          <span className="text-sm font-medium text-gray-900 flex-1 min-w-0 truncate">
+          <span className="text-sm font-medium text-gray-900 dark:text-gray-100 flex-1 min-w-0 truncate">
             {match.awayTeam?.name ?? 'TBD'}
           </span>
         </div>
 
         <div className="flex items-center gap-2 ml-2 shrink-0">
           {match.scheduledAt && !showEditForm && (
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 dark:text-gray-500">
               {new Date(match.scheduledAt).toLocaleDateString(undefined, {
                 month: 'short',
                 day: 'numeric',
@@ -269,10 +269,10 @@ function MatchRow({
             <span
               className={`text-xs px-2 py-0.5 rounded ${
                 match.result!.status === 'PENDING'
-                  ? 'bg-yellow-100 text-yellow-800'
+                  ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                   : match.result!.status === 'DISPUTED'
-                    ? 'bg-red-100 text-red-800'
-                    : 'bg-green-100 text-green-800'
+                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                    : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
               }`}
             >
               {match.result!.status}
@@ -285,14 +285,14 @@ function MatchRow({
                 onClick={handleSwap}
                 disabled={updateMatch.isPending}
                 title="Swap home/away"
-                className="text-xs text-gray-400 hover:text-indigo-600 disabled:opacity-50"
+                className="text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-600 disabled:opacity-50"
               >
                 &#8646;
               </button>
               <button
                 onClick={() => setShowEditForm(true)}
                 title="Edit match"
-                className="text-xs text-gray-400 hover:text-indigo-600"
+                className="text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-600"
               >
                 Edit
               </button>
@@ -322,7 +322,7 @@ function MatchRow({
       {/* Edit form */}
       {showEditForm && (
         <div className="mt-3 flex items-center gap-2 flex-wrap">
-          <label className="text-xs text-gray-500">Date/Time:</label>
+          <label className="text-xs text-gray-500 dark:text-gray-400">Date/Time:</label>
           <input
             type="datetime-local"
             value={editScheduledAt}
@@ -343,7 +343,7 @@ function MatchRow({
               );
               setShowEditForm(false);
             }}
-            className="text-gray-500 hover:text-gray-700 text-sm"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-sm"
           >
             Cancel
           </button>
@@ -375,7 +375,7 @@ function MatchRow({
             onChange={(e) => setHomeScore(parseInt(e.target.value) || 0)}
             className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
           />
-          <span className="text-gray-400">-</span>
+          <span className="text-gray-400 dark:text-gray-500">-</span>
           <input
             type="number"
             min={0}
@@ -397,7 +397,7 @@ function MatchRow({
           </button>
           <button
             onClick={() => setShowForm(false)}
-            className="text-gray-500 hover:text-gray-700 text-sm"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-sm"
           >
             Cancel
           </button>

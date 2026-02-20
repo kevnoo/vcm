@@ -13,7 +13,7 @@ export function TransfersPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h1 className="text-2xl font-bold text-gray-900">Transfers</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Transfers</h1>
         <Link
           to="/transfers/create-trade"
           className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg"
@@ -23,7 +23,7 @@ export function TransfersPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-200 dark:border-gray-700">
         <nav className="-mb-px flex space-x-2 sm:space-x-6">
           {TABS.map((tab) => (
             <button
@@ -32,7 +32,7 @@ export function TransfersPage() {
               className={`py-2 px-1 border-b-2 text-sm font-medium ${
                 activeTab === tab
                   ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'
               }`}
             >
               {tab}

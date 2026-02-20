@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { useAuthStore } from '../../stores/auth.store';
+import { ThemeToggle } from './ThemeToggle';
 
 const navItems = [
   { to: '/', label: 'Dashboard' },
@@ -89,18 +90,21 @@ export function AppShell() {
             <p className="text-xs text-gray-400">{user?.role}</p>
           </div>
         </div>
-        <button
-          onClick={clearAuth}
-          className="mt-3 w-full text-sm text-gray-400 hover:text-white text-left"
-        >
-          Sign out
-        </button>
+        <div className="flex items-center justify-between mt-3">
+          <button
+            onClick={clearAuth}
+            className="text-sm text-gray-400 hover:text-white text-left"
+          >
+            Sign out
+          </button>
+          <ThemeToggle />
+        </div>
       </div>
     </>
   );
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       {/* Mobile hamburger button */}
       <button
         onClick={() => setSidebarOpen(true)}

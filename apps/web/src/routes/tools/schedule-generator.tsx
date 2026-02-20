@@ -81,7 +81,7 @@ export function ScheduleGeneratorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -93,10 +93,10 @@ export function ScheduleGeneratorPage() {
               &larr; Home
             </a>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
             Schedule Generator
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
             Generate match schedules for your league or tournament. This is a
             free tool — no account required.
           </p>
@@ -107,7 +107,7 @@ export function ScheduleGeneratorPage() {
           <div className="lg:col-span-1 space-y-6">
             {/* Competition type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Competition Type
               </label>
               <select
@@ -128,7 +128,7 @@ export function ScheduleGeneratorPage() {
 
             {/* Add teams */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Teams ({teams.length})
               </label>
               <div className="flex gap-2">
@@ -167,13 +167,13 @@ export function ScheduleGeneratorPage() {
                 {teams.map((team, i) => (
                   <span
                     key={team}
-                    className="inline-flex items-center gap-1 bg-white border border-gray-200 rounded-full px-3 py-1 text-sm"
+                    className="inline-flex items-center gap-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-3 py-1 text-sm"
                   >
-                    <span className="text-gray-400 text-xs">{i + 1}.</span>{' '}
+                    <span className="text-gray-400 dark:text-gray-500 text-xs">{i + 1}.</span>{' '}
                     {team}
                     <button
                       onClick={() => removeTeam(team)}
-                      className="text-gray-400 hover:text-red-500 ml-1"
+                      className="text-gray-400 dark:text-gray-500 hover:text-red-500 ml-1"
                     >
                       &times;
                     </button>
@@ -195,7 +195,7 @@ export function ScheduleGeneratorPage() {
           {/* Right panel: results */}
           <div className="lg:col-span-2">
             {!rounds && (
-              <div className="bg-white rounded-lg shadow p-8 text-center text-gray-400">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-8 text-center text-gray-400 dark:text-gray-500">
                 <p className="text-lg">Add at least 2 teams and click Generate</p>
                 <p className="text-sm mt-1">
                   The schedule will appear here
@@ -206,11 +206,11 @@ export function ScheduleGeneratorPage() {
             {rounds && (
               <div>
                 <div className="flex items-baseline justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Generated Schedule
                   </h2>
                   <div className="flex items-center gap-3">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {rounds.length} rounds &middot; {totalMatches} matches
                     </p>
                     <button
@@ -226,26 +226,26 @@ export function ScheduleGeneratorPage() {
                   {rounds.map((round) => (
                     <div
                       key={round.roundNumber}
-                      className="bg-white rounded-lg shadow"
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30"
                     >
-                      <div className="px-4 py-2.5 bg-gray-50 border-b rounded-t-lg">
-                        <h3 className="text-sm font-medium text-gray-700">
+                      <div className="px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border-b dark:border-gray-700 rounded-t-lg">
+                        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                           {round.name}
                         </h3>
                       </div>
-                      <div className="divide-y">
+                      <div className="divide-y dark:divide-gray-700">
                         {round.matches.map((match, i) => (
                           <div
                             key={i}
                             className="px-4 py-2.5 flex items-center"
                           >
-                            <span className="text-sm font-medium text-gray-900 w-2/5 text-right pr-3">
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-100 w-2/5 text-right pr-3">
                               {match.home}
                             </span>
-                            <span className="text-xs text-gray-400 w-1/5 text-center">
+                            <span className="text-xs text-gray-400 dark:text-gray-500 w-1/5 text-center">
                               vs
                             </span>
-                            <span className="text-sm font-medium text-gray-900 w-2/5 pl-3">
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-100 w-2/5 pl-3">
                               {match.away}
                             </span>
                           </div>

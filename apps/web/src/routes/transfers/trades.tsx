@@ -21,7 +21,7 @@ export function TradesTab() {
             className={`text-xs font-medium px-3 py-1.5 rounded-full ${
               statusFilter === status
                 ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             {status.replace(/_/g, ' ')}
@@ -30,7 +30,7 @@ export function TradesTab() {
       </div>
 
       {isLoading ? (
-        <p className="text-gray-500">Loading trades...</p>
+        <p className="text-gray-500 dark:text-gray-400">Loading trades...</p>
       ) : trades && trades.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2">
           {trades.map((trade) => (
@@ -38,7 +38,7 @@ export function TradesTab() {
           ))}
         </div>
       ) : (
-        <p className="text-gray-500 text-sm">No trade offers found.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">No trade offers found.</p>
       )}
     </div>
   );

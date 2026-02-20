@@ -133,11 +133,11 @@ export function PosPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Point of Sale</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Point of Sale</h1>
 
       {/* Team Selection */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4 mb-6">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Select Team
         </label>
         <select
@@ -156,9 +156,9 @@ export function PosPage() {
           ))}
         </select>
         {selectedTeam && (
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
             Owner: {selectedTeam.owner?.discordUsername ?? 'N/A'} | Budget:{' '}
-            <span className="font-medium text-gray-700">
+            <span className="font-medium text-gray-700 dark:text-gray-300">
               {selectedTeam.budget.toLocaleString()}
             </span>
           </p>
@@ -171,34 +171,34 @@ export function PosPage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Items */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Items</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Items</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {items?.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => addItemToCart(item)}
-                    className="bg-white rounded-lg shadow p-3 text-left hover:shadow-md transition-shadow"
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-3 text-left hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900 text-sm">{item.name}</span>
-                      <span className="text-sm font-bold text-gray-700">
+                      <span className="font-medium text-gray-900 dark:text-gray-100 text-sm">{item.name}</span>
+                      <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
                         {item.price.toLocaleString()}
                       </span>
                     </div>
                     {item.description && (
-                      <p className="text-xs text-gray-500 mt-1">{item.description}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>
                     )}
                   </button>
                 ))}
                 {items?.length === 0 && (
-                  <p className="text-gray-500 text-sm">No items available.</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">No items available.</p>
                 )}
               </div>
             </div>
 
             {/* Bundles */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Bundles</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Bundles</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {bundles?.map((bundle) => {
                   const individualTotal =
@@ -212,18 +212,18 @@ export function PosPage() {
                     <button
                       key={bundle.id}
                       onClick={() => addBundleToCart(bundle)}
-                      className="bg-white rounded-lg shadow p-3 text-left hover:shadow-md transition-shadow border-l-4 border-indigo-400"
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-3 text-left hover:shadow-md transition-shadow border-l-4 border-indigo-400"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-gray-900 text-sm">
+                          <span className="font-medium text-gray-900 dark:text-gray-100 text-sm">
                             {bundle.name}
                           </span>
-                          <span className="text-xs bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">
+                          <span className="text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 px-1.5 py-0.5 rounded">
                             Bundle
                           </span>
                         </div>
-                        <span className="text-sm font-bold text-gray-700">
+                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
                           {bundle.price.toLocaleString()}
                         </span>
                       </div>
@@ -236,7 +236,7 @@ export function PosPage() {
                         {bundle.items?.map((bi) => (
                           <span
                             key={bi.id}
-                            className="text-xs text-gray-500 mr-2"
+                            className="text-xs text-gray-500 dark:text-gray-400 mr-2"
                           >
                             {bi.itemDefinition?.name} x{bi.quantity}
                           </span>
@@ -246,7 +246,7 @@ export function PosPage() {
                   );
                 })}
                 {bundles?.length === 0 && (
-                  <p className="text-gray-500 text-sm">No bundles available.</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">No bundles available.</p>
                 )}
               </div>
             </div>
@@ -254,11 +254,11 @@ export function PosPage() {
 
           {/* Cart */}
           <div>
-            <div className="bg-white rounded-lg shadow p-4 sticky top-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Cart</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4 sticky top-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Cart</h2>
 
               {cart.length === 0 && (
-                <p className="text-gray-500 text-sm mb-4">
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
                   Click items or bundles to add them to the cart.
                 </p>
               )}
@@ -267,27 +267,27 @@ export function PosPage() {
                 {cart.map((entry, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between bg-gray-50 rounded px-3 py-2"
+                    className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded px-3 py-2"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1">
-                        <span className="text-sm font-medium text-gray-900 truncate">
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                           {entry.name}
                         </span>
                         {entry.type === 'bundle' && (
-                          <span className="text-xs bg-indigo-100 text-indigo-700 px-1 py-0.5 rounded">
+                          <span className="text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 px-1 py-0.5 rounded">
                             B
                           </span>
                         )}
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         {entry.unitPrice.toLocaleString()} each
                       </span>
                     </div>
                     <div className="flex items-center gap-2 ml-2">
                       <button
                         onClick={() => updateQuantity(i, entry.quantity - 1)}
-                        className="w-6 h-6 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm flex items-center justify-center"
+                        className="w-6 h-6 rounded bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 text-sm flex items-center justify-center"
                       >
                         -
                       </button>
@@ -296,7 +296,7 @@ export function PosPage() {
                       </span>
                       <button
                         onClick={() => updateQuantity(i, entry.quantity + 1)}
-                        className="w-6 h-6 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm flex items-center justify-center"
+                        className="w-6 h-6 rounded bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 text-sm flex items-center justify-center"
                       >
                         +
                       </button>
@@ -312,24 +312,24 @@ export function PosPage() {
               </div>
 
               {/* Totals */}
-              <div className="border-t border-gray-200 pt-3 mb-4">
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mb-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal:</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     {cartTotal.toLocaleString()}
                   </span>
                 </div>
                 {selectedTeam && (
                   <div className="flex justify-between text-sm mt-1">
-                    <span className="text-gray-600">Team budget:</span>
-                    <span className="font-medium text-gray-900">
+                    <span className="text-gray-600 dark:text-gray-400">Team budget:</span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
                       {selectedTeam.budget.toLocaleString()}
                     </span>
                   </div>
                 )}
                 {selectedTeam && (
                   <div className="flex justify-between text-sm mt-1">
-                    <span className="text-gray-600">Remaining:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Remaining:</span>
                     <span
                       className={`font-medium ${
                         selectedTeam.budget - cartTotal >= 0
@@ -359,7 +359,7 @@ export function PosPage() {
                 <button
                   onClick={clearCart}
                   disabled={cart.length === 0}
-                  className="w-full bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-gray-700 py-2 rounded-lg text-sm font-medium"
+                  className="w-full bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50 text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm font-medium"
                 >
                   Clear Cart
                 </button>
@@ -373,14 +373,14 @@ export function PosPage() {
               )}
 
               {lastResult && (
-                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm font-medium text-green-800">
+                <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
+                  <p className="text-sm font-medium text-green-800 dark:text-green-400">
                     Transaction complete
                   </p>
-                  <p className="text-xs text-green-700 mt-1">
+                  <p className="text-xs text-green-700 dark:text-green-400 mt-1">
                     Total charged: {lastResult.totalCost?.toLocaleString()}
                   </p>
-                  <p className="text-xs text-green-700">
+                  <p className="text-xs text-green-700 dark:text-green-400">
                     Remaining budget: {lastResult.remainingBudget?.toLocaleString()}
                   </p>
                 </div>

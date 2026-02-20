@@ -22,8 +22,8 @@ export function MatchStatsPage() {
   const user = useAuthStore((s) => s.user);
   const isAdmin = useAuthStore((s) => s.isAdmin);
 
-  if (matchLoading || statsLoading) return <p className="text-gray-500">Loading...</p>;
-  if (!match) return <p className="text-gray-500">Match not found.</p>;
+  if (matchLoading || statsLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
+  if (!match) return <p className="text-gray-500 dark:text-gray-400">Match not found.</p>;
 
   const canEditHome =
     isAdmin() || user?.id === (match.homeTeam as any)?.owner?.id;
@@ -39,15 +39,15 @@ export function MatchStatsPage() {
         >
           &larr; Back to competition
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900 mt-2">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">
           {match.homeTeam?.name} vs {match.awayTeam?.name}
         </h1>
         {match.result && (
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 dark:text-gray-400">
             Final Score: {match.result.homeScore} - {match.result.awayScore}
           </p>
         )}
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           {match.round?.name ?? `Round ${match.round?.roundNumber}`}
           {match.scheduledAt &&
             ` \u00b7 ${new Date(match.scheduledAt).toLocaleDateString(undefined, {
@@ -198,9 +198,9 @@ function LineupSection({
   const bench = lineup.filter((e) => !e.isStarter);
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
         {canEdit && !editing && !editingSubs && (
           <div className="flex gap-2">
             <button
@@ -246,7 +246,7 @@ function LineupSection({
                   </option>
                 ))}
               </select>
-              <label className="flex items-center gap-1 text-xs text-gray-600">
+              <label className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
                 <input
                   type="checkbox"
                   checked={entry.isStarter}
@@ -285,7 +285,7 @@ function LineupSection({
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="text-gray-500 hover:text-gray-700 text-sm"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm"
             >
               Cancel
             </button>
@@ -295,19 +295,19 @@ function LineupSection({
         <div>
           {starters.length > 0 && (
             <div className="mb-3">
-              <h3 className="text-xs font-medium text-gray-500 uppercase mb-1">
+              <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">
                 Starting XI
               </h3>
               <div className="space-y-1">
                 {starters.map((entry) => (
                   <div
                     key={entry.id}
-                    className="flex justify-between text-sm text-gray-800"
+                    className="flex justify-between text-sm text-gray-800 dark:text-gray-200"
                   >
                     <span>
                       {entry.player?.firstName} {entry.player?.lastName}
                     </span>
-                    <span className="text-gray-400">{entry.position}</span>
+                    <span className="text-gray-400 dark:text-gray-500">{entry.position}</span>
                   </div>
                 ))}
               </div>
@@ -315,34 +315,34 @@ function LineupSection({
           )}
           {bench.length > 0 && (
             <div className="mb-3">
-              <h3 className="text-xs font-medium text-gray-500 uppercase mb-1">
+              <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">
                 Bench
               </h3>
               <div className="space-y-1">
                 {bench.map((entry) => (
                   <div
                     key={entry.id}
-                    className="flex justify-between text-sm text-gray-600"
+                    className="flex justify-between text-sm text-gray-600 dark:text-gray-400"
                   >
                     <span>
                       {entry.player?.firstName} {entry.player?.lastName}
                     </span>
-                    <span className="text-gray-400">{entry.position}</span>
+                    <span className="text-gray-400 dark:text-gray-500">{entry.position}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
           {lineup.length === 0 && (
-            <p className="text-sm text-gray-400 italic">No lineup set</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 italic">No lineup set</p>
           )}
         </div>
       )}
 
       {/* Substitutions */}
       {editingSubs ? (
-        <div className="mt-4 pt-3 border-t">
-          <h3 className="text-xs font-medium text-gray-500 uppercase mb-2">
+        <div className="mt-4 pt-3 border-t dark:border-gray-700">
+          <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">
             Substitutions
           </h3>
           {subs.map((sub, i) => (
@@ -359,7 +359,7 @@ function LineupSection({
                   </option>
                 ))}
               </select>
-              <span className="text-gray-400 text-xs">&rarr;</span>
+              <span className="text-gray-400 dark:text-gray-500 text-xs">&rarr;</span>
               <select
                 value={sub.playerInId}
                 onChange={(e) => updateSub(i, 'playerInId', e.target.value)}
@@ -416,7 +416,7 @@ function LineupSection({
             </button>
             <button
               onClick={() => setEditingSubs(false)}
-              className="text-gray-500 hover:text-gray-700 text-sm"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm"
             >
               Cancel
             </button>
@@ -424,13 +424,13 @@ function LineupSection({
         </div>
       ) : (
         substitutions.length > 0 && (
-          <div className="mt-4 pt-3 border-t">
-            <h3 className="text-xs font-medium text-gray-500 uppercase mb-1">
+          <div className="mt-4 pt-3 border-t dark:border-gray-700">
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">
               Substitutions
             </h3>
             <div className="space-y-1">
               {substitutions.map((sub) => (
-                <div key={sub.id} className="text-sm text-gray-700">
+                <div key={sub.id} className="text-sm text-gray-700 dark:text-gray-300">
                   <span className="text-red-500">
                     {sub.playerOut?.firstName} {sub.playerOut?.lastName}
                   </span>
@@ -438,7 +438,7 @@ function LineupSection({
                   <span className="text-green-600">
                     {sub.playerIn?.firstName} {sub.playerIn?.lastName}
                   </span>
-                  <span className="text-gray-400 ml-2">{sub.minute}&apos;</span>
+                  <span className="text-gray-400 dark:text-gray-500 ml-2">{sub.minute}&apos;</span>
                 </div>
               ))}
             </div>
@@ -517,9 +517,9 @@ function PlayerStatsSection({
   );
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 mb-8">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4 mb-8">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-semibold text-gray-900">Player Stats</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Player Stats</h2>
         {canEdit && !editing && (
           <button
             onClick={startEdit}
@@ -618,7 +618,7 @@ function PlayerStatsSection({
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="text-gray-500 hover:text-gray-700 text-sm"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm"
             >
               Cancel
             </button>
@@ -628,31 +628,31 @@ function PlayerStatsSection({
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {STAT_TYPES.map((type) => (
             <div key={type}>
-              <h3 className="text-xs font-medium text-gray-500 uppercase mb-1">
+              <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-1">
                 {type}s
               </h3>
               {statsByType[type]?.length > 0 ? (
                 <div className="space-y-1">
                   {statsByType[type].map((stat) => (
-                    <div key={stat.id} className="text-sm text-gray-700">
+                    <div key={stat.id} className="text-sm text-gray-700 dark:text-gray-300">
                       {stat.player?.firstName} {stat.player?.lastName}
                       {stat.value > 1 && (
-                        <span className="text-gray-400"> x{stat.value}</span>
+                        <span className="text-gray-400 dark:text-gray-500"> x{stat.value}</span>
                       )}
                       {stat.minute && (
-                        <span className="text-gray-400"> {stat.minute}&apos;</span>
+                        <span className="text-gray-400 dark:text-gray-500"> {stat.minute}&apos;</span>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-400 italic">None</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500 italic">None</p>
               )}
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-sm text-gray-400 italic">No stats recorded</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 italic">No stats recorded</p>
       )}
     </div>
   );
@@ -690,12 +690,12 @@ function MinutesPlayedSection({
           return (
             <div
               key={pm.playerId}
-              className="flex justify-between text-sm text-gray-700"
+              className="flex justify-between text-sm text-gray-700 dark:text-gray-300"
             >
               <span>
                 {player?.firstName} {player?.lastName}
               </span>
-              <span className="text-gray-500">{pm.minutesPlayed} min</span>
+              <span className="text-gray-500 dark:text-gray-400">{pm.minutesPlayed} min</span>
             </div>
           );
         })}
@@ -703,14 +703,14 @@ function MinutesPlayedSection({
   );
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <h2 className="text-lg font-semibold text-gray-900 mb-3">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
         Minutes Played
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {homeMinutes.length > 0 && (
           <div>
-            <h3 className="text-xs font-medium text-gray-500 uppercase mb-2">
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">
               Home
             </h3>
             {renderList(homeMinutes)}
@@ -718,7 +718,7 @@ function MinutesPlayedSection({
         )}
         {awayMinutes.length > 0 && (
           <div>
-            <h3 className="text-xs font-medium text-gray-500 uppercase mb-2">
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">
               Away
             </h3>
             {renderList(awayMinutes)}

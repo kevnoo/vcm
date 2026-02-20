@@ -6,14 +6,14 @@ import { useTeams } from '../../hooks/useTeams';
 import type { TradeOfferPlayer } from '@vcm/shared';
 
 const STATUS_COLORS: Record<string, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-800',
-  PENDING_APPROVAL: 'bg-blue-100 text-blue-800',
-  APPROVED: 'bg-green-100 text-green-800',
-  REJECTED: 'bg-red-100 text-red-800',
-  DENIED: 'bg-red-100 text-red-800',
-  COUNTERED: 'bg-purple-100 text-purple-800',
-  CANCELLED: 'bg-gray-100 text-gray-800',
-  EXPIRED: 'bg-gray-100 text-gray-800',
+  PENDING: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+  PENDING_APPROVAL: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  APPROVED: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+  REJECTED: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  DENIED: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  COUNTERED: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+  CANCELLED: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
+  EXPIRED: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
 };
 
 export function TradeDetailPage() {
@@ -28,8 +28,8 @@ export function TradeDetailPage() {
   const denyTrade = useDenyTrade();
   const [noteInput, setNoteInput] = useState('');
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
-  if (!trade) return <p className="text-gray-500">Trade not found.</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
+  if (!trade) return <p className="text-gray-500 dark:text-gray-400">Trade not found.</p>;
 
   const userTeam = teams?.find((t) => t.ownerId === user?.id);
   const isInitiatingOwner = userTeam?.id === trade.initiatingTeamId;
@@ -42,10 +42,10 @@ export function TradeDetailPage() {
       </div>
 
       {/* Header */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold text-gray-900">Trade Offer</h1>
-          <span className={`text-sm font-medium px-3 py-1 rounded ${STATUS_COLORS[trade.status] ?? 'bg-gray-100 text-gray-800'}`}>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Trade Offer</h1>
+          <span className={`text-sm font-medium px-3 py-1 rounded ${STATUS_COLORS[trade.status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'}`}>
             {trade.status.replace('_', ' ')}
           </span>
         </div>
@@ -53,7 +53,7 @@ export function TradeDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
           {/* Initiating team side */}
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
               {trade.initTeam?.name ?? 'Unknown'} offers:
             </h3>
             {trade.offeredPlayers && trade.offeredPlayers.length > 0 ? (
@@ -67,7 +67,7 @@ export function TradeDetailPage() {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-400">No players offered</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">No players offered</p>
             )}
             {trade.currencyOffered > 0 && (
               <p className="text-sm text-green-600 mt-2">{trade.currencyOffered.toLocaleString()} currency</p>
@@ -76,7 +76,7 @@ export function TradeDetailPage() {
 
           {/* Receiving team side */}
           <div>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
               {trade.recvTeam?.name ?? 'Unknown'} offers:
             </h3>
             {trade.requestedPlayers && trade.requestedPlayers.length > 0 ? (
@@ -90,7 +90,7 @@ export function TradeDetailPage() {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-400">No players requested</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">No players requested</p>
             )}
             {trade.currencyRequested > 0 && (
               <p className="text-sm text-green-600 mt-2">{trade.currencyRequested.toLocaleString()} currency</p>
@@ -100,25 +100,25 @@ export function TradeDetailPage() {
 
         {/* Notes */}
         {trade.note && (
-          <div className="mt-4 p-3 bg-gray-50 rounded">
-            <p className="text-xs text-gray-500">Note</p>
-            <p className="text-sm text-gray-700">{trade.note}</p>
+          <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded">
+            <p className="text-xs text-gray-500 dark:text-gray-400">Note</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">{trade.note}</p>
           </div>
         )}
         {trade.responseNote && (
-          <div className="mt-2 p-3 bg-gray-50 rounded">
-            <p className="text-xs text-gray-500">Response</p>
-            <p className="text-sm text-gray-700">{trade.responseNote}</p>
+          <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded">
+            <p className="text-xs text-gray-500 dark:text-gray-400">Response</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">{trade.responseNote}</p>
           </div>
         )}
         {trade.adminNote && (
-          <div className="mt-2 p-3 bg-gray-50 rounded">
-            <p className="text-xs text-gray-500">Admin Note</p>
-            <p className="text-sm text-gray-700">{trade.adminNote}</p>
+          <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded">
+            <p className="text-xs text-gray-500 dark:text-gray-400">Admin Note</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">{trade.adminNote}</p>
           </div>
         )}
 
-        <div className="mt-4 text-xs text-gray-400">
+        <div className="mt-4 text-xs text-gray-400 dark:text-gray-500">
           Created: {new Date(trade.createdAt).toLocaleString()}
           {trade.expiresAt && <> &middot; Expires: {new Date(trade.expiresAt).toLocaleString()}</>}
         </div>
@@ -126,8 +126,8 @@ export function TradeDetailPage() {
 
       {/* Actions */}
       {(trade.status === 'PENDING' && (isReceivingOwner || isInitiatingOwner)) && (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">Actions</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
+          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">Actions</h3>
           <textarea
             value={noteInput}
             onChange={(e) => setNoteInput(e.target.value)}
@@ -175,8 +175,8 @@ export function TradeDetailPage() {
 
       {/* Admin actions */}
       {trade.status === 'PENDING_APPROVAL' && isAdmin() && (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">Admin Review</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
+          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">Admin Review</h3>
           <textarea
             value={noteInput}
             onChange={(e) => setNoteInput(e.target.value)}

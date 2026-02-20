@@ -26,11 +26,11 @@ export function WaiversTab() {
   return (
     <div className="space-y-4">
       {isLoading ? (
-        <p className="text-gray-500">Loading waivers...</p>
+        <p className="text-gray-500 dark:text-gray-400">Loading waivers...</p>
       ) : waivers && waivers.length > 0 ? (
         <div className="grid gap-4">
           {waivers.map((waiver) => (
-            <div key={waiver.id} className="bg-white rounded-lg shadow p-4">
+            <div key={waiver.id} className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <Link
@@ -42,21 +42,21 @@ export function WaiversTab() {
                       : 'Unknown Player'}
                   </Link>
                   {waiver.player && (
-                    <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
+                    <span className="inline-block bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 text-xs font-medium px-2 py-0.5 rounded">
                       {waiver.player.primaryPosition}
                     </span>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
                   <WaiverCountdown expiresAt={waiver.expiresAt} />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
                     {waiver.bids?.length ?? 0} bid{(waiver.bids?.length ?? 0) !== 1 ? 's' : ''}
                   </span>
                 </div>
               </div>
 
               {waiver.releasedFrom && (
-                <p className="text-xs text-gray-500 mb-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                   Released from: {waiver.releasedFrom.name}
                 </p>
               )}
@@ -86,7 +86,7 @@ export function WaiversTab() {
 
               {/* Admin actions */}
               {isAdmin() && (
-                <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
+                <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                   <button
                     onClick={() => resolveWaiver.mutate(waiver.id)}
                     disabled={resolveWaiver.isPending}
@@ -105,7 +105,7 @@ export function WaiversTab() {
                   {waiver.bids && waiver.bids.length > 0 && (
                     <div className="ml-auto flex gap-2">
                       {waiver.bids.map((bid: WaiverBid) => (
-                        <span key={bid.id} className="text-xs text-gray-500">
+                        <span key={bid.id} className="text-xs text-gray-500 dark:text-gray-400">
                           {bid.team?.name}: {bid.amount.toLocaleString()}
                         </span>
                       ))}
@@ -117,7 +117,7 @@ export function WaiversTab() {
           ))}
         </div>
       ) : (
-        <p className="text-gray-500 text-sm">No active waivers.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">No active waivers.</p>
       )}
     </div>
   );

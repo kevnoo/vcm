@@ -14,9 +14,9 @@ interface Props {
 const ROLE_LEVELS = Object.values(RoleLevel);
 
 const levelColors: Record<string, string> = {
-  BASIC: 'bg-gray-100 text-gray-700',
-  INTERMEDIATE: 'bg-blue-100 text-blue-700',
-  ADVANCED: 'bg-purple-100 text-purple-700',
+  BASIC: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+  INTERMEDIATE: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  ADVANCED: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
 };
 
 function PositionRolesSection({
@@ -69,9 +69,9 @@ function PositionRolesSection({
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
       <div className="flex justify-between items-center mb-3">
-        <h3 className="text-sm font-semibold text-gray-700">
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
           {position.position}
           {position.isPrimary && (
             <span className="ml-2 text-xs font-normal text-indigo-600">(Primary)</span>
@@ -96,7 +96,7 @@ function PositionRolesSection({
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 rounded font-medium"
+              className="text-xs bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-2 py-1 rounded font-medium"
             >
               Cancel
             </button>
@@ -107,19 +107,19 @@ function PositionRolesSection({
       {!editing ? (
         <div className="space-y-2">
           {roles.length === 0 ? (
-            <p className="text-xs text-gray-500">No roles assigned.</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">No roles assigned.</p>
           ) : (
             roles.map((assignment) => (
               <div
                 key={assignment.id}
-                className="flex items-center justify-between py-1.5 px-3 bg-gray-50 rounded"
+                className="flex items-center justify-between py-1.5 px-3 bg-gray-50 dark:bg-gray-700 rounded"
               >
                 <div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {assignment.roleDefinition?.name}
                   </span>
                   {assignment.roleDefinition?.description && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {assignment.roleDefinition.description}
                     </p>
                   )}
@@ -140,7 +140,7 @@ function PositionRolesSection({
             return (
               <div
                 key={role.id}
-                className="flex items-center justify-between py-1.5 px-3 bg-gray-50 rounded"
+                className="flex items-center justify-between py-1.5 px-3 bg-gray-50 dark:bg-gray-700 rounded"
               >
                 <label className="flex items-center gap-2">
                   <input
@@ -155,9 +155,9 @@ function PositionRolesSection({
                     className="rounded border-gray-300"
                   />
                   <div>
-                    <span className="text-sm font-medium text-gray-900">{role.name}</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{role.name}</span>
                     {role.description && (
-                      <p className="text-xs text-gray-500">{role.description}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{role.description}</p>
                     )}
                   </div>
                 </label>
@@ -194,10 +194,10 @@ function PositionRolesSection({
 
 export function PlayerRolesPanel({ playerId, positions, isAdmin }: Props) {
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Roles</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Roles</h2>
       {positions.length === 0 ? (
-        <p className="text-sm text-gray-500">No positions assigned.</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">No positions assigned.</p>
       ) : (
         <div className="space-y-4">
           {positions.map((position) => (

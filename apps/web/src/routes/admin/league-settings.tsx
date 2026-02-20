@@ -44,22 +44,22 @@ export function LeagueSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">League Settings</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">League Settings</h1>
 
       {/* Existing settings */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900">Current Settings</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30">
+        <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Current Settings</h2>
         </div>
         <div className="p-4">
           {isLoading ? (
-            <p className="text-gray-500 text-sm">Loading...</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Loading...</p>
           ) : settings && settings.length > 0 ? (
             <div className="space-y-3">
               {settings.map((setting) => (
-                <div key={setting.key} className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded">
+                <div key={setting.key} className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-900 font-mono">{setting.key}</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100 font-mono">{setting.key}</span>
                     {editingKey === setting.key ? (
                       <input
                         type="text"
@@ -69,7 +69,7 @@ export function LeagueSettingsPage() {
                         autoFocus
                       />
                     ) : (
-                      <span className="text-sm text-gray-600">{setting.value}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{setting.value}</span>
                     )}
                   </div>
                   <div className="flex gap-2">
@@ -84,7 +84,7 @@ export function LeagueSettingsPage() {
                         </button>
                         <button
                           onClick={() => setEditingKey(null)}
-                          className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+                          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 font-medium"
                         >
                           Cancel
                         </button>
@@ -110,14 +110,14 @@ export function LeagueSettingsPage() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-sm">No settings configured.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">No settings configured.</p>
           )}
         </div>
       </div>
 
       {/* Add new setting */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-sm font-medium text-gray-900 mb-3">Add Setting</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
+        <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">Add Setting</h3>
         <div className="flex gap-3">
           <input
             type="text"

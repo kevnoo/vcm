@@ -17,8 +17,8 @@ export function TeamDetailPage() {
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState('');
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
-  if (!team) return <p className="text-gray-500">Team not found.</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
+  if (!team) return <p className="text-gray-500 dark:text-gray-400">Team not found.</p>;
 
   const startEditBudget = () => {
     setBudgetInput(String(team.budget));
@@ -44,18 +44,18 @@ export function TeamDetailPage() {
             className="w-16 h-16 rounded-full object-cover"
           />
         ) : (
-          <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl font-bold">
+          <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-400 text-2xl font-bold">
             {team.name.charAt(0)}
           </div>
         )}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
-          <p className="text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{team.name}</h1>
+          <p className="text-gray-500 dark:text-gray-400">
             Owner: {team.owner?.discordUsername ?? 'None'}
           </p>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-sm text-gray-600">
-              Budget: <span className="font-medium text-gray-900">{team.budget.toLocaleString()}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              Budget: <span className="font-medium text-gray-900 dark:text-gray-100">{team.budget.toLocaleString()}</span>
             </span>
             {isAdmin() && !editingBudget && (
               <button
@@ -83,7 +83,7 @@ export function TeamDetailPage() {
                 </button>
                 <button
                   onClick={() => setEditingBudget(false)}
-                  className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+                  className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 font-medium"
                 >
                   Cancel
                 </button>
@@ -94,20 +94,20 @@ export function TeamDetailPage() {
       </div>
 
       {/* Roster */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900">Roster</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30">
+        <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Roster</h2>
         </div>
         <div className="p-4">
           {playersLoading ? (
-            <p className="text-gray-500 text-sm">Loading roster...</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Loading roster...</p>
           ) : players && players.length > 0 ? (
             <div className="space-y-2">
               {players.map((player) => (
                 <Link
                   key={player.id}
                   to={`/players/${player.id}`}
-                  className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors"
+                  className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     {player.imageUrl ? (
@@ -117,17 +117,17 @@ export function TeamDetailPage() {
                         className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold">
+                      <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-400 text-xs font-bold">
                         {player.firstName.charAt(0)}
                         {player.lastName.charAt(0)}
                       </div>
                     )}
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {player.firstName} {player.lastName}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
+                    <span className="inline-block bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 text-xs font-medium px-2 py-0.5 rounded">
                       {player.primaryPosition}
                     </span>
                     {player.positions
@@ -135,27 +135,27 @@ export function TeamDetailPage() {
                       .map((p) => (
                         <span
                           key={p.id}
-                          className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded"
+                          className="inline-block bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs font-medium px-2 py-0.5 rounded"
                         >
                           {p.position}
                         </span>
                       ))}
-                    <span className="text-xs text-gray-500">Age {player.age}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Age {player.age}</span>
                   </div>
                 </Link>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-sm">No players on this team.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">No players on this team.</p>
           )}
         </div>
       </div>
 
       {/* Pending Trades */}
       {pendingTrades && pendingTrades.length > 0 && (
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-4 border-b border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-900">Pending Trades</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30">
+          <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Pending Trades</h2>
           </div>
           <div className="p-4 grid gap-4 md:grid-cols-2">
             {pendingTrades.map((trade) => (

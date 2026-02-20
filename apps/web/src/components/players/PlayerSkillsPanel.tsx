@@ -51,16 +51,16 @@ export function PlayerSkillsPanel({ playerId, skills, isAdmin }: Props) {
   };
 
   const getSkillColor = (value: number) => {
-    if (value >= 80) return 'text-green-700 bg-green-50';
-    if (value >= 60) return 'text-yellow-700 bg-yellow-50';
-    if (value >= 40) return 'text-orange-700 bg-orange-50';
-    return 'text-red-700 bg-red-50';
+    if (value >= 80) return 'text-green-700 bg-green-50 dark:bg-green-900/30 dark:text-green-400';
+    if (value >= 60) return 'text-yellow-700 bg-yellow-50 dark:bg-yellow-900/30 dark:text-yellow-400';
+    if (value >= 40) return 'text-orange-700 bg-orange-50 dark:bg-orange-900/30 dark:text-orange-400';
+    return 'text-red-700 bg-red-50 dark:bg-red-900/30 dark:text-red-400';
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Skills</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Skills</h2>
         {isAdmin && !editing && (
           <button
             onClick={startEditing}
@@ -80,7 +80,7 @@ export function PlayerSkillsPanel({ playerId, skills, isAdmin }: Props) {
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded font-medium"
+              className="text-sm bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-3 py-1 rounded font-medium"
             >
               Cancel
             </button>
@@ -91,7 +91,7 @@ export function PlayerSkillsPanel({ playerId, skills, isAdmin }: Props) {
       <div className="space-y-6">
         {groupedSkills.map(({ group, skills: groupSkills }) => (
           <div key={group.id}>
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
               {group.name}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -100,7 +100,7 @@ export function PlayerSkillsPanel({ playerId, skills, isAdmin }: Props) {
                   key={skill.id}
                   className="flex items-center justify-between py-1 px-2 rounded"
                 >
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
                     {skill.skillDefinition?.name}
                   </span>
                   {editing ? (

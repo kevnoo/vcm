@@ -38,7 +38,7 @@ export function ItemManagementPage() {
   const [editPrice, setEditPrice] = useState('');
   const [editActive, setEditActive] = useState(true);
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +97,7 @@ export function ItemManagementPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Item Management</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Item Management</h1>
         {!adding && (
           <button
             onClick={() => setAdding(true)}
@@ -110,8 +110,8 @@ export function ItemManagementPage() {
 
       {/* Add Form */}
       {adding && (
-        <form onSubmit={handleAdd} className="bg-white rounded-lg shadow p-4 mb-6 space-y-3">
-          <h3 className="font-medium text-gray-900">New Item</h3>
+        <form onSubmit={handleAdd} className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4 mb-6 space-y-3">
+          <h3 className="font-medium text-gray-900 dark:text-gray-100">New Item</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <input
               type="text"
@@ -171,7 +171,7 @@ export function ItemManagementPage() {
             <button
               type="button"
               onClick={() => setAdding(false)}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium"
+              className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium"
             >
               Cancel
             </button>
@@ -182,10 +182,10 @@ export function ItemManagementPage() {
       {/* Items List */}
       <div className="space-y-3">
         {items?.length === 0 && (
-          <p className="text-gray-500 text-sm">No items created yet.</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">No items created yet.</p>
         )}
         {items?.map((item) => (
-          <div key={item.id} className="bg-white rounded-lg shadow p-4">
+          <div key={item.id} className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4">
             {editing?.id === item.id ? (
               <div className="space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -246,7 +246,7 @@ export function ItemManagementPage() {
                   </button>
                   <button
                     onClick={() => setEditing(null)}
-                    className="text-xs bg-gray-200 text-gray-700 px-3 py-1.5 rounded"
+                    className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded"
                   >
                     Cancel
                   </button>
@@ -256,21 +256,21 @@ export function ItemManagementPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-900">{item.name}</span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">{item.name}</span>
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full ${
                         item.isActive
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-500'
+                          ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                          : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
                       }`}
                     >
                       {item.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                   {item.description && (
-                    <p className="text-sm text-gray-500 mt-0.5">{item.description}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{item.description}</p>
                   )}
-                  <div className="flex gap-4 mt-1 text-xs text-gray-400">
+                  <div className="flex gap-4 mt-1 text-xs text-gray-400 dark:text-gray-500">
                     <span>Effect: {EFFECT_TYPE_LABELS[item.effectType]} ({item.effectValue})</span>
                     <span>Price: {item.price.toLocaleString()}</span>
                   </div>

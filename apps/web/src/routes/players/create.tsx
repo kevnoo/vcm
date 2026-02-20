@@ -47,11 +47,11 @@ export function CreatePlayerPage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Create Player</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Create Player</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             First Name
           </label>
           <input
@@ -64,7 +64,7 @@ export function CreatePlayerPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Last Name
           </label>
           <input
@@ -77,7 +77,7 @@ export function CreatePlayerPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Age</label>
           <input
             type="number"
             value={age}
@@ -90,7 +90,7 @@ export function CreatePlayerPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Primary Position
           </label>
           <select
@@ -114,7 +114,7 @@ export function CreatePlayerPage() {
 
         {primaryPosition && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Alternative Positions (optional)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -125,8 +125,8 @@ export function CreatePlayerPage() {
                   onClick={() => toggleAltPosition(pos)}
                   className={`text-xs font-medium px-2.5 py-1 rounded border transition-colors ${
                     alternativePositions.includes(pos)
-                      ? 'bg-indigo-100 text-indigo-800 border-indigo-300'
-                      : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                      ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 border-indigo-300 dark:border-indigo-700'
+                      : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
                   {pos}
@@ -137,7 +137,7 @@ export function CreatePlayerPage() {
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Team (optional)
           </label>
           <select
@@ -155,7 +155,7 @@ export function CreatePlayerPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Image URL (optional)
           </label>
           <input
@@ -177,7 +177,7 @@ export function CreatePlayerPage() {
           <button
             type="button"
             onClick={() => navigate('/players')}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium"
+            className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium"
           >
             Cancel
           </button>

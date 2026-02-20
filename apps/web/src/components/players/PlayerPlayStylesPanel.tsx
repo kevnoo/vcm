@@ -15,8 +15,8 @@ interface Props {
 const PLAY_STYLE_LEVELS = Object.values(PlayStyleLevel);
 
 const levelColors: Record<string, string> = {
-  BASIC: 'bg-gray-100 text-gray-700',
-  ADVANCED: 'bg-purple-100 text-purple-700',
+  BASIC: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+  ADVANCED: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
 };
 
 export function PlayerPlayStylesPanel({
@@ -62,9 +62,9 @@ export function PlayerPlayStylesPanel({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Play Styles</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Play Styles</h2>
         {isAdmin && !editing && (
           <button
             onClick={startEditing}
@@ -84,7 +84,7 @@ export function PlayerPlayStylesPanel({
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded font-medium"
+              className="text-sm bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-3 py-1 rounded font-medium"
             >
               Cancel
             </button>
@@ -95,14 +95,14 @@ export function PlayerPlayStylesPanel({
       {!editing ? (
         <div className="flex flex-wrap gap-2">
           {playStyles.length === 0 ? (
-            <p className="text-sm text-gray-500">No play styles assigned.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">No play styles assigned.</p>
           ) : (
             playStyles.map((assignment) => (
               <div
                 key={assignment.id}
-                className="flex items-center gap-2 py-1.5 px-3 bg-gray-50 rounded-full"
+                className="flex items-center gap-2 py-1.5 px-3 bg-gray-50 dark:bg-gray-700 rounded-full"
               >
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   {assignment.playStyleDefinition?.name}
                 </span>
                 <span
@@ -121,7 +121,7 @@ export function PlayerPlayStylesPanel({
             return (
               <div
                 key={style.id}
-                className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded"
+                className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded"
               >
                 <label className="flex items-center gap-2">
                   <input
@@ -136,11 +136,11 @@ export function PlayerPlayStylesPanel({
                     className="rounded border-gray-300"
                   />
                   <div>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {style.name}
                     </span>
                     {style.description && (
-                      <p className="text-xs text-gray-500">{style.description}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{style.description}</p>
                     )}
                   </div>
                 </label>

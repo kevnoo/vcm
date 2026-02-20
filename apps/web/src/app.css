@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  .dark {
+    color-scheme: dark;
+  }
+
+  /* Auto-style form elements in dark mode */
+  .dark input:not([type="checkbox"]):not([type="radio"]),
+  .dark select,
+  .dark textarea {
+    background-color: var(--color-gray-700);
+    border-color: var(--color-gray-600);
+    color: var(--color-gray-100);
+  }
+
+  .dark input:not([type="checkbox"]):not([type="radio"])::placeholder,
+  .dark textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+
+  /* Dividers */
+  .dark .divide-y > :not(:first-child) {
+    border-color: var(--color-gray-700);
+  }
+}

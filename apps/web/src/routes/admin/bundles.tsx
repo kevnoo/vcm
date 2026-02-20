@@ -32,7 +32,7 @@ export function BundleManagementPage() {
   const [editSelectedItemId, setEditSelectedItemId] = useState('');
   const [editSelectedQty, setEditSelectedQty] = useState('1');
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
 
   const getItemName = (itemDefId: string) =>
     allItems?.find((i) => i.id === itemDefId)?.name ?? itemDefId;
@@ -135,7 +135,7 @@ export function BundleManagementPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Bundle Management</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Bundle Management</h1>
         {!adding && (
           <button
             onClick={() => setAdding(true)}
@@ -148,8 +148,8 @@ export function BundleManagementPage() {
 
       {/* Add Form */}
       {adding && (
-        <form onSubmit={handleCreate} className="bg-white rounded-lg shadow p-4 mb-6 space-y-3">
-          <h3 className="font-medium text-gray-900">New Bundle</h3>
+        <form onSubmit={handleCreate} className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4 mb-6 space-y-3">
+          <h3 className="font-medium text-gray-900 dark:text-gray-100">New Bundle</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <input
               type="text"
@@ -175,7 +175,7 @@ export function BundleManagementPage() {
               required
               className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-            <div className="text-sm text-gray-500 flex items-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
               Individual total: {individualTotal(newItems).toLocaleString()}
               {newPrice && individualTotal(newItems) > parseInt(newPrice, 10) && (
                 <span className="ml-2 text-green-600 font-medium">
@@ -187,7 +187,7 @@ export function BundleManagementPage() {
 
           {/* Item picker */}
           <div>
-            <p className="text-sm font-medium text-gray-700 mb-2">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Items in bundle ({newItems.length}/min 2):
             </p>
             <div className="flex gap-2 mb-2">
@@ -215,7 +215,7 @@ export function BundleManagementPage() {
                 type="button"
                 onClick={handleAddItem}
                 disabled={!selectedItemId}
-                className="bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-gray-700 px-3 py-2 rounded-lg text-sm"
+                className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm"
               >
                 Add
               </button>
@@ -223,7 +223,7 @@ export function BundleManagementPage() {
             {newItems.map((bi) => (
               <div
                 key={bi.itemDefinitionId}
-                className="flex items-center justify-between bg-gray-50 px-3 py-1.5 rounded mb-1 text-sm"
+                className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 px-3 py-1.5 rounded mb-1 text-sm"
               >
                 <span>
                   {getItemName(bi.itemDefinitionId)} x{bi.quantity}
@@ -253,7 +253,7 @@ export function BundleManagementPage() {
                 setAdding(false);
                 setNewItems([]);
               }}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium"
+              className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium"
             >
               Cancel
             </button>
@@ -269,10 +269,10 @@ export function BundleManagementPage() {
       {/* Bundles List */}
       <div className="space-y-3">
         {bundles?.length === 0 && (
-          <p className="text-gray-500 text-sm">No bundles created yet.</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">No bundles created yet.</p>
         )}
         {bundles?.map((bundle) => (
-          <div key={bundle.id} className="bg-white rounded-lg shadow p-4">
+          <div key={bundle.id} className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4">
             {editing?.id === bundle.id ? (
               <div className="space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -309,7 +309,7 @@ export function BundleManagementPage() {
 
                 {/* Edit item picker */}
                 <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Items ({editItems.length}/min 2):
                   </p>
                   <div className="flex gap-2 mb-2">
@@ -336,7 +336,7 @@ export function BundleManagementPage() {
                       type="button"
                       onClick={handleEditAddItem}
                       disabled={!editSelectedItemId}
-                      className="bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-gray-700 px-3 py-2 rounded-lg text-sm"
+                      className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg text-sm"
                     >
                       Add
                     </button>
@@ -344,7 +344,7 @@ export function BundleManagementPage() {
                   {editItems.map((bi) => (
                     <div
                       key={bi.itemDefinitionId}
-                      className="flex items-center justify-between bg-gray-50 px-3 py-1.5 rounded mb-1 text-sm"
+                      className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 px-3 py-1.5 rounded mb-1 text-sm"
                     >
                       <span>
                         {getItemName(bi.itemDefinitionId)} x{bi.quantity}
@@ -370,7 +370,7 @@ export function BundleManagementPage() {
                   </button>
                   <button
                     onClick={() => setEditing(null)}
-                    className="text-xs bg-gray-200 text-gray-700 px-3 py-1.5 rounded"
+                    className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded"
                   >
                     Cancel
                   </button>
@@ -381,21 +381,21 @@ export function BundleManagementPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">{bundle.name}</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">{bundle.name}</span>
                       <span
                         className={`text-xs px-2 py-0.5 rounded-full ${
                           bundle.isActive
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-100 text-gray-500'
+                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                            : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
                         }`}
                       >
                         {bundle.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
                     {bundle.description && (
-                      <p className="text-sm text-gray-500 mt-0.5">{bundle.description}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{bundle.description}</p>
                     )}
-                    <div className="flex gap-4 mt-1 text-xs text-gray-400">
+                    <div className="flex gap-4 mt-1 text-xs text-gray-400 dark:text-gray-500">
                       <span>Price: {bundle.price.toLocaleString()}</span>
                       <span>Items: {bundle.items?.length ?? 0}</span>
                       {bundle.items && (
@@ -444,7 +444,7 @@ export function BundleManagementPage() {
                     {bundle.items.map((bi) => (
                       <span
                         key={bi.id}
-                        className="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded"
+                        className="text-xs bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 px-2 py-0.5 rounded"
                       >
                         {bi.itemDefinition?.name ?? bi.itemDefinitionId} x{bi.quantity}
                       </span>

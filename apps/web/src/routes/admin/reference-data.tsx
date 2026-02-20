@@ -38,10 +38,10 @@ export function ReferenceDataPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Reference Data</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Reference Data</h1>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
         <nav className="flex gap-4">
           {tabs.map((tab) => (
             <button
@@ -50,7 +50,7 @@ export function ReferenceDataPage() {
               className={`pb-3 px-1 text-sm font-medium border-b-2 ${
                 activeTab === tab.key
                   ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               {tab.label}
@@ -89,7 +89,7 @@ function SkillsTab() {
   const [editSkillDefault, setEditSkillDefault] = useState('');
   const [editSkillSort, setEditSkillSort] = useState('');
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
 
   const handleAddGroup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -171,7 +171,7 @@ function SkillsTab() {
 
       {/* Groups */}
       {groups?.map((group) => (
-        <div key={group.id} className="bg-white rounded-lg shadow">
+        <div key={group.id} className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30">
           <div
             className="flex items-center justify-between p-4 cursor-pointer"
             onClick={() =>
@@ -201,15 +201,15 @@ function SkillsTab() {
                 </button>
                 <button
                   onClick={() => setEditingGroup(null)}
-                  className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded"
+                  className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 rounded"
                 >
                   Cancel
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <span className="font-medium text-gray-900">{group.name}</span>
-                <span className="text-xs text-gray-400">
+                <span className="font-medium text-gray-900 dark:text-gray-100">{group.name}</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500">
                   {group.skills?.length ?? 0} skills
                 </span>
               </div>
@@ -234,11 +234,11 @@ function SkillsTab() {
           </div>
 
           {expandedGroup === group.id && (
-            <div className="border-t border-gray-100 p-4 space-y-2">
+            <div className="border-t border-gray-100 dark:border-gray-700 p-4 space-y-2">
               {group.skills?.map((skill) => (
                 <div
                   key={skill.id}
-                  className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded"
+                  className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded"
                 >
                   {editingSkill?.id === skill.id ? (
                     <div className="flex gap-2 flex-1">
@@ -272,7 +272,7 @@ function SkillsTab() {
                       </button>
                       <button
                         onClick={() => setEditingSkill(null)}
-                        className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded"
+                        className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 rounded"
                       >
                         Cancel
                       </button>
@@ -280,8 +280,8 @@ function SkillsTab() {
                   ) : (
                     <>
                       <div>
-                        <span className="text-sm text-gray-900">{skill.name}</span>
-                        <span className="text-xs text-gray-400 ml-2">
+                        <span className="text-sm text-gray-900 dark:text-gray-100">{skill.name}</span>
+                        <span className="text-xs text-gray-400 dark:text-gray-500 ml-2">
                           (default: {skill.defaultValue})
                         </span>
                       </div>
@@ -335,7 +335,7 @@ function SkillsTab() {
                   </button>
                   <button
                     onClick={() => setAddingSkillToGroup(null)}
-                    className="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded"
+                    className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-1 rounded"
                   >
                     Cancel
                   </button>
@@ -372,7 +372,7 @@ function RolesTab() {
   const [editPosition, setEditPosition] = useState<Position | ''>('');
   const [editDescription, setEditDescription] = useState('');
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
 
   // Group by position
   const grouped = POSITIONS.map((pos) => ({
@@ -455,20 +455,20 @@ function RolesTab() {
           <button type="submit" disabled={createRole.isPending} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium">
             Add
           </button>
-          <button type="button" onClick={() => setAdding(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">
+          <button type="button" onClick={() => setAdding(false)} className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium">
             Cancel
           </button>
         </form>
       )}
 
       {grouped.map(({ position, roles: posRoles }) => (
-        <div key={position} className="bg-white rounded-lg shadow">
-          <div className="p-4 border-b border-gray-100">
-            <h3 className="font-medium text-gray-900">{position}</h3>
+        <div key={position} className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30">
+          <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+            <h3 className="font-medium text-gray-900 dark:text-gray-100">{position}</h3>
           </div>
           <div className="p-4 space-y-2">
             {posRoles.map((role) => (
-              <div key={role.id} className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded">
+              <div key={role.id} className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded">
                 {editingRole?.id === role.id ? (
                   <div className="flex gap-2 flex-1">
                     <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="rounded border border-gray-300 px-2 py-1 text-sm flex-1" />
@@ -477,13 +477,13 @@ function RolesTab() {
                     </select>
                     <input type="text" value={editDescription} onChange={(e) => setEditDescription(e.target.value)} placeholder="Description" className="rounded border border-gray-300 px-2 py-1 text-sm flex-1" />
                     <button onClick={handleSave} className="text-xs bg-indigo-600 text-white px-2 py-1 rounded">Save</button>
-                    <button onClick={() => setEditingRole(null)} className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">Cancel</button>
+                    <button onClick={() => setEditingRole(null)} className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">Cancel</button>
                   </div>
                 ) : (
                   <>
                     <div>
-                      <span className="text-sm font-medium text-gray-900">{role.name}</span>
-                      {role.description && <span className="text-xs text-gray-500 ml-2">{role.description}</span>}
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{role.name}</span>
+                      {role.description && <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">{role.description}</span>}
                     </div>
                     <div className="flex gap-2">
                       <button onClick={() => handleEdit(role)} className="text-xs text-indigo-600 hover:text-indigo-700">Edit</button>
@@ -518,7 +518,7 @@ function PlayStylesTab() {
   const [editDescription, setEditDescription] = useState('');
   const [editIconUrl, setEditIconUrl] = useState('');
 
-  if (isLoading) return <p className="text-gray-500">Loading...</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading...</p>;
 
   const grouped = POSITIONS.map((pos) => ({
     position: pos,
@@ -588,18 +588,18 @@ function PlayStylesTab() {
           <input type="text" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} placeholder="Description" className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1" />
           <input type="url" value={newIconUrl} onChange={(e) => setNewIconUrl(e.target.value)} placeholder="Icon URL" className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           <button type="submit" disabled={createStyle.isPending} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium">Add</button>
-          <button type="button" onClick={() => setAdding(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">Cancel</button>
+          <button type="button" onClick={() => setAdding(false)} className="bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium">Cancel</button>
         </form>
       )}
 
       {grouped.map(({ position, styles: posStyles }) => (
-        <div key={position} className="bg-white rounded-lg shadow">
-          <div className="p-4 border-b border-gray-100">
-            <h3 className="font-medium text-gray-900">{position}</h3>
+        <div key={position} className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30">
+          <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+            <h3 className="font-medium text-gray-900 dark:text-gray-100">{position}</h3>
           </div>
           <div className="p-4 space-y-2">
             {posStyles.map((style) => (
-              <div key={style.id} className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded">
+              <div key={style.id} className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded">
                 {editingStyle?.id === style.id ? (
                   <div className="flex gap-2 flex-1 flex-wrap">
                     <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="rounded border border-gray-300 px-2 py-1 text-sm" />
@@ -609,13 +609,13 @@ function PlayStylesTab() {
                     <input type="text" value={editDescription} onChange={(e) => setEditDescription(e.target.value)} placeholder="Description" className="rounded border border-gray-300 px-2 py-1 text-sm flex-1" />
                     <input type="url" value={editIconUrl} onChange={(e) => setEditIconUrl(e.target.value)} placeholder="Icon URL" className="rounded border border-gray-300 px-2 py-1 text-sm" />
                     <button onClick={handleSave} className="text-xs bg-indigo-600 text-white px-2 py-1 rounded">Save</button>
-                    <button onClick={() => setEditingStyle(null)} className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">Cancel</button>
+                    <button onClick={() => setEditingStyle(null)} className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">Cancel</button>
                   </div>
                 ) : (
                   <>
                     <div>
-                      <span className="text-sm font-medium text-gray-900">{style.name}</span>
-                      {style.description && <span className="text-xs text-gray-500 ml-2">{style.description}</span>}
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{style.name}</span>
+                      {style.description && <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">{style.description}</span>}
                     </div>
                     <div className="flex gap-2">
                       <button onClick={() => handleEdit(style)} className="text-xs text-indigo-600 hover:text-indigo-700">Edit</button>

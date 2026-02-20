@@ -21,19 +21,19 @@ export function FreeAgencyTab() {
   return (
     <div className="space-y-4">
       {userTeam && (
-        <div className="text-sm text-gray-500">
-          Your budget: <span className="font-medium text-gray-900">{userTeam.budget.toLocaleString()}</span>
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          Your budget: <span className="font-medium text-gray-900 dark:text-gray-100">{userTeam.budget.toLocaleString()}</span>
         </div>
       )}
 
       {isLoading ? (
-        <p className="text-gray-500">Loading free agents...</p>
+        <p className="text-gray-500 dark:text-gray-400">Loading free agents...</p>
       ) : freeAgents && freeAgents.length > 0 ? (
         <div className="grid gap-3">
           {freeAgents.map((player) => (
             <div
               key={player.id}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white rounded-lg shadow p-4"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4"
             >
               <div className="flex items-center gap-3">
                 {player.imageUrl ? (
@@ -43,7 +43,7 @@ export function FreeAgencyTab() {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-bold">
+                  <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-bold">
                     {player.firstName.charAt(0)}
                     {player.lastName.charAt(0)}
                   </div>
@@ -56,10 +56,10 @@ export function FreeAgencyTab() {
                     {player.firstName} {player.lastName}
                   </Link>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
+                    <span className="inline-block bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 text-xs font-medium px-2 py-0.5 rounded">
                       {player.primaryPosition}
                     </span>
-                    <span className="text-xs text-gray-500">Age {player.age}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Age {player.age}</span>
                   </div>
                 </div>
               </div>
@@ -80,7 +80,7 @@ export function FreeAgencyTab() {
           ))}
         </div>
       ) : (
-        <p className="text-gray-500 text-sm">No free agents available.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">No free agents available.</p>
       )}
     </div>
   );

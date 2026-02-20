@@ -6,14 +6,14 @@ export function DisputesPage() {
   const resolveResult = useResolveResult();
   const confirmResult = useConfirmResult();
 
-  if (isLoading) return <p className="text-gray-500">Loading disputes...</p>;
+  if (isLoading) return <p className="text-gray-500 dark:text-gray-400">Loading disputes...</p>;
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Disputes</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Disputes</h1>
 
       {disputes?.length === 0 && (
-        <p className="text-gray-500 text-center py-12">No pending disputes.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-center py-12">No pending disputes.</p>
       )}
 
       <div className="space-y-4">
@@ -54,24 +54,24 @@ function DisputeCard({
   const [note, setNote] = useState('');
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-4">
       <div className="flex justify-between items-start mb-3">
         <div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {result.match?.round?.competition?.name} &middot;{' '}
             {result.match?.round?.name}
           </p>
-          <p className="font-medium text-gray-900">
+          <p className="font-medium text-gray-900 dark:text-gray-100">
             {result.match?.homeTeam?.name} {result.homeScore} -{' '}
             {result.awayScore} {result.match?.awayTeam?.name}
           </p>
         </div>
-        <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">
+        <span className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 text-xs px-2 py-1 rounded">
           DISPUTED
         </span>
       </div>
 
-      <div className="text-sm text-gray-600 mb-3">
+      <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
         <p>
           Submitted by: <strong>{result.submittedBy?.discordUsername}</strong>
         </p>
@@ -107,7 +107,7 @@ function DisputeCard({
             onChange={(e) => setHomeScore(parseInt(e.target.value) || 0)}
             className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
           />
-          <span className="text-gray-400">-</span>
+          <span className="text-gray-400 dark:text-gray-500">-</span>
           <input
             type="number"
             min={0}
