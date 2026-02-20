@@ -76,3 +76,13 @@ export type {
   PosBundleDto,
   PosCheckoutDto,
 } from './bundle';
+export type {
+  MatchLineupEntry,
+  MatchSubstitution,
+  MatchPlayerStat,
+  MatchStats,
+  PlayerMinutes,
+  SaveLineupDto,
+  SaveSubstitutionsDto,
+  SavePlayerStatsDto,
+} from './game-stats';

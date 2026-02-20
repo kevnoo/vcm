@@ -15,6 +15,7 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { ItemsModule } from './items/items.module';
 import { BundlesModule } from './bundles/bundles.module';
 import { PosModule } from './pos/pos.module';
+import { GameStatsModule } from './game-stats/game-stats.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PosModule } from './pos/pos.module';
     ItemsModule,
     BundlesModule,
     PosModule,
+    GameStatsModule,
   ],
 })
 export class AppModule {}
