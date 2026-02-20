@@ -7,7 +7,7 @@ export type {
   CreateCompetitionDto,
   AddTeamsDto,
 } from './competition';
-export type { Match } from './match';
+export type { Match, UpdateMatchDto } from './match';
 export type {
   Result,
   SubmitResultDto,

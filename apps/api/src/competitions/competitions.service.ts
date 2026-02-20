@@ -106,10 +106,11 @@ export class CompetitionsService {
       );
     }
 
+    // If a schedule already exists, delete it before regenerating
     if (competition.rounds.length > 0) {
-      throw new BadRequestException(
-        'Schedule already generated. Delete existing rounds first.',
-      );
+      await this.prisma.round.deleteMany({
+        where: { competitionId },
+      });
     }
 
     const teamIds = competition.teams.map((ct) => ct.teamId);

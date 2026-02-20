@@ -16,3 +16,9 @@ export interface Match {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface UpdateMatchDto {
+  homeTeamId?: string;
+  awayTeamId?: string;
+  scheduledAt?: string | null;
+}
