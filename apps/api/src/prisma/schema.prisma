@@ -430,8 +430,9 @@ model ItemDefinition {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
-  teamItems TeamItem[]
-  usageLogs ItemUsageLog[]
+  teamItems   TeamItem[]
+  usageLogs   ItemUsageLog[]
+  bundleItems BundleItem[]
 }
 
 model TeamItem {
@@ -460,6 +461,31 @@ model ItemUsageLog {
   team           Team           @relation(fields: [teamId], references: [id])
   itemDefinition ItemDefinition @relation(fields: [itemDefinitionId], references: [id])
   player         Player         @relation(fields: [playerId], references: [id])
+}
+
+// ─── Bundles ───────────────────────────────────────────
+model Bundle {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  price       Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items BundleItem[]
+}
+
+model BundleItem {
+  id               String @id @default(uuid())
+  bundleId         String
+  itemDefinitionId String
+  quantity         Int    @default(1)
+
+  bundle         Bundle         @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  itemDefinition ItemDefinition @relation(fields: [itemDefinitionId], references: [id], onDelete: Cascade)
+
+  @@unique([bundleId, itemDefinitionId])
 }
 
 // ─── League Settings ────────────────────────────────────

@@ -66,6 +66,17 @@ export type {
   UseItemDto,
 } from './item';
 export type {
+  Bundle,
+  BundleItem,
+  CreateBundleDto,
+  CreateBundleItemDto,
+  UpdateBundleDto,
+  BuyBundleDto,
+  PosTransactionItemDto,
+  PosBundleDto,
+  PosCheckoutDto,
+} from './bundle';
+export type {
   MatchLineupEntry,
   MatchSubstitution,
   MatchPlayerStat,
