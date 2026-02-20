@@ -9,6 +9,7 @@ import {
 import { useTeams } from '../../hooks/useTeams';
 import { useAuthStore } from '../../stores/auth.store';
 import { useSubmitResult } from '../../hooks/useResults';
+import { useUpdateMatch } from '../../hooks/useMatches';
 import type { Match, Round } from '@vcm/shared';
 import { downloadCSV } from '../../lib/export-csv';
 
@@ -64,7 +65,7 @@ export function CompetitionDetailPage() {
 
         {isAdmin() && isDraft && (
           <div className="flex gap-2">
-            {!hasSchedule && (competition.teams?.length ?? 0) >= 2 && (
+            {(competition.teams?.length ?? 0) >= 2 && (
               <button
                 onClick={() => generateSchedule.mutate()}
                 disabled={generateSchedule.isPending}
@@ -72,7 +73,9 @@ export function CompetitionDetailPage() {
               >
                 {generateSchedule.isPending
                   ? 'Generating...'
-                  : 'Generate Schedule'}
+                  : hasSchedule
+                    ? 'Regenerate Schedule'
+                    : 'Generate Schedule'}
               </button>
             )}
             {hasSchedule && (
@@ -151,7 +154,11 @@ export function CompetitionDetailPage() {
             </button>
           </div>
           {competition.rounds?.map((round) => (
-            <RoundSection key={round.id} round={round} />
+            <RoundSection
+              key={round.id}
+              round={round}
+              competitionId={id!}
+            />
           ))}
         </section>
       )}
@@ -159,7 +166,13 @@ export function CompetitionDetailPage() {
   );
 }
 
-function RoundSection({ round }: { round: Round }) {
+function RoundSection({
+  round,
+  competitionId,
+}: {
+  round: Round;
+  competitionId: string;
+}) {
   return (
     <div className="mb-6">
       <h3 className="text-sm font-medium text-gray-500 mb-2">
@@ -167,20 +180,35 @@ function RoundSection({ round }: { round: Round }) {
       </h3>
       <div className="bg-white rounded-lg shadow divide-y">
         {round.matches?.map((match) => (
-          <MatchRow key={match.id} match={match} />
+          <MatchRow
+            key={match.id}
+            match={match}
+            competitionId={competitionId}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function MatchRow({ match }: { match: Match }) {
+function MatchRow({
+  match,
+  competitionId,
+}: {
+  match: Match;
+  competitionId: string;
+}) {
   const user = useAuthStore((s) => s.user);
   const isAdmin = useAuthStore((s) => s.isAdmin);
   const [showForm, setShowForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
+  const [editScheduledAt, setEditScheduledAt] = useState(
+    match.scheduledAt ? match.scheduledAt.slice(0, 16) : '',
+  );
   const submitResult = useSubmitResult(match.id);
+  const updateMatch = useUpdateMatch(match.id, competitionId);
 
   const hasResult = !!match.result;
   const canSubmit =
@@ -188,6 +216,21 @@ function MatchRow({ match }: { match: Match }) {
     (isAdmin() ||
       user?.id === match.homeTeam?.owner?.id ||
       user?.id === match.awayTeam?.owner?.id);
+  const canEdit = isAdmin() && !hasResult && match.status !== 'COMPLETED';
+
+  const handleSwap = () => {
+    updateMatch.mutate({
+      homeTeamId: match.awayTeamId,
+      awayTeamId: match.homeTeamId,
+    });
+  };
+
+  const handleSaveSchedule = () => {
+    updateMatch.mutate(
+      { scheduledAt: editScheduledAt || null },
+      { onSuccess: () => setShowEditForm(false) },
+    );
+  };
 
   return (
     <div className="px-4 py-3">
@@ -210,30 +253,110 @@ function MatchRow({ match }: { match: Match }) {
           </span>
         </div>
 
-        {hasResult && match.result!.status !== 'CONFIRMED' && (
-          <span
-            className={`text-xs px-2 py-0.5 rounded ${
-              match.result!.status === 'PENDING'
-                ? 'bg-yellow-100 text-yellow-800'
-                : match.result!.status === 'DISPUTED'
-                  ? 'bg-red-100 text-red-800'
-                  : 'bg-green-100 text-green-800'
-            }`}
-          >
-            {match.result!.status}
-          </span>
-        )}
+        <div className="flex items-center gap-2 ml-2 shrink-0">
+          {match.scheduledAt && !showEditForm && (
+            <span className="text-xs text-gray-400">
+              {new Date(match.scheduledAt).toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
+          )}
 
-        {canSubmit && !showForm && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="text-xs text-indigo-600 hover:text-indigo-800"
-          >
-            Submit Result
-          </button>
-        )}
+          {hasResult && match.result!.status !== 'CONFIRMED' && (
+            <span
+              className={`text-xs px-2 py-0.5 rounded ${
+                match.result!.status === 'PENDING'
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : match.result!.status === 'DISPUTED'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-green-100 text-green-800'
+              }`}
+            >
+              {match.result!.status}
+            </span>
+          )}
+
+          {canEdit && !showEditForm && (
+            <>
+              <button
+                onClick={handleSwap}
+                disabled={updateMatch.isPending}
+                title="Swap home/away"
+                className="text-xs text-gray-400 hover:text-indigo-600 disabled:opacity-50"
+              >
+                &#8646;
+              </button>
+              <button
+                onClick={() => setShowEditForm(true)}
+                title="Edit match"
+                className="text-xs text-gray-400 hover:text-indigo-600"
+              >
+                Edit
+              </button>
+            </>
+          )}
+
+          {canSubmit && !showForm && !showEditForm && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="text-xs text-indigo-600 hover:text-indigo-800"
+            >
+              Submit Result
+            </button>
+          )}
+        </div>
       </div>
 
+      {/* Edit form */}
+      {showEditForm && (
+        <div className="mt-3 flex items-center gap-2 flex-wrap">
+          <label className="text-xs text-gray-500">Date/Time:</label>
+          <input
+            type="datetime-local"
+            value={editScheduledAt}
+            onChange={(e) => setEditScheduledAt(e.target.value)}
+            className="rounded border border-gray-300 px-2 py-1 text-sm"
+          />
+          <button
+            onClick={handleSaveSchedule}
+            disabled={updateMatch.isPending}
+            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-3 py-1 rounded text-sm"
+          >
+            Save
+          </button>
+          <button
+            onClick={() => {
+              setEditScheduledAt(
+                match.scheduledAt ? match.scheduledAt.slice(0, 16) : '',
+              );
+              setShowEditForm(false);
+            }}
+            className="text-gray-500 hover:text-gray-700 text-sm"
+          >
+            Cancel
+          </button>
+          {editScheduledAt && (
+            <button
+              onClick={() => {
+                setEditScheduledAt('');
+                updateMatch.mutate(
+                  { scheduledAt: null },
+                  { onSuccess: () => setShowEditForm(false) },
+                );
+              }}
+              disabled={updateMatch.isPending}
+              className="text-xs text-red-500 hover:text-red-700"
+            >
+              Clear date
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Submit result form */}
       {showForm && (
         <div className="mt-3 flex items-center gap-2">
           <input
