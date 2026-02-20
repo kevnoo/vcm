@@ -40,19 +40,21 @@ model Team {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner            User              @relation(fields: [ownerId], references: [id])
-  competitionTeams CompetitionTeam[]
-  homeMatches      Match[]           @relation("HomeTeam")
-  awayMatches      Match[]           @relation("AwayTeam")
-  players          Player[]
-  initiatedTrades  TradeOffer[]      @relation("InitiatingTeam")
-  receivedTrades   TradeOffer[]      @relation("ReceivingTeam")
-  waiverBids       WaiverBid[]
-  releasedWaivers  WaiverWire[]
-  transactionsFrom Transaction[]     @relation("FromTeam")
-  transactionsTo   Transaction[]     @relation("ToTeam")
-  items            TeamItem[]
-  itemUsageLogs    ItemUsageLog[]
+  owner              User                @relation(fields: [ownerId], references: [id])
+  competitionTeams   CompetitionTeam[]
+  homeMatches        Match[]             @relation("HomeTeam")
+  awayMatches        Match[]             @relation("AwayTeam")
+  players            Player[]
+  initiatedTrades    TradeOffer[]        @relation("InitiatingTeam")
+  receivedTrades     TradeOffer[]        @relation("ReceivingTeam")
+  waiverBids         WaiverBid[]
+  releasedWaivers    WaiverWire[]
+  transactionsFrom   Transaction[]       @relation("FromTeam")
+  transactionsTo     Transaction[]       @relation("ToTeam")
+  items              TeamItem[]
+  itemUsageLogs      ItemUsageLog[]
+  lineupEntries      MatchLineupEntry[]
+  matchSubstitutions MatchSubstitution[]
 }
 
 // ─── Competitions ────────────────────────────────────────
@@ -121,10 +123,13 @@ model Match {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  round    Round   @relation(fields: [roundId], references: [id], onDelete: Cascade)
-  homeTeam Team    @relation("HomeTeam", fields: [homeTeamId], references: [id])
-  awayTeam Team    @relation("AwayTeam", fields: [awayTeamId], references: [id])
-  result   Result?
+  round         Round                @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  homeTeam      Team                 @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam      Team                 @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  result        Result?
+  lineupEntries MatchLineupEntry[]
+  substitutions MatchSubstitution[]
+  playerStats   MatchPlayerStat[]
 }
 
 enum MatchStatus {
@@ -160,6 +165,60 @@ enum ResultStatus {
   CONFIRMED
   DISPUTED
   RESOLVED
+}
+
+// ─── Match Stats ────────────────────────────────────────
+model MatchLineupEntry {
+  id        String    @id @default(uuid())
+  matchId   String
+  teamId    String
+  playerId  String
+  position  Position
+  isStarter Boolean   @default(true)
+
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@unique([matchId, teamId, playerId])
+}
+
+model MatchSubstitution {
+  id          String @id @default(uuid())
+  matchId     String
+  teamId      String
+  playerInId  String
+  playerOutId String
+  minute      Int
+
+  match     Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  team      Team   @relation(fields: [teamId], references: [id])
+  playerIn  Player @relation("SubbedIn", fields: [playerInId], references: [id])
+  playerOut Player @relation("SubbedOut", fields: [playerOutId], references: [id])
+
+  @@index([matchId])
+}
+
+model MatchPlayerStat {
+  id       String         @id @default(uuid())
+  matchId  String
+  playerId String
+  statType MatchStatType
+  value    Int            @default(1)
+  minute   Int?
+
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@index([matchId])
+  @@index([playerId])
+}
+
+enum MatchStatType {
+  GOAL
+  ASSIST
+  TACKLE
+  SAVE
 }
 
 // ─── Player Enums ───────────────────────────────────────
@@ -296,14 +355,18 @@ model Player {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  team         Team?                       @relation(fields: [teamId], references: [id], onDelete: SetNull)
-  skills       PlayerSkill[]
-  positions    PlayerPosition[]
-  playStyles   PlayerPlayStyleAssignment[]
-  tradePlayers TradeOfferPlayer[]
-  waiverWires  WaiverWire[]
-  transactions Transaction[]
-  itemUsages   ItemUsageLog[]
+  team             Team?                       @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  skills           PlayerSkill[]
+  positions        PlayerPosition[]
+  playStyles       PlayerPlayStyleAssignment[]
+  tradePlayers     TradeOfferPlayer[]
+  waiverWires      WaiverWire[]
+  transactions     Transaction[]
+  itemUsages       ItemUsageLog[]
+  lineupEntries    MatchLineupEntry[]
+  substitutionsIn  MatchSubstitution[]         @relation("SubbedIn")
+  substitutionsOut MatchSubstitution[]         @relation("SubbedOut")
+  matchStats       MatchPlayerStat[]
 }
 
 model PlayerPosition {

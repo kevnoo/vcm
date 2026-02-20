@@ -24,6 +24,7 @@ import { ReferenceDataPage } from './routes/admin/reference-data';
 import { ItemManagementPage } from './routes/admin/items';
 import { ShopPage } from './routes/shop/index';
 import { InventoryPage } from './routes/shop/inventory';
+import { MatchStatsPage } from './routes/matches/stats';
 import { ScheduleGeneratorPage } from './routes/tools/schedule-generator';
 import { useCurrentUser } from './hooks/useAuth';
 
@@ -82,6 +83,8 @@ export function App() {
           }
         />
         <Route path="competitions/:id" element={<CompetitionDetailPage />} />
+
+        <Route path="matches/:matchId/stats" element={<MatchStatsPage />} />
 
         <Route path="shop" element={<ShopPage />} />
         <Route path="shop/inventory" element={<InventoryPage />} />

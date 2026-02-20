@@ -65,3 +65,13 @@ export type {
   BuyItemDto,
   UseItemDto,
 } from './item';
+export type {
+  MatchLineupEntry,
+  MatchSubstitution,
+  MatchPlayerStat,
+  MatchStats,
+  PlayerMinutes,
+  SaveLineupDto,
+  SaveSubstitutionsDto,
+  SavePlayerStatsDto,
+} from './game-stats';

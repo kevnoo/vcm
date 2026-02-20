@@ -10,3 +10,4 @@ export { TradeOfferStatus } from './trade-offer-status.enum';
 export { WaiverStatus } from './waiver-status.enum';
 export { TransactionType } from './transaction-type.enum';
 export { ItemEffectType } from './item-effect-type.enum';
+export { MatchStatType } from './match-stat-type.enum';
