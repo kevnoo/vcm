@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams, Link } from 'react-router';
 import {
   useCompetition,
   useAddTeams,
@@ -306,6 +306,15 @@ function MatchRow({
             >
               Submit Result
             </button>
+          )}
+
+          {hasResult && (
+            <Link
+              to={`/matches/${match.id}/stats`}
+              className="text-xs text-indigo-600 hover:text-indigo-800"
+            >
+              Stats
+            </Link>
           )}
         </div>
       </div>
