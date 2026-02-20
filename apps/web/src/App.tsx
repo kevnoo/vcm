@@ -21,6 +21,9 @@ import { DisputesPage } from './routes/admin/disputes';
 import { PendingTradesPage } from './routes/admin/pending-trades';
 import { LeagueSettingsPage } from './routes/admin/league-settings';
 import { ReferenceDataPage } from './routes/admin/reference-data';
+import { ItemManagementPage } from './routes/admin/items';
+import { ShopPage } from './routes/shop/index';
+import { InventoryPage } from './routes/shop/inventory';
 import { ScheduleGeneratorPage } from './routes/tools/schedule-generator';
 import { useCurrentUser } from './hooks/useAuth';
 
@@ -80,6 +83,9 @@ export function App() {
         />
         <Route path="competitions/:id" element={<CompetitionDetailPage />} />
 
+        <Route path="shop" element={<ShopPage />} />
+        <Route path="shop/inventory" element={<InventoryPage />} />
+
         <Route
           path="admin/disputes"
           element={
@@ -109,6 +115,14 @@ export function App() {
           element={
             <AdminRoute>
               <ReferenceDataPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/items"
+          element={
+            <AdminRoute>
+              <ItemManagementPage />
             </AdminRoute>
           }
         />

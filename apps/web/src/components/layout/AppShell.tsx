@@ -8,11 +8,14 @@ const navItems = [
   { to: '/players', label: 'Players' },
   { to: '/transfers', label: 'Transfers' },
   { to: '/competitions', label: 'Competitions' },
+  { to: '/shop', label: 'Shop' },
+  { to: '/shop/inventory', label: 'Inventory' },
 ];
 
 const adminItems = [
   { to: '/admin/disputes', label: 'Disputes' },
   { to: '/admin/pending-trades', label: 'Pending Trades' },
+  { to: '/admin/items', label: 'Item Management' },
   { to: '/admin/league-settings', label: 'League Settings' },
   { to: '/admin/reference-data', label: 'Reference Data' },
 ];

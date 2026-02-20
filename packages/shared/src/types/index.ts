@@ -56,3 +56,12 @@ export type {
   PlaceWaiverBidDto,
   Transaction,
 } from './transaction';
+export type {
+  ItemDefinition,
+  TeamItem,
+  ItemUsageLog,
+  CreateItemDefinitionDto,
+  UpdateItemDefinitionDto,
+  BuyItemDto,
+  UseItemDto,
+} from './item';

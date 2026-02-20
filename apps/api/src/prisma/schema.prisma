@@ -51,6 +51,8 @@ model Team {
   releasedWaivers  WaiverWire[]
   transactionsFrom Transaction[]     @relation("FromTeam")
   transactionsTo   Transaction[]     @relation("ToTeam")
+  items            TeamItem[]
+  itemUsageLogs    ItemUsageLog[]
 }
 
 // ─── Competitions ────────────────────────────────────────
@@ -188,6 +190,14 @@ enum PlayStyleLevel {
   ADVANCED
 }
 
+// ─── Item Enums ─────────────────────────────────────────
+enum ItemEffectType {
+  BOOST_OVERALL
+  BOOST_WEAK_FOOT
+  BOOST_POTENTIAL
+  SET_OVERALL
+}
+
 // ─── Transaction Enums ──────────────────────────────────
 enum TradeOfferStatus {
   PENDING
@@ -278,6 +288,9 @@ model Player {
   lastName        String
   age             Int
   primaryPosition Position
+  overall         Int      @default(50)
+  weakFoot        Int      @default(3)
+  potential       Int      @default(50)
   teamId          String?
   imageUrl        String?
   createdAt       DateTime @default(now())
@@ -290,6 +303,7 @@ model Player {
   tradePlayers TradeOfferPlayer[]
   waiverWires  WaiverWire[]
   transactions Transaction[]
+  itemUsages   ItemUsageLog[]
 }
 
 model PlayerPosition {
@@ -339,6 +353,50 @@ model PlayerPlayStyleAssignment {
   playStyleDefinition PlayStyleDefinition @relation(fields: [playStyleDefinitionId], references: [id], onDelete: Cascade)
 
   @@unique([playerId, playStyleDefinitionId])
+}
+
+// ─── Items ──────────────────────────────────────────────
+model ItemDefinition {
+  id          String         @id @default(uuid())
+  name        String         @unique
+  description String?
+  effectType  ItemEffectType
+  effectValue Int
+  price       Int
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  teamItems TeamItem[]
+  usageLogs ItemUsageLog[]
+}
+
+model TeamItem {
+  id               String   @id @default(uuid())
+  teamId           String
+  itemDefinitionId String
+  quantity         Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  team           Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  itemDefinition ItemDefinition @relation(fields: [itemDefinitionId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, itemDefinitionId])
+}
+
+model ItemUsageLog {
+  id               String   @id @default(uuid())
+  teamId           String
+  itemDefinitionId String
+  playerId         String
+  previousValue    Int
+  newValue         Int
+  usedAt           DateTime @default(now())
+
+  team           Team           @relation(fields: [teamId], references: [id])
+  itemDefinition ItemDefinition @relation(fields: [itemDefinitionId], references: [id])
+  player         Player         @relation(fields: [playerId], references: [id])
 }
 
 // ─── League Settings ────────────────────────────────────
