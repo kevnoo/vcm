@@ -17,6 +17,21 @@ export class CreatePlayerDto {
   @IsEnum(Position)
   primaryPosition: Position;
 
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  overall?: number;
+
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  weakFoot?: number;
+
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  potential?: number;
+
   @IsArray()
   @IsEnum(Position, { each: true })
   @IsOptional()

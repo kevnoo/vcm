@@ -12,6 +12,7 @@ import { ReferenceDataModule } from './reference-data/reference-data.module';
 import { PlayersModule } from './players/players.module';
 import { LeagueSettingsModule } from './league-settings/league-settings.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { ItemsModule } from './items/items.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     PlayersModule,
     LeagueSettingsModule,
     TransactionsModule,
+    ItemsModule,
   ],
 })
 export class AppModule {}

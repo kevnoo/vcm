@@ -49,6 +49,9 @@ export interface Player {
   lastName: string;
   age: number;
   primaryPosition: Position;
+  overall: number;
+  weakFoot: number;
+  potential: number;
   teamId: string | null;
   imageUrl: string | null;
   team?: Team | null;
@@ -100,6 +103,9 @@ export interface CreatePlayerDto {
   lastName: string;
   age: number;
   primaryPosition: Position;
+  overall?: number;
+  weakFoot?: number;
+  potential?: number;
   alternativePositions?: Position[];
   teamId?: string;
   imageUrl?: string;
@@ -110,6 +116,9 @@ export interface UpdatePlayerDto {
   lastName?: string;
   age?: number;
   primaryPosition?: Position;
+  overall?: number;
+  weakFoot?: number;
+  potential?: number;
   alternativePositions?: Position[];
   teamId?: string | null;
   imageUrl?: string | null;
