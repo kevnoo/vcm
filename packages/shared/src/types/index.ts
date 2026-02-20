@@ -65,3 +65,14 @@ export type {
   BuyItemDto,
   UseItemDto,
 } from './item';
+export type {
+  Bundle,
+  BundleItem,
+  CreateBundleDto,
+  CreateBundleItemDto,
+  UpdateBundleDto,
+  BuyBundleDto,
+  PosTransactionItemDto,
+  PosBundleDto,
+  PosCheckoutDto,
+} from './bundle';

@@ -16,6 +16,8 @@ const adminItems = [
   { to: '/admin/disputes', label: 'Disputes' },
   { to: '/admin/pending-trades', label: 'Pending Trades' },
   { to: '/admin/items', label: 'Item Management' },
+  { to: '/admin/bundles', label: 'Bundle Management' },
+  { to: '/admin/pos', label: 'Point of Sale' },
   { to: '/admin/league-settings', label: 'League Settings' },
   { to: '/admin/reference-data', label: 'Reference Data' },
 ];

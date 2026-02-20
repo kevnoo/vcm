@@ -22,6 +22,8 @@ import { PendingTradesPage } from './routes/admin/pending-trades';
 import { LeagueSettingsPage } from './routes/admin/league-settings';
 import { ReferenceDataPage } from './routes/admin/reference-data';
 import { ItemManagementPage } from './routes/admin/items';
+import { BundleManagementPage } from './routes/admin/bundles';
+import { PosPage } from './routes/admin/pos';
 import { ShopPage } from './routes/shop/index';
 import { InventoryPage } from './routes/shop/inventory';
 import { ScheduleGeneratorPage } from './routes/tools/schedule-generator';
@@ -123,6 +125,22 @@ export function App() {
           element={
             <AdminRoute>
               <ItemManagementPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/bundles"
+          element={
+            <AdminRoute>
+              <BundleManagementPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/pos"
+          element={
+            <AdminRoute>
+              <PosPage />
             </AdminRoute>
           }
         />
