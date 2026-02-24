@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router';
-import { useTeam, useSetTeamBudget } from '../../hooks/useTeams';
+import { useTeam, useSetTeamBudget, useUpdateTeam } from '../../hooks/useTeams';
+import { useUsers, useCreateUser } from '../../hooks/useUsers';
 import { usePlayers } from '../../hooks/usePlayers';
 import { useTrades } from '../../hooks/useTrades';
 import { useAuthStore } from '../../stores/auth.store';
@@ -14,8 +15,18 @@ export function TeamDetailPage() {
   const { isAdmin } = useAuthStore();
   const setBudget = useSetTeamBudget();
 
+  const { data: users } = useUsers();
+  const updateTeam = useUpdateTeam();
+  const createUser = useCreateUser();
+
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetInput, setBudgetInput] = useState('');
+
+  const [reassigning, setReassigning] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [newUsername, setNewUsername] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
 
   if (isLoading) return <p className="text-gray-500">Loading...</p>;
   if (!team) return <p className="text-gray-500">Team not found.</p>;
@@ -34,6 +45,51 @@ export function TeamDetailPage() {
     );
   };
 
+  const startReassign = () => {
+    setSelectedUserId('');
+    setNewUsername('');
+    setIsNewUser(false);
+    setReassigning(true);
+  };
+
+  const cancelReassign = () => {
+    setReassigning(false);
+    setShowConfirm(false);
+  };
+
+  const handleReassignClick = () => {
+    if (isNewUser ? newUsername.trim() : selectedUserId) {
+      setShowConfirm(true);
+    }
+  };
+
+  const confirmReassign = async () => {
+    let ownerId = selectedUserId;
+
+    if (isNewUser) {
+      try {
+        const newUser = await createUser.mutateAsync({ discordUsername: newUsername.trim() });
+        ownerId = newUser.id;
+      } catch {
+        return;
+      }
+    }
+
+    updateTeam.mutate(
+      { id: team.id, ownerId },
+      {
+        onSuccess: () => {
+          setReassigning(false);
+          setShowConfirm(false);
+        },
+      },
+    );
+  };
+
+  const newOwnerName = isNewUser
+    ? newUsername.trim()
+    : users?.find((u) => u.id === selectedUserId)?.discordUsername ?? '';
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -50,9 +106,105 @@ export function TeamDetailPage() {
         )}
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
-          <p className="text-gray-500">
-            Owner: {team.owner?.discordUsername ?? 'None'}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-gray-500">
+              Owner: {team.owner?.discordUsername ?? 'None'}
+            </p>
+            {isAdmin() && !reassigning && (
+              <button
+                onClick={startReassign}
+                className="text-xs text-indigo-600 hover:text-indigo-700 font-medium"
+              >
+                Reassign
+              </button>
+            )}
+          </div>
+          {reassigning && (
+            <div className="mt-2 space-y-2">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsNewUser(false)}
+                  className={`text-xs font-medium px-2 py-1 rounded ${!isNewUser ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  Existing User
+                </button>
+                <button
+                  onClick={() => setIsNewUser(true)}
+                  className={`text-xs font-medium px-2 py-1 rounded ${isNewUser ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  New User
+                </button>
+              </div>
+              {isNewUser ? (
+                <input
+                  type="text"
+                  placeholder="Discord username"
+                  value={newUsername}
+                  onChange={(e) => setNewUsername(e.target.value)}
+                  className="rounded border border-gray-300 px-2 py-1 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              ) : (
+                <select
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  className="rounded border border-gray-300 px-2 py-1 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="">Select user</option>
+                  {users
+                    ?.filter((u) => u.id !== team.ownerId)
+                    .map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.discordUsername}
+                      </option>
+                    ))}
+                </select>
+              )}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleReassignClick}
+                  disabled={isNewUser ? !newUsername.trim() : !selectedUserId}
+                  className="text-xs text-green-600 hover:text-green-700 font-medium disabled:opacity-50"
+                >
+                  Reassign
+                </button>
+                <button
+                  onClick={cancelReassign}
+                  className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+              {showConfirm && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm">
+                  <p className="text-yellow-800">
+                    Reassign <strong>{team.name}</strong> from{' '}
+                    <strong>{team.owner?.discordUsername ?? 'None'}</strong> to{' '}
+                    <strong>{newOwnerName}</strong>?
+                  </p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <button
+                      onClick={confirmReassign}
+                      disabled={updateTeam.isPending || createUser.isPending}
+                      className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-3 py-1 rounded text-xs font-medium"
+                    >
+                      {updateTeam.isPending || createUser.isPending ? 'Reassigning...' : 'Confirm'}
+                    </button>
+                    <button
+                      onClick={cancelReassign}
+                      className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                  {(updateTeam.isError || createUser.isError) && (
+                    <p className="text-red-600 text-xs mt-1">
+                      Failed to reassign. Please try again.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
           <div className="flex items-center gap-2 mt-1">
             <span className="text-sm text-gray-600">
               Budget: <span className="font-medium text-gray-900">{team.budget.toLocaleString()}</span>
