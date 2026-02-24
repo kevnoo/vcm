@@ -26,6 +26,10 @@ model User {
   matchMessages    MatchMessage[]
   timeProposals    TimeProposal[] @relation("ProposedBy")
   respondedProposals TimeProposal[] @relation("RespondedBy")
+  submittedGameStats MatchPlayerGameStats[] @relation("GameStatsSubmittedBy")
+  disputedStats      StatDispute[]          @relation("StatDisputedBy")
+  resolvedStats      StatDispute[]          @relation("StatResolvedBy")
+  statDelegations    StatDelegate[]         @relation("StatDelegateUser")
 }
 
 enum Role {
@@ -58,6 +62,8 @@ model Team {
   itemUsageLogs      ItemUsageLog[]
   lineupEntries      MatchLineupEntry[]
   matchSubstitutions MatchSubstitution[]
+  playerGameStats MatchPlayerGameStats[]
+  statDelegates   StatDelegate[]
 }
 
 // ─── Competitions ────────────────────────────────────────
@@ -135,6 +141,7 @@ model Match {
   playerStats   MatchPlayerStat[]
   messages      MatchMessage[]
   timeProposals TimeProposal[]
+  playerGameStats MatchPlayerGameStats[]
 }
 
 enum MatchStatus {
@@ -169,6 +176,18 @@ enum ResultStatus {
   PENDING
   CONFIRMED
   DISPUTED
+  RESOLVED
+}
+
+enum GameStatsStatus {
+  PENDING
+  CONFIRMED
+  DISPUTED
+  RESOLVED
+}
+
+enum StatDisputeStatus {
+  OPEN
   RESOLVED
 }
 
@@ -255,6 +274,85 @@ model MatchPlayerStat {
 
   @@index([matchId])
   @@index([playerId])
+}
+
+// ─── Player Game Stats (per-match summary) ────────────────
+model MatchPlayerGameStats {
+  id              String          @id @default(uuid())
+  matchId         String
+  playerId        String
+  teamId          String
+  submittedById   String
+  position        Position
+  isSubstitute    Boolean         @default(false)
+  rating          Float
+  goals           Int             @default(0)
+  assists         Int             @default(0)
+  shots           Int             @default(0)
+  shotAccuracy    Float           @default(0)
+  passes          Int             @default(0)
+  passAccuracy    Float           @default(0)
+  dribbles        Int             @default(0)
+  dribbleSuccessRate Float        @default(0)
+  tackles         Int             @default(0)
+  tackleSuccessRate Float         @default(0)
+  offsides        Int             @default(0)
+  foulsCommitted  Int             @default(0)
+  possessionsWon  Int             @default(0)
+  possessionsLost Int             @default(0)
+  minutesPlayed   Int             @default(0)
+  yellowCards     Int             @default(0)
+  redCards        Int             @default(0)
+  // GK-only fields (nullable)
+  shotsAgainst    Int?
+  shotsOnTarget   Int?
+  saves           Int?
+  goalsConceded   Int?
+  saveSuccessRate Float?
+  cleanSheet      Boolean?
+  status          GameStatsStatus @default(PENDING)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  match       Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player      Player  @relation(fields: [playerId], references: [id])
+  team        Team    @relation(fields: [teamId], references: [id])
+  submittedBy User    @relation("GameStatsSubmittedBy", fields: [submittedById], references: [id])
+  disputes    StatDispute[]
+
+  @@unique([matchId, playerId])
+  @@index([matchId])
+  @@index([playerId])
+  @@index([teamId])
+}
+
+model StatDispute {
+  id             String             @id @default(uuid())
+  gameStatsId    String
+  fieldName      String
+  disputedById   String
+  reason         String?
+  status         StatDisputeStatus  @default(OPEN)
+  resolvedById   String?
+  resolutionNote String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  gameStats   MatchPlayerGameStats @relation(fields: [gameStatsId], references: [id], onDelete: Cascade)
+  disputedBy  User                 @relation("StatDisputedBy", fields: [disputedById], references: [id])
+  resolvedBy  User?                @relation("StatResolvedBy", fields: [resolvedById], references: [id])
+}
+
+model StatDelegate {
+  id             String   @id @default(uuid())
+  teamId         String
+  delegateUserId String
+  createdAt      DateTime @default(now())
+
+  team     Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  delegate User @relation("StatDelegateUser", fields: [delegateUserId], references: [id])
+
+  @@unique([teamId, delegateUserId])
 }
 
 enum MatchStatType {
@@ -410,6 +508,7 @@ model Player {
   substitutionsIn  MatchSubstitution[]         @relation("SubbedIn")
   substitutionsOut MatchSubstitution[]         @relation("SubbedOut")
   matchStats       MatchPlayerStat[]
+  gameStats        MatchPlayerGameStats[]
 }
 
 model PlayerPosition {
