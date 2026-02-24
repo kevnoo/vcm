@@ -1,15 +1,57 @@
-We are building a web app to support a video game community called Virtual Career Mode. Virtual Career Mode is a self-managed video game league for the game EAFC26 (and future iterations). The community communicates and organizes via Discord but needs a web app. The primary users will be the administrators and team owners. They will log in using their Discord account using Discord's OAuth2.
+# VCM — Virtual Career Mode
 
-Phase 1 will be focused on league set up.
+Web app for the Virtual Career Mode community, a self-managed EAFC26 video game league. Users authenticate via Discord OAuth2. Primary users: admins and team owners.
 
-Team Set Up:
+## Tech Stack
 
-An admin(s) will enter in all of the teams. A team will have a name, a logo, and an owner.
+- **Monorepo**: pnpm workspaces + Turborepo
+- **Backend**: NestJS 11, Prisma ORM, PostgreSQL, Passport (Discord + JWT)
+- **Frontend**: React 19, React Router 7, Zustand 5, TanStack Query 5, Tailwind CSS 4, Vite 6
+- **Shared types**: `packages/shared` — enums, interfaces, DTOs
 
-Competition Set Up:
+## Project Structure
 
-An admin will create a competition. The types of compeitions will be the same types of soccer competitions that exist in real life such as Double Round Robin, Tournament/Cup, Play Off, etc.
+- `apps/api/` — NestJS backend (port 3000)
+- `apps/web/` — React frontend (port 5173)
+- `packages/shared/` — Shared TypeScript types
 
-Based off the competition, the admin will need a tool that will auto-generate the schedule of matches. Once the schedule is generated, the app should be set up so that the results are posted and confirmed by either an Admin or the participating team owners. To avoid conflict, if one of the owners is the one to post the score, there will be a button that another owner would be able to click to report the result as incorrect in which the Admin team can come in and triage/handle.
+## Common Commands
 
-Phase 2 will be about setting up the player database and rosters.
+- `pnpm dev` — run all apps
+- `pnpm build` — build all (run `pnpm build:shared` first if types changed)
+- `pnpm --filter @vcm/web build` — build frontend only
+- `pnpm db:migrate` — run Prisma migrations + generate client
+- `pnpm db:generate` — generate Prisma client only
+- `pnpm db:seed` — seed database
+- `pnpm db:studio` — open Prisma Studio GUI
+
+## Key Patterns
+
+- **Auth**: Discord OAuth2 → Passport → JWT (7-day). Token in localStorage (`vcm_token`). Axios interceptor adds Bearer header.
+- **Roles**: `ADMIN` | `OWNER` enum. Backend: `@Roles('ADMIN')` decorator + `RolesGuard`. Frontend: `AdminRoute` component checks `user.role`, `isInAdminView()` for UI rendering.
+- **View switching**: Admins can toggle between admin/owner views via `activeView` in Zustand auth store. Use `isInAdminView()` for UI decisions, `isAdmin()` for permission checks.
+- **API pattern**: NestJS controllers with class-validator DTOs. Prisma for DB access.
+- **Frontend state**: Zustand for auth, React Query for server state. Hooks in `apps/web/src/hooks/`.
+- **Prisma schema**: `apps/api/src/prisma/schema.prisma`. Generated client: `apps/api/src/generated/prisma`.
+
+## What's Built
+
+Phase 1 (League Setup) — complete:
+- Teams (CRUD, owner reassignment, budgets)
+- Competitions (double round robin, single round robin, knockout cup, playoff)
+- Match scheduling (auto-generation), result submission, dispute workflow
+
+Phase 2 (Players & Rosters) — in progress:
+- Player database (positions, skills, play styles, roles)
+- Per-match game stats with dispute/delegate system
+
+Additional features:
+- Transaction audit log (trades, free agency, waivers, admin moves)
+- Trade offers with counters, waiver wire with bidding
+- Item/boost system with bundles
+- Admin dashboard with disputes, pending trades, league settings
+- Owner dashboard with team-scoped views
+
+## Environment Variables
+
+`DATABASE_URL`, `JWT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_CALLBACK_URL`, `FRONTEND_URL`, `ADMIN_DISCORD_ID`
