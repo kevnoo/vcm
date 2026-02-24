@@ -17,6 +17,7 @@ import { BundlesModule } from './bundles/bundles.module';
 import { PosModule } from './pos/pos.module';
 import { GameStatsModule } from './game-stats/game-stats.module';
 import { StatDelegatesModule } from './stat-delegates/stat-delegates.module';
+import { PlayerGameStatsModule } from './player-game-stats/player-game-stats.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { StatDelegatesModule } from './stat-delegates/stat-delegates.module';
     PosModule,
     GameStatsModule,
     StatDelegatesModule,
+    PlayerGameStatsModule,
   ],
 })
 export class AppModule {}
