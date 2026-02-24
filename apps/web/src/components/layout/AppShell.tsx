@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuthStore } from '../../stores/auth.store';
 
 const navItems = [
@@ -23,7 +23,8 @@ const adminItems = [
 ];
 
 export function AppShell() {
-  const { user, clearAuth, isAdmin } = useAuthStore();
+  const { user, clearAuth, isAdmin, isInAdminView, switchView } = useAuthStore();
+  const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -52,7 +53,7 @@ export function AppShell() {
           </Link>
         ))}
 
-        {isAdmin() && (
+        {isInAdminView() && (
           <>
             <div className="pt-4 pb-2 px-3 text-xs text-gray-500 uppercase tracking-wider">
               Admin
@@ -86,9 +87,27 @@ export function AppShell() {
           )}
           <div className="flex-1 min-w-0">
             <p className="text-sm truncate">{user?.discordUsername}</p>
-            <p className="text-xs text-gray-400">{user?.role}</p>
+            <p className="text-xs text-gray-400">
+              {isAdmin() ? (isInAdminView() ? 'Admin View' : 'Owner View') : user?.role}
+            </p>
           </div>
         </div>
+        {isAdmin() && (
+          <button
+            onClick={() => {
+              const newView = isInAdminView() ? 'owner' : 'admin';
+              switchView(newView);
+              navigate('/');
+              closeSidebar();
+            }}
+            className="mt-2 w-full text-sm text-indigo-400 hover:text-indigo-300 text-left flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            {isInAdminView() ? 'Switch to Owner View' : 'Switch to Admin View'}
+          </button>
+        )}
         <button
           onClick={clearAuth}
           className="mt-3 w-full text-sm text-gray-400 hover:text-white text-left"
