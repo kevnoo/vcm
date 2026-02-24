@@ -1,17 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useCreateTeam } from '../../hooks/useTeams';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../../lib/api';
-import type { User } from '@vcm/shared';
+import { useUsers } from '../../hooks/useUsers';
 
 export function CreateTeamPage() {
   const navigate = useNavigate();
   const createTeam = useCreateTeam();
-  const { data: users } = useQuery<User[]>({
-    queryKey: ['users'],
-    queryFn: () => api.get('/users').then((r) => r.data),
-  });
+  const { data: users } = useUsers();
 
   const [name, setName] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
