@@ -3,11 +3,11 @@ import { AdminDashboard } from '../components/dashboard/AdminDashboard';
 import { OwnerDashboard } from '../components/dashboard/OwnerDashboard';
 
 export function DashboardPage() {
-  const { user, isAdmin } = useAuthStore();
+  const { user, isInAdminView } = useAuthStore();
 
   if (!user) return null;
 
-  if (isAdmin()) {
+  if (isInAdminView()) {
     return <AdminDashboard user={user} />;
   }
 
