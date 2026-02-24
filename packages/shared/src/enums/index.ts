@@ -12,3 +12,5 @@ export { TransactionType } from './transaction-type.enum';
 export { ItemEffectType } from './item-effect-type.enum';
 export { MatchStatType } from './match-stat-type.enum';
 export { TimeProposalStatus } from './time-proposal-status.enum';
+export { GameStatsStatus } from './game-stats-status.enum';
+export { StatDisputeStatus } from './stat-dispute-status.enum';

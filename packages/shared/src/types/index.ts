@@ -85,6 +85,17 @@ export type {
   SaveLineupDto,
   SaveSubstitutionsDto,
   SavePlayerStatsDto,
+  MatchPlayerGameStats,
+  StatDispute,
+  StatDelegate,
+  PlayerGameStatEntry,
+  SubmitGameStatsDto,
+  DisputeStatFieldDto,
+  ResolveStatDisputeDto,
+  ConfirmGameStatsDto,
+  AddStatDelegateDto,
+  PlayerSeasonStats,
+  LeaderboardEntry,
 } from './game-stats';
 export type {
   MatchMessage,
