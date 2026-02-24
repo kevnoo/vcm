@@ -1,4 +1,4 @@
-export type { User } from './user';
+export type { User, CreateUserDto } from './user';
 export type { Team, CreateTeamDto, UpdateTeamDto, SetBudgetDto } from './team';
 export type {
   Competition,
