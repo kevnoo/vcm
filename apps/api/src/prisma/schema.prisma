@@ -23,6 +23,9 @@ model User {
   resolvedResults  Result[]      @relation("ResolvedBy")
   approvedTrades   TradeOffer[]  @relation("ApprovedBy")
   executedTransactions Transaction[] @relation("ExecutedBy")
+  matchMessages    MatchMessage[]
+  timeProposals    TimeProposal[] @relation("ProposedBy")
+  respondedProposals TimeProposal[] @relation("RespondedBy")
 }
 
 enum Role {
@@ -130,6 +133,8 @@ model Match {
   lineupEntries MatchLineupEntry[]
   substitutions MatchSubstitution[]
   playerStats   MatchPlayerStat[]
+  messages      MatchMessage[]
+  timeProposals TimeProposal[]
 }
 
 enum MatchStatus {
@@ -165,6 +170,44 @@ enum ResultStatus {
   CONFIRMED
   DISPUTED
   RESOLVED
+}
+
+// ─── Match Messages ────────────────────────────────────
+model MatchMessage {
+  id        String   @id @default(uuid())
+  matchId   String
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+
+  match  Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id])
+
+  @@index([matchId, createdAt])
+}
+
+// ─── Time Proposals ────────────────────────────────────
+model TimeProposal {
+  id            String             @id @default(uuid())
+  matchId       String
+  proposedById  String
+  proposedTime  DateTime
+  status        TimeProposalStatus @default(PENDING)
+  respondedById String?
+  respondedAt   DateTime?
+  createdAt     DateTime           @default(now())
+
+  match       Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  proposedBy  User  @relation("ProposedBy", fields: [proposedById], references: [id])
+  respondedBy User? @relation("RespondedBy", fields: [respondedById], references: [id])
+
+  @@index([matchId])
+}
+
+enum TimeProposalStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
 }
 
 // ─── Match Stats ────────────────────────────────────────
