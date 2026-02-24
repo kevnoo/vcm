@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -16,7 +16,15 @@ export class UsersService {
     return this.prisma.user.findUniqueOrThrow({ where: { id } });
   }
 
-  create(dto: { discordUsername: string }) {
+  async create(dto: { discordUsername: string }) {
+    const existing = await this.prisma.user.findFirst({
+      where: { discordUsername: dto.discordUsername },
+    });
+    if (existing) {
+      throw new ConflictException(
+        `A user with username "${dto.discordUsername}" already exists`,
+      );
+    }
     return this.prisma.user.create({
       data: {
         discordId: `placeholder:${randomUUID()}`,

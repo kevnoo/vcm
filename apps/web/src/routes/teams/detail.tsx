@@ -12,7 +12,7 @@ export function TeamDetailPage() {
   const { data: team, isLoading } = useTeam(id!);
   const { data: players, isLoading: playersLoading } = usePlayers({ teamId: id });
   const { data: pendingTrades } = useTrades({ teamId: id, status: 'PENDING' });
-  const { isAdmin } = useAuthStore();
+  const { isAdmin, isInAdminView } = useAuthStore();
   const setBudget = useSetTeamBudget();
 
   const { data: users } = useUsers();
@@ -110,7 +110,7 @@ export function TeamDetailPage() {
             <p className="text-gray-500">
               Owner: {team.owner?.discordUsername ?? 'None'}
             </p>
-            {isAdmin() && !reassigning && (
+            {isInAdminView() && !reassigning && (
               <button
                 onClick={startReassign}
                 className="text-xs text-indigo-600 hover:text-indigo-700 font-medium"
@@ -209,7 +209,7 @@ export function TeamDetailPage() {
             <span className="text-sm text-gray-600">
               Budget: <span className="font-medium text-gray-900">{team.budget.toLocaleString()}</span>
             </span>
-            {isAdmin() && !editingBudget && (
+            {isInAdminView() && !editingBudget && (
               <button
                 onClick={startEditBudget}
                 className="text-xs text-indigo-600 hover:text-indigo-700 font-medium"

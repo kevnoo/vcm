@@ -23,12 +23,13 @@ export class AuthService {
 
     if (!user) {
       // 2. Check for a placeholder user with matching discordUsername
-      const placeholder = await this.prisma.user.findFirst({
+      const placeholders = await this.prisma.user.findMany({
         where: {
           discordUsername: profile.username,
           discordId: { startsWith: 'placeholder:' },
         },
       });
+      const placeholder = placeholders.length === 1 ? placeholders[0] : null;
 
       if (placeholder) {
         // 3. Merge: update placeholder with real Discord identity
