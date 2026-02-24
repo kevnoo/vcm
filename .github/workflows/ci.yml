@@ -38,14 +38,14 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      - name: Seed database
-        if: ${{ github.event.inputs.run_seed == 'true' }}
-        run: pnpm --filter @vcm/api run db:seed
+      - name: Generate Prisma client
+        run: pnpm --filter @vcm/api run db:generate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      - name: Generate Prisma client
-        run: pnpm --filter @vcm/api run db:generate
+      - name: Seed database
+        if: ${{ github.event.inputs.run_seed == 'true' }}
+        run: pnpm --filter @vcm/api run db:seed
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
