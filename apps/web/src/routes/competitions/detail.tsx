@@ -308,6 +308,13 @@ function MatchRow({
             </button>
           )}
 
+          <Link
+            to={`/matches/${match.id}`}
+            className="text-xs text-indigo-600 hover:text-indigo-800"
+          >
+            View
+          </Link>
+
           {hasResult && (
             <Link
               to={`/matches/${match.id}/stats`}

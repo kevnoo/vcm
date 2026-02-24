@@ -86,3 +86,12 @@ export type {
   SaveSubstitutionsDto,
   SavePlayerStatsDto,
 } from './game-stats';
+export type {
+  MatchMessage,
+  TimeProposal,
+  MatchHubRole,
+  MatchHub,
+  CreateMatchMessageDto,
+  CreateTimeProposalDto,
+  RespondTimeProposalDto,
+} from './match-scheduling';
