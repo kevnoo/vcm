@@ -4,6 +4,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      run_seed:
+        description: 'Run database seed after migrations'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -28,6 +35,12 @@ jobs:
 
       - name: Run database migrations
         run: pnpm --filter @vcm/api run db:migrate:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Seed database
+        if: ${{ github.event.inputs.run_seed == 'true' }}
+        run: pnpm --filter @vcm/api run db:seed
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
