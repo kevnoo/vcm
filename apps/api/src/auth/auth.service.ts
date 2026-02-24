@@ -16,20 +16,43 @@ export class AuthService {
   ) {}
 
   async validateDiscordUser(profile: DiscordProfile) {
+    // 1. Look up by real Discord ID (existing users who have logged in)
     let user = await this.prisma.user.findUnique({
       where: { discordId: profile.id },
     });
 
     if (!user) {
-      user = await this.prisma.user.create({
-        data: {
-          discordId: profile.id,
+      // 2. Check for a placeholder user with matching discordUsername
+      const placeholder = await this.prisma.user.findFirst({
+        where: {
           discordUsername: profile.username,
-          discordAvatar: profile.avatar,
-          role: 'OWNER',
+          discordId: { startsWith: 'placeholder:' },
         },
       });
+
+      if (placeholder) {
+        // 3. Merge: update placeholder with real Discord identity
+        user = await this.prisma.user.update({
+          where: { id: placeholder.id },
+          data: {
+            discordId: profile.id,
+            discordUsername: profile.username,
+            discordAvatar: profile.avatar,
+          },
+        });
+      } else {
+        // 4. Brand new user — create from scratch
+        user = await this.prisma.user.create({
+          data: {
+            discordId: profile.id,
+            discordUsername: profile.username,
+            discordAvatar: profile.avatar,
+            role: 'OWNER',
+          },
+        });
+      }
     } else {
+      // Existing user — refresh profile fields
       user = await this.prisma.user.update({
         where: { id: user.id },
         data: {
