@@ -26,8 +26,15 @@ jobs:
       - name: Build shared package
         run: pnpm --filter @vcm/shared run build
 
+      - name: Run database migrations
+        run: pnpm --filter @vcm/api run db:migrate:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Generate Prisma client
         run: pnpm --filter @vcm/api run db:generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Build API
         run: pnpm --filter @vcm/api run build
