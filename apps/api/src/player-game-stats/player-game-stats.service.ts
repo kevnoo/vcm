@@ -8,6 +8,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { StatDelegatesService } from '../stat-delegates/stat-delegates.service';
 import { SubmitGameStatsDto } from './dto/submit-game-stats.dto';
 import { ConfirmGameStatsDto } from './dto/confirm-game-stats.dto';
+import { DisputeStatFieldDto } from './dto/dispute-stat-field.dto';
+import { ResolveStatDisputeDto } from './dto/resolve-stat-dispute.dto';
 
 interface AuthUser {
   id: string;
@@ -16,6 +18,16 @@ interface AuthUser {
 
 @Injectable()
 export class PlayerGameStatsService {
+  private static readonly DISPUTABLE_FIELDS = [
+    'rating', 'goals', 'assists', 'shots', 'shotAccuracy',
+    'passes', 'passAccuracy', 'dribbles', 'dribbleSuccessRate',
+    'tackles', 'tackleSuccessRate', 'offsides', 'foulsCommitted',
+    'possessionsWon', 'possessionsLost', 'minutesPlayed',
+    'yellowCards', 'redCards',
+    'shotsAgainst', 'shotsOnTarget', 'saves', 'goalsConceded',
+    'saveSuccessRate', 'cleanSheet',
+  ];
+
   constructor(
     private prisma: PrismaService,
     private statDelegatesService: StatDelegatesService,
@@ -156,6 +168,129 @@ export class PlayerGameStatsService {
         status: 'PENDING',
       },
       data: { status: 'CONFIRMED' },
+    });
+  }
+
+  async disputeFields(gameStatsId: string, dto: DisputeStatFieldDto, user: AuthUser) {
+    const gameStats = await this.prisma.matchPlayerGameStats.findUniqueOrThrow({
+      where: { id: gameStatsId },
+      include: {
+        match: { include: { homeTeam: true, awayTeam: true } },
+      },
+    });
+
+    if (!['PENDING', 'CONFIRMED'].includes(gameStats.status)) {
+      throw new BadRequestException('Can only dispute PENDING or CONFIRMED stats');
+    }
+
+    // Verify user is opposing owner or admin
+    const isAdmin = user.role === 'ADMIN';
+    const opposingTeam =
+      gameStats.teamId === gameStats.match.homeTeamId
+        ? gameStats.match.awayTeam
+        : gameStats.match.homeTeam;
+    const isOpposingOwner = opposingTeam.ownerId === user.id;
+
+    if (!isAdmin && !isOpposingOwner) {
+      throw new ForbiddenException('Only the opposing team owner or an admin can dispute stats');
+    }
+
+    // Validate field names
+    for (const field of dto.fields) {
+      if (!PlayerGameStatsService.DISPUTABLE_FIELDS.includes(field.fieldName)) {
+        throw new BadRequestException(`Invalid field name: ${field.fieldName}`);
+      }
+    }
+
+    // Create dispute records and update game stats status
+    return this.prisma.$transaction(async (tx) => {
+      const disputes = await Promise.all(
+        dto.fields.map((field) =>
+          tx.statDispute.create({
+            data: {
+              gameStatsId,
+              fieldName: field.fieldName,
+              disputedById: user.id,
+              reason: field.reason ?? null,
+            },
+            include: { disputedBy: true },
+          }),
+        ),
+      );
+
+      await tx.matchPlayerGameStats.update({
+        where: { id: gameStatsId },
+        data: { status: 'DISPUTED' },
+      });
+
+      return disputes;
+    });
+  }
+
+  async resolveDispute(disputeId: string, dto: ResolveStatDisputeDto, adminId: string) {
+    const dispute = await this.prisma.statDispute.findUniqueOrThrow({
+      where: { id: disputeId },
+      include: { gameStats: true },
+    });
+
+    if (dispute.status !== 'OPEN') {
+      throw new BadRequestException('Dispute is already resolved');
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const resolved = await tx.statDispute.update({
+        where: { id: disputeId },
+        data: {
+          status: 'RESOLVED',
+          resolvedById: adminId,
+          resolutionNote: dto.note ?? null,
+        },
+        include: { disputedBy: true, resolvedBy: true },
+      });
+
+      // If a corrected value was provided, update the game stats field
+      if (dto.correctedValue !== undefined) {
+        await tx.matchPlayerGameStats.update({
+          where: { id: dispute.gameStatsId },
+          data: { [dispute.fieldName]: dto.correctedValue },
+        });
+      }
+
+      // Check if all disputes for this game stats entry are resolved
+      const openDisputes = await tx.statDispute.count({
+        where: { gameStatsId: dispute.gameStatsId, status: 'OPEN' },
+      });
+
+      if (openDisputes === 0) {
+        await tx.matchPlayerGameStats.update({
+          where: { id: dispute.gameStatsId },
+          data: { status: 'RESOLVED' },
+        });
+      }
+
+      return resolved;
+    });
+  }
+
+  async findOpenDisputes() {
+    return this.prisma.statDispute.findMany({
+      where: { status: 'OPEN' },
+      include: {
+        gameStats: {
+          include: {
+            player: true,
+            match: {
+              include: {
+                homeTeam: true,
+                awayTeam: true,
+                round: { include: { competition: true } },
+              },
+            },
+          },
+        },
+        disputedBy: true,
+      },
+      orderBy: { createdAt: 'asc' },
     });
   }
 }
