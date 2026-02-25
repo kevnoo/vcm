@@ -92,20 +92,20 @@ export function TeamDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         {team.logoUrl ? (
           <img
             src={team.logoUrl}
             alt={team.name}
-            className="w-16 h-16 rounded-full object-cover"
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover shrink-0"
           />
         ) : (
-          <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl font-bold">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xl sm:text-2xl font-bold shrink-0">
             {team.name.charAt(0)}
           </div>
         )}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">{team.name}</h1>
           <div className="flex items-center gap-2">
             <p className="text-gray-500">
               Owner: {team.owner?.discordUsername ?? 'None'}
@@ -259,26 +259,26 @@ export function TeamDetailPage() {
                 <Link
                   key={player.id}
                   to={`/players/${player.id}`}
-                  className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors"
+                  className="flex items-center justify-between py-2.5 px-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors active:bg-gray-200"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     {player.imageUrl ? (
                       <img
                         src={player.imageUrl}
                         alt={`${player.firstName} ${player.lastName}`}
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="w-8 h-8 rounded-full object-cover shrink-0"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold">
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold shrink-0">
                         {player.firstName.charAt(0)}
                         {player.lastName.charAt(0)}
                       </div>
                     )}
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-900 truncate">
                       {player.firstName} {player.lastName}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-2">
                     <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
                       {player.primaryPosition}
                     </span>
@@ -287,12 +287,12 @@ export function TeamDetailPage() {
                       .map((p) => (
                         <span
                           key={p.id}
-                          className="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded"
+                          className="hidden sm:inline-block bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded"
                         >
                           {p.position}
                         </span>
                       ))}
-                    <span className="text-xs text-gray-500">Age {player.age}</span>
+                    <span className="text-xs text-gray-500 hidden sm:inline">Age {player.age}</span>
                   </div>
                 </Link>
               ))}

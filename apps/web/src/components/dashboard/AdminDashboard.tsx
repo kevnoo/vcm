@@ -48,12 +48,12 @@ export function AdminDashboard({ user }: { user: User }) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
         Admin Dashboard
       </h1>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <StatCard
           label="Teams"
           value={teamsLoading ? '...' : (teams?.length ?? 0)}
@@ -78,7 +78,7 @@ export function AdminDashboard({ user }: { user: User }) {
       </div>
 
       {/* Action items row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Disputes */}
         <div className="bg-white rounded-lg shadow">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
@@ -179,7 +179,7 @@ export function AdminDashboard({ user }: { user: User }) {
       </div>
 
       {/* Upcoming matches & Recent results */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Upcoming matches */}
         <div className="bg-white rounded-lg shadow">
           <div className="px-4 py-3 border-b border-gray-100">
@@ -335,11 +335,11 @@ function StatCard({
   return (
     <Link
       to={linkTo}
-      className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow"
+      className="bg-white rounded-lg shadow p-3 sm:p-4 hover:shadow-md transition-shadow active:shadow-sm"
     >
-      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</h3>
+      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider leading-tight">{label}</h3>
       <p
-        className={`text-3xl font-bold mt-1 ${
+        className={`text-2xl sm:text-3xl font-bold mt-1 ${
           variant === 'muted' ? 'text-gray-400' : 'text-gray-900'
         }`}
       >
@@ -367,7 +367,7 @@ function QuickAction({ to, label }: { to: string; label: string }) {
   return (
     <Link
       to={to}
-      className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors"
+      className="inline-flex items-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-medium rounded-lg transition-colors"
     >
       {label}
     </Link>

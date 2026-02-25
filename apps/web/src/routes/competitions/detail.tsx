@@ -233,15 +233,16 @@ function MatchRow({
   };
 
   return (
-    <div className="px-4 py-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4 flex-1">
+    <div className="px-3 py-3 sm:px-4">
+      {/* Match teams & score row */}
+      <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
           <span className="text-sm font-medium text-gray-900 flex-1 min-w-0 truncate text-right">
             {match.homeTeam?.name ?? 'TBD'}
           </span>
 
           {hasResult ? (
-            <span className="text-lg font-bold text-gray-900 w-8 text-center shrink-0">
+            <span className="text-base sm:text-lg font-bold text-gray-900 w-12 text-center shrink-0">
               {match.result!.homeScore} - {match.result!.awayScore}
             </span>
           ) : (
@@ -253,9 +254,27 @@ function MatchRow({
           </span>
         </div>
 
-        <div className="flex items-center gap-2 ml-2 shrink-0">
+        {/* Status badge - inline on desktop, below on narrow mobile */}
+        {hasResult && match.result!.status !== 'CONFIRMED' && (
+          <span
+            className={`text-xs px-2 py-0.5 rounded shrink-0 ${
+              match.result!.status === 'PENDING'
+                ? 'bg-yellow-100 text-yellow-800'
+                : match.result!.status === 'DISPUTED'
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-green-100 text-green-800'
+            }`}
+          >
+            {match.result!.status}
+          </span>
+        )}
+      </div>
+
+      {/* Meta row: date + action links */}
+      <div className="flex items-center justify-between mt-1.5">
+        <div className="text-xs text-gray-400">
           {match.scheduledAt && !showEditForm && (
-            <span className="text-xs text-gray-400">
+            <span>
               {new Date(match.scheduledAt).toLocaleDateString(undefined, {
                 month: 'short',
                 day: 'numeric',
@@ -264,35 +283,22 @@ function MatchRow({
               })}
             </span>
           )}
-
-          {hasResult && match.result!.status !== 'CONFIRMED' && (
-            <span
-              className={`text-xs px-2 py-0.5 rounded ${
-                match.result!.status === 'PENDING'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : match.result!.status === 'DISPUTED'
-                    ? 'bg-red-100 text-red-800'
-                    : 'bg-green-100 text-green-800'
-              }`}
-            >
-              {match.result!.status}
-            </span>
-          )}
-
+        </div>
+        <div className="flex items-center gap-3 sm:gap-2">
           {canEdit && !showEditForm && (
             <>
               <button
                 onClick={handleSwap}
                 disabled={updateMatch.isPending}
                 title="Swap home/away"
-                className="text-xs text-gray-400 hover:text-indigo-600 disabled:opacity-50"
+                className="text-xs text-gray-400 hover:text-indigo-600 disabled:opacity-50 p-1"
               >
                 &#8646;
               </button>
               <button
                 onClick={() => setShowEditForm(true)}
                 title="Edit match"
-                className="text-xs text-gray-400 hover:text-indigo-600"
+                className="text-xs text-gray-400 hover:text-indigo-600 p-1"
               >
                 Edit
               </button>
@@ -302,15 +308,15 @@ function MatchRow({
           {canSubmit && !showForm && !showEditForm && (
             <button
               onClick={() => setShowForm(true)}
-              className="text-xs text-indigo-600 hover:text-indigo-800"
+              className="text-xs text-indigo-600 hover:text-indigo-800 p-1"
             >
-              Submit Result
+              Submit
             </button>
           )}
 
           <Link
             to={`/matches/${match.id}`}
-            className="text-xs text-indigo-600 hover:text-indigo-800"
+            className="text-xs text-indigo-600 hover:text-indigo-800 p-1"
           >
             View
           </Link>
@@ -318,7 +324,7 @@ function MatchRow({
           {hasResult && (
             <Link
               to={`/matches/${match.id}/stats`}
-              className="text-xs text-indigo-600 hover:text-indigo-800"
+              className="text-xs text-indigo-600 hover:text-indigo-800 p-1"
             >
               Stats
             </Link>
@@ -328,47 +334,49 @@ function MatchRow({
 
       {/* Edit form */}
       {showEditForm && (
-        <div className="mt-3 flex items-center gap-2 flex-wrap">
+        <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
           <label className="text-xs text-gray-500">Date/Time:</label>
           <input
             type="datetime-local"
             value={editScheduledAt}
             onChange={(e) => setEditScheduledAt(e.target.value)}
-            className="rounded border border-gray-300 px-2 py-1 text-sm"
+            className="rounded border border-gray-300 px-2 py-1.5 text-sm w-full sm:w-auto"
           />
-          <button
-            onClick={handleSaveSchedule}
-            disabled={updateMatch.isPending}
-            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-3 py-1 rounded text-sm"
-          >
-            Save
-          </button>
-          <button
-            onClick={() => {
-              setEditScheduledAt(
-                match.scheduledAt ? match.scheduledAt.slice(0, 16) : '',
-              );
-              setShowEditForm(false);
-            }}
-            className="text-gray-500 hover:text-gray-700 text-sm"
-          >
-            Cancel
-          </button>
-          {editScheduledAt && (
+          <div className="flex gap-2">
+            <button
+              onClick={handleSaveSchedule}
+              disabled={updateMatch.isPending}
+              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-3 py-1.5 rounded text-sm"
+            >
+              Save
+            </button>
             <button
               onClick={() => {
-                setEditScheduledAt('');
-                updateMatch.mutate(
-                  { scheduledAt: null },
-                  { onSuccess: () => setShowEditForm(false) },
+                setEditScheduledAt(
+                  match.scheduledAt ? match.scheduledAt.slice(0, 16) : '',
                 );
+                setShowEditForm(false);
               }}
-              disabled={updateMatch.isPending}
-              className="text-xs text-red-500 hover:text-red-700"
+              className="text-gray-500 hover:text-gray-700 text-sm py-1.5"
             >
-              Clear date
+              Cancel
             </button>
-          )}
+            {editScheduledAt && (
+              <button
+                onClick={() => {
+                  setEditScheduledAt('');
+                  updateMatch.mutate(
+                    { scheduledAt: null },
+                    { onSuccess: () => setShowEditForm(false) },
+                  );
+                }}
+                disabled={updateMatch.isPending}
+                className="text-xs text-red-500 hover:text-red-700 py-1.5"
+              >
+                Clear date
+              </button>
+            )}
+          </div>
         </div>
       )}
 
@@ -380,7 +388,7 @@ function MatchRow({
             min={0}
             value={homeScore}
             onChange={(e) => setHomeScore(parseInt(e.target.value) || 0)}
-            className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
+            className="w-16 rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
           />
           <span className="text-gray-400">-</span>
           <input
@@ -388,7 +396,7 @@ function MatchRow({
             min={0}
             value={awayScore}
             onChange={(e) => setAwayScore(parseInt(e.target.value) || 0)}
-            className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
+            className="w-16 rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
           />
           <button
             onClick={() => {
@@ -398,13 +406,13 @@ function MatchRow({
               );
             }}
             disabled={submitResult.isPending}
-            className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-3 py-1 rounded text-sm"
+            className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-3 py-1.5 rounded text-sm"
           >
             Submit
           </button>
           <button
             onClick={() => setShowForm(false)}
-            className="text-gray-500 hover:text-gray-700 text-sm"
+            className="text-gray-500 hover:text-gray-700 text-sm py-1.5"
           >
             Cancel
           </button>

@@ -123,32 +123,32 @@ export function OwnerDashboard({ user }: { user: User }) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
         Welcome, {user.discordUsername}
       </h1>
 
       {/* Team overview card */}
-      <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <div className="flex items-center gap-4">
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="flex items-center gap-3 sm:gap-4">
           {myTeam.logoUrl ? (
             <img
               src={myTeam.logoUrl}
               alt={myTeam.name}
-              className="w-16 h-16 rounded-lg object-cover"
+              className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover shrink-0"
             />
           ) : (
-            <div className="w-16 h-16 rounded-lg bg-gray-200 flex items-center justify-center text-2xl font-bold text-gray-400">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-gray-200 flex items-center justify-center text-xl sm:text-2xl font-bold text-gray-400 shrink-0">
               {myTeam.name.charAt(0)}
             </div>
           )}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <Link
               to={`/teams/${myTeam.id}`}
-              className="text-xl font-bold text-gray-900 hover:text-indigo-600"
+              className="text-lg sm:text-xl font-bold text-gray-900 hover:text-indigo-600"
             >
               {myTeam.name}
             </Link>
-            <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 sm:mt-2 text-sm text-gray-600">
               <span>
                 Budget: <strong className="text-gray-900">${myTeam.budget.toLocaleString()}</strong>
               </span>
@@ -166,7 +166,7 @@ export function OwnerDashboard({ user }: { user: User }) {
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <MiniCard label="Competitions" value={myCompetitions.length} />
         <MiniCard label="Upcoming Matches" value={upcomingMatches.length} />
         <MiniCard
@@ -181,7 +181,7 @@ export function OwnerDashboard({ user }: { user: User }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Upcoming matches */}
         <div className="bg-white rounded-lg shadow">
           <div className="px-4 py-3 border-b border-gray-100">
@@ -392,10 +392,10 @@ function MiniCard({
   highlight?: boolean;
 }) {
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</h3>
+    <div className="bg-white rounded-lg shadow p-3 sm:p-4">
+      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider leading-tight">{label}</h3>
       <p
-        className={`text-3xl font-bold mt-1 ${
+        className={`text-2xl sm:text-3xl font-bold mt-1 ${
           highlight ? 'text-indigo-600' : 'text-gray-900'
         }`}
       >

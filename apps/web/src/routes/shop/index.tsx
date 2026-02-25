@@ -91,7 +91,7 @@ export function ShopPage() {
       )}
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-gray-200 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
         <nav className="flex gap-4">
           <button
             onClick={() => setActiveTab('items')}
@@ -153,31 +153,35 @@ export function ShopPage() {
                     )}
                   </div>
                   {buyingItem === item.id && (
-                    <div className="mt-3 flex gap-2 items-center">
-                      <label className="text-sm text-gray-600">Qty:</label>
-                      <input
-                        type="number"
-                        value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
-                        min={1}
-                        className="w-20 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
-                      />
-                      <span className="text-sm text-gray-500">
-                        Total: {(item.price * (parseInt(quantity, 10) || 0)).toLocaleString()}
-                      </span>
-                      <button
-                        onClick={() => handleBuyItem(item.id)}
-                        disabled={buyItem.isPending}
-                        className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg text-sm font-medium"
-                      >
-                        Confirm
-                      </button>
-                      <button
-                        onClick={() => setBuyingItem(null)}
-                        className="text-sm text-gray-500 hover:text-gray-700"
-                      >
-                        Cancel
-                      </button>
+                    <div className="mt-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <label className="text-sm text-gray-600">Qty:</label>
+                        <input
+                          type="number"
+                          value={quantity}
+                          onChange={(e) => setQuantity(e.target.value)}
+                          min={1}
+                          className="w-20 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+                        />
+                        <span className="text-sm text-gray-500">
+                          Total: {(item.price * (parseInt(quantity, 10) || 0)).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleBuyItem(item.id)}
+                          disabled={buyItem.isPending}
+                          className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg text-sm font-medium"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => setBuyingItem(null)}
+                          className="text-sm text-gray-500 hover:text-gray-700 py-1.5"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   )}
                   {buyItem.isError && buyingItem === item.id && (
@@ -257,31 +261,35 @@ export function ShopPage() {
                       )}
                     </div>
                     {buyingBundle === bundle.id && (
-                      <div className="mt-3 flex gap-2 items-center">
-                        <label className="text-sm text-gray-600">Qty:</label>
-                        <input
-                          type="number"
-                          value={quantity}
-                          onChange={(e) => setQuantity(e.target.value)}
-                          min={1}
-                          className="w-20 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
-                        />
-                        <span className="text-sm text-gray-500">
-                          Total: {(bundle.price * (parseInt(quantity, 10) || 0)).toLocaleString()}
-                        </span>
-                        <button
-                          onClick={() => handleBuyBundle(bundle.id)}
-                          disabled={buyBundle.isPending}
-                          className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg text-sm font-medium"
-                        >
-                          Confirm
-                        </button>
-                        <button
-                          onClick={() => setBuyingBundle(null)}
-                          className="text-sm text-gray-500 hover:text-gray-700"
-                        >
-                          Cancel
-                        </button>
+                      <div className="mt-3 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <label className="text-sm text-gray-600">Qty:</label>
+                          <input
+                            type="number"
+                            value={quantity}
+                            onChange={(e) => setQuantity(e.target.value)}
+                            min={1}
+                            className="w-20 rounded-lg border border-gray-300 px-2 py-1.5 text-sm"
+                          />
+                          <span className="text-sm text-gray-500">
+                            Total: {(bundle.price * (parseInt(quantity, 10) || 0)).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleBuyBundle(bundle.id)}
+                            disabled={buyBundle.isPending}
+                            className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg text-sm font-medium"
+                          >
+                            Confirm
+                          </button>
+                          <button
+                            onClick={() => setBuyingBundle(null)}
+                            className="text-sm text-gray-500 hover:text-gray-700 py-1.5"
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       </div>
                     )}
                     {buyBundle.isError && buyingBundle === bundle.id && (
