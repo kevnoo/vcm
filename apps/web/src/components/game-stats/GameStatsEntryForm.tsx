@@ -106,7 +106,7 @@ function StatField({
         min={min}
         max={max}
         step={step}
-        className="w-full rounded border border-gray-300 px-2 py-1 text-sm text-center"
+        className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
       />
     </div>
   );
@@ -210,21 +210,21 @@ export function GameStatsEntryForm({
         <button
           type="button"
           onClick={() => togglePlayer(p.playerId)}
-          className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+          className="w-full flex items-center justify-between px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left gap-2"
         >
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <span className="inline-flex items-center justify-center w-8 h-8 shrink-0 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
               {p.position}
             </span>
-            <span className="text-sm font-medium text-gray-900">{playerName}</span>
+            <span className="text-sm font-medium text-gray-900 truncate">{playerName}</span>
             {!p.isStarter && (
-              <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">
+              <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded shrink-0">
                 SUB
               </span>
             )}
           </div>
           <svg
-            className={`w-5 h-5 text-gray-400 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+            className={`w-5 h-5 text-gray-400 shrink-0 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -235,11 +235,11 @@ export function GameStatsEntryForm({
 
         {/* Expanded stat fields */}
         {isExpanded && stats && (
-          <div className="px-4 py-4 space-y-4">
+          <div className="px-3 sm:px-4 py-4 space-y-4">
             {/* Key stats row */}
             <div>
               <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Key Stats</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 <StatField
                   label="Rating (1-10)"
                   value={stats.rating}
@@ -270,7 +270,7 @@ export function GameStatsEntryForm({
             {/* Shooting */}
             <div>
               <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Shooting</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 <StatField
                   label="Shots"
                   value={stats.shots}
@@ -288,7 +288,7 @@ export function GameStatsEntryForm({
             {/* Passing */}
             <div>
               <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Passing</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 <StatField
                   label="Passes"
                   value={stats.passes}
@@ -306,7 +306,7 @@ export function GameStatsEntryForm({
             {/* Dribbling */}
             <div>
               <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Dribbling</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 <StatField
                   label="Dribbles"
                   value={stats.dribbles}
@@ -324,7 +324,7 @@ export function GameStatsEntryForm({
             {/* Defending */}
             <div>
               <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Defending</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 <StatField
                   label="Tackles"
                   value={stats.tackles}
@@ -352,7 +352,7 @@ export function GameStatsEntryForm({
             {/* Discipline */}
             <div>
               <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Discipline</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 <StatField
                   label="Offsides"
                   value={stats.offsides}
@@ -384,7 +384,7 @@ export function GameStatsEntryForm({
                 <p className="text-xs font-semibold text-gray-600 uppercase mb-2">
                   Goalkeeper Stats
                 </p>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   <StatField
                     label="Shots Against"
                     value={stats.shotsAgainst}
@@ -437,7 +437,7 @@ export function GameStatsEntryForm({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white rounded-lg shadow p-3 sm:p-4 overflow-hidden">
       <h3 className="text-sm font-semibold text-gray-900 mb-4">Enter Game Stats</h3>
 
       {/* Starters */}

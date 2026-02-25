@@ -222,11 +222,11 @@ function LineupSection({
       {editing ? (
         <div>
           {entries.map((entry, i) => (
-            <div key={i} className="flex items-center gap-2 mb-2">
+            <div key={i} className="flex flex-wrap items-center gap-2 mb-2">
               <select
                 value={entry.playerId}
                 onChange={(e) => updateEntry(i, 'playerId', e.target.value)}
-                className="rounded border border-gray-300 px-2 py-1 text-sm flex-1"
+                className="rounded border border-gray-300 px-2 py-1.5 text-sm flex-1 min-w-[140px]"
               >
                 <option value="">Select player...</option>
                 {teamPlayers?.map((p) => (
@@ -238,7 +238,7 @@ function LineupSection({
               <select
                 value={entry.position}
                 onChange={(e) => updateEntry(i, 'position', e.target.value)}
-                className="rounded border border-gray-300 px-2 py-1 text-sm w-20"
+                className="rounded border border-gray-300 px-2 py-1.5 text-sm w-20"
               >
                 {POSITIONS.map((pos) => (
                   <option key={pos} value={pos}>
@@ -346,11 +346,11 @@ function LineupSection({
             Substitutions
           </h3>
           {subs.map((sub, i) => (
-            <div key={i} className="flex items-center gap-2 mb-2">
+            <div key={i} className="flex flex-wrap items-center gap-2 mb-2">
               <select
                 value={sub.playerOutId}
                 onChange={(e) => updateSub(i, 'playerOutId', e.target.value)}
-                className="rounded border border-gray-300 px-2 py-1 text-sm flex-1"
+                className="rounded border border-gray-300 px-2 py-1.5 text-sm flex-1 min-w-[120px]"
               >
                 <option value="">Out...</option>
                 {teamPlayers?.map((p) => (
@@ -363,7 +363,7 @@ function LineupSection({
               <select
                 value={sub.playerInId}
                 onChange={(e) => updateSub(i, 'playerInId', e.target.value)}
-                className="rounded border border-gray-300 px-2 py-1 text-sm flex-1"
+                className="rounded border border-gray-300 px-2 py-1.5 text-sm flex-1 min-w-[120px]"
               >
                 <option value="">In...</option>
                 {teamPlayers?.map((p) => (
@@ -380,7 +380,7 @@ function LineupSection({
                 onChange={(e) =>
                   updateSub(i, 'minute', parseInt(e.target.value) || 0)
                 }
-                className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
+                className="w-16 rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
                 placeholder="Min"
               />
               <button
@@ -533,11 +533,11 @@ function PlayerStatsSection({
       {editing ? (
         <div>
           {statEntries.map((entry, i) => (
-            <div key={i} className="flex items-center gap-2 mb-2">
+            <div key={i} className="flex flex-wrap items-center gap-2 mb-2">
               <select
                 value={entry.playerId}
                 onChange={(e) => updateStatEntry(i, 'playerId', e.target.value)}
-                className="rounded border border-gray-300 px-2 py-1 text-sm flex-1"
+                className="rounded border border-gray-300 px-2 py-1.5 text-sm flex-1 min-w-[140px]"
               >
                 <option value="">Select player...</option>
                 {allPlayers.map((p) => (
@@ -549,7 +549,7 @@ function PlayerStatsSection({
               <select
                 value={entry.statType}
                 onChange={(e) => updateStatEntry(i, 'statType', e.target.value)}
-                className="rounded border border-gray-300 px-2 py-1 text-sm w-24"
+                className="rounded border border-gray-300 px-2 py-1.5 text-sm w-24"
               >
                 {STAT_TYPES.map((type) => (
                   <option key={type} value={type}>
@@ -564,7 +564,7 @@ function PlayerStatsSection({
                 onChange={(e) =>
                   updateStatEntry(i, 'value', parseInt(e.target.value) || 0)
                 }
-                className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
+                className="w-16 rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
                 placeholder="Qty"
               />
               <input
@@ -579,7 +579,7 @@ function PlayerStatsSection({
                     e.target.value ? parseInt(e.target.value) : '',
                   )
                 }
-                className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
+                className="w-16 rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
                 placeholder="Min"
               />
               <button
@@ -625,7 +625,7 @@ function PlayerStatsSection({
           </div>
         </div>
       ) : playerStats.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {STAT_TYPES.map((type) => (
             <div key={type}>
               <h3 className="text-xs font-medium text-gray-500 uppercase mb-1">
