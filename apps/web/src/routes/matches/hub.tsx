@@ -124,8 +124,8 @@ function MatchStatusBanner({ hub }: { hub: MatchHub }) {
   const status = statusConfig[match.status] ?? statusConfig.SCHEDULED;
 
   return (
-    <div className={`${status.bg} rounded-lg p-4 flex items-center justify-between`}>
-      <div className="flex items-center gap-3">
+    <div className={`${status.bg} rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2`}>
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
         <span className={`px-2 py-1 rounded text-xs font-medium ${status.text} ${status.bg}`}>
           {status.label}
         </span>
@@ -135,7 +135,6 @@ function MatchStatusBanner({ hub }: { hub: MatchHub }) {
               weekday: 'short',
               month: 'short',
               day: 'numeric',
-              year: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
             })}

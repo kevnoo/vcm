@@ -29,7 +29,7 @@ export function PlayersPage() {
         {isAdmin() && (
           <Link
             to="/players/create"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+            className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium w-full sm:w-auto"
           >
             Add Player
           </Link>
@@ -67,7 +67,7 @@ export function PlayersPage() {
           ))}
         </select>
 
-        <label className="flex items-center gap-2 text-sm text-gray-700">
+        <label className="flex items-center gap-2 text-sm text-gray-700 py-2 sm:py-0 cursor-pointer">
           <input
             type="checkbox"
             checked={freeAgentsOnly}
@@ -75,7 +75,7 @@ export function PlayersPage() {
               setFreeAgentsOnly(e.target.checked);
               if (e.target.checked) setTeamFilter('');
             }}
-            className="rounded border-gray-300"
+            className="rounded border-gray-300 w-4 h-4"
           />
           Free Agents Only
         </label>

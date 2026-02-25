@@ -99,35 +99,37 @@ function DisputeCard({
       </div>
 
       {showResolve && (
-        <div className="mt-3 border-t pt-3 flex items-center gap-2 flex-wrap">
-          <input
-            type="number"
-            min={0}
-            value={homeScore}
-            onChange={(e) => setHomeScore(parseInt(e.target.value) || 0)}
-            className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
-          />
-          <span className="text-gray-400">-</span>
-          <input
-            type="number"
-            min={0}
-            value={awayScore}
-            onChange={(e) => setAwayScore(parseInt(e.target.value) || 0)}
-            className="w-16 rounded border border-gray-300 px-2 py-1 text-sm text-center"
-          />
+        <div className="mt-3 border-t pt-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min={0}
+              value={homeScore}
+              onChange={(e) => setHomeScore(parseInt(e.target.value) || 0)}
+              className="w-16 rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
+            />
+            <span className="text-gray-400">-</span>
+            <input
+              type="number"
+              min={0}
+              value={awayScore}
+              onChange={(e) => setAwayScore(parseInt(e.target.value) || 0)}
+              className="w-16 rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
+            />
+          </div>
           <input
             type="text"
             placeholder="Resolution note (optional)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm min-w-32"
+            className="w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
           />
           <button
             onClick={() =>
               onResolve({ homeScore, awayScore, note: note || undefined })
             }
             disabled={isResolving}
-            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-3 py-1 rounded text-sm"
+            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-1.5 rounded text-sm"
           >
             Resolve
           </button>
