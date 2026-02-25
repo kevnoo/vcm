@@ -17,7 +17,22 @@ export class CompetitionsService {
 
   findAll() {
     return this.prisma.competition.findMany({
-      include: { teams: { include: { team: true } } },
+      include: {
+        teams: { include: { team: true } },
+        rounds: {
+          include: {
+            matches: {
+              include: {
+                homeTeam: true,
+                awayTeam: true,
+                result: true,
+              },
+              orderBy: { matchNumber: 'asc' },
+            },
+          },
+          orderBy: { roundNumber: 'asc' },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
