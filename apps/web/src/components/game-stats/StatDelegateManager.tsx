@@ -45,13 +45,13 @@ export function StatDelegateManager({ teamId }: StatDelegateManagerProps) {
           {delegates.map((d) => (
             <div
               key={d.id}
-              className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded"
+              className="flex items-center justify-between gap-2 py-2 px-3 bg-gray-50 rounded"
             >
-              <div>
-                <span className="text-sm font-medium text-gray-900">
+              <div className="min-w-0">
+                <span className="text-sm font-medium text-gray-900 truncate block sm:inline">
                   {d.delegate?.discordUsername ?? d.delegateUserId}
                 </span>
-                <span className="text-xs text-gray-400 ml-2">
+                <span className="text-xs text-gray-400 sm:ml-2 block sm:inline">
                   Added {new Date(d.createdAt).toLocaleDateString()}
                 </span>
               </div>

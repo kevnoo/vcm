@@ -113,66 +113,65 @@ function StatValue({
   };
 
   return (
-    <div className="flex items-center justify-between py-1">
-      <span className="text-xs text-gray-500">{label}</span>
-      <div className="flex items-center gap-2">
-        <span className={`text-sm font-medium ${hasDispute ? 'text-red-600' : 'text-gray-900'}`}>
-          {displayValue}
-        </span>
-        {canDispute && !hasDispute && (
-          <>
-            {showReasonInput ? (
-              <div className="flex items-center gap-1">
-                <input
-                  type="text"
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                  placeholder="Reason (optional)"
-                  className="w-32 rounded border border-gray-300 px-2 py-0.5 text-xs"
-                />
-                <button
-                  onClick={handleDispute}
-                  disabled={disputeStatField.isPending}
-                  className="text-xs text-red-600 hover:text-red-800 font-medium"
-                >
-                  Flag
-                </button>
-                <button
-                  onClick={() => {
-                    setShowReasonInput(false);
-                    setReason('');
-                  }}
-                  className="text-xs text-gray-400 hover:text-gray-600"
-                >
-                  X
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setShowReasonInput(true)}
-                className="text-gray-300 hover:text-red-500 transition-colors"
-                title="Dispute this stat"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 21v-4l13-13a1.5 1.5 0 012.12 0l1.88 1.88a1.5 1.5 0 010 2.12L7 21H3z"
-                  />
-                </svg>
-              </button>
-            )}
-          </>
-        )}
-        {hasDispute && (
-          <span className="text-xs text-red-500" title="This stat is disputed">
-            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L1 21h22L12 2zm0 3.83L19.53 19H4.47L12 5.83zM11 16h2v2h-2v-2zm0-6h2v4h-2v-4z" />
-            </svg>
+    <div className="py-1">
+      <div className="flex items-center justify-between">
+        <span className="text-xs text-gray-500">{label}</span>
+        <div className="flex items-center gap-2">
+          <span className={`text-sm font-medium ${hasDispute ? 'text-red-600' : 'text-gray-900'}`}>
+            {displayValue}
           </span>
-        )}
+          {canDispute && !hasDispute && !showReasonInput && (
+            <button
+              onClick={() => setShowReasonInput(true)}
+              className="text-gray-300 hover:text-red-500 transition-colors"
+              title="Dispute this stat"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 21v-4l13-13a1.5 1.5 0 012.12 0l1.88 1.88a1.5 1.5 0 010 2.12L7 21H3z"
+                />
+              </svg>
+            </button>
+          )}
+          {hasDispute && (
+            <span className="text-xs text-red-500" title="This stat is disputed">
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L1 21h22L12 2zm0 3.83L19.53 19H4.47L12 5.83zM11 16h2v2h-2v-2zm0-6h2v4h-2v-4z" />
+              </svg>
+            </span>
+          )}
+        </div>
       </div>
+      {canDispute && !hasDispute && showReasonInput && (
+        <div className="flex items-center gap-1 mt-1">
+          <input
+            type="text"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Reason (optional)"
+            className="flex-1 min-w-0 rounded border border-gray-300 px-2 py-0.5 text-xs"
+          />
+          <button
+            onClick={handleDispute}
+            disabled={disputeStatField.isPending}
+            className="text-xs text-red-600 hover:text-red-800 font-medium shrink-0"
+          >
+            Flag
+          </button>
+          <button
+            onClick={() => {
+              setShowReasonInput(false);
+              setReason('');
+            }}
+            className="text-xs text-gray-400 hover:text-gray-600 shrink-0"
+          >
+            X
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -237,29 +236,29 @@ export function GameStatsReview({
         <button
           type="button"
           onClick={() => togglePlayer(stat.playerId)}
-          className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+          className="w-full flex items-center justify-between px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left gap-2"
         >
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <span className="inline-flex items-center justify-center w-8 h-8 shrink-0 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
               {stat.position}
             </span>
-            <span className="text-sm font-medium text-gray-900">{playerName}</span>
+            <span className="text-sm font-medium text-gray-900 truncate">{playerName}</span>
             {stat.isSubstitute && (
-              <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">
+              <span className="text-xs bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded shrink-0 hidden sm:inline">
                 SUB
               </span>
             )}
             {hasAnyDispute && (
-              <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">
+              <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded shrink-0 hidden sm:inline">
                 DISPUTED
               </span>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <span className="text-sm font-bold text-gray-700">
               {stat.rating.toFixed(1)}
             </span>
-            <span className={`px-2 py-0.5 rounded text-xs ${STATUS_COLORS[stat.status] ?? ''}`}>
+            <span className={`px-1.5 sm:px-2 py-0.5 rounded text-xs ${STATUS_COLORS[stat.status] ?? ''}`}>
               {stat.status}
             </span>
             <svg
@@ -275,7 +274,7 @@ export function GameStatsReview({
 
         {/* Expanded stat fields (read-only) */}
         {isExpanded && (
-          <div className="px-4 py-3 divide-y divide-gray-100">
+          <div className="px-3 sm:px-4 py-3 divide-y divide-gray-100">
             {COMMON_FIELDS.map((field) => (
               <StatValue
                 key={field}
@@ -308,7 +307,7 @@ export function GameStatsReview({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white rounded-lg shadow p-3 sm:p-4 overflow-hidden">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-sm font-semibold text-gray-900">Game Stats</h3>
         {stats[0] && (
