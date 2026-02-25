@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PlayerGameStatsService } from './player-game-stats.service';
@@ -68,5 +69,23 @@ export class PlayerGameStatsController {
   @Roles('ADMIN')
   findOpenDisputes() {
     return this.service.findOpenDisputes();
+  }
+
+  @Get('players/:playerId/stats/season')
+  getPlayerSeasonStats(
+    @Param('playerId') playerId: string,
+    @Query('competitionId') competitionId: string,
+  ) {
+    return this.service.getPlayerSeasonStats(playerId, competitionId);
+  }
+
+  @Get('players/:playerId/stats/career')
+  getPlayerCareerStats(@Param('playerId') playerId: string) {
+    return this.service.getPlayerCareerStats(playerId);
+  }
+
+  @Get('competitions/:competitionId/stats/leaders')
+  getCompetitionLeaders(@Param('competitionId') competitionId: string) {
+    return this.service.getCompetitionLeaders(competitionId);
   }
 }

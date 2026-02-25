@@ -272,6 +272,151 @@ export class PlayerGameStatsService {
     });
   }
 
+  async getPlayerSeasonStats(playerId: string, competitionId: string) {
+    const stats = await this.prisma.matchPlayerGameStats.findMany({
+      where: {
+        playerId,
+        status: { in: ['CONFIRMED', 'RESOLVED'] },
+        match: {
+          round: { competitionId },
+        },
+      },
+    });
+
+    if (stats.length === 0) return null;
+
+    const count = stats.length;
+    const gkStats = stats.filter((s) => s.saves !== null);
+
+    return {
+      playerId,
+      competitionId,
+      matchesPlayed: count,
+      avgRating: +(stats.reduce((sum, s) => sum + s.rating, 0) / count).toFixed(2),
+      totalGoals: stats.reduce((sum, s) => sum + s.goals, 0),
+      totalAssists: stats.reduce((sum, s) => sum + s.assists, 0),
+      totalShots: stats.reduce((sum, s) => sum + s.shots, 0),
+      avgShotAccuracy: +(stats.reduce((sum, s) => sum + s.shotAccuracy, 0) / count).toFixed(2),
+      totalPasses: stats.reduce((sum, s) => sum + s.passes, 0),
+      avgPassAccuracy: +(stats.reduce((sum, s) => sum + s.passAccuracy, 0) / count).toFixed(2),
+      totalDribbles: stats.reduce((sum, s) => sum + s.dribbles, 0),
+      avgDribbleSuccessRate: +(stats.reduce((sum, s) => sum + s.dribbleSuccessRate, 0) / count).toFixed(2),
+      totalTackles: stats.reduce((sum, s) => sum + s.tackles, 0),
+      avgTackleSuccessRate: +(stats.reduce((sum, s) => sum + s.tackleSuccessRate, 0) / count).toFixed(2),
+      totalOffsides: stats.reduce((sum, s) => sum + s.offsides, 0),
+      totalFoulsCommitted: stats.reduce((sum, s) => sum + s.foulsCommitted, 0),
+      totalPossessionsWon: stats.reduce((sum, s) => sum + s.possessionsWon, 0),
+      totalPossessionsLost: stats.reduce((sum, s) => sum + s.possessionsLost, 0),
+      totalMinutesPlayed: stats.reduce((sum, s) => sum + s.minutesPlayed, 0),
+      totalYellowCards: stats.reduce((sum, s) => sum + s.yellowCards, 0),
+      totalRedCards: stats.reduce((sum, s) => sum + s.redCards, 0),
+      // GK
+      totalSaves: gkStats.length > 0
+        ? gkStats.reduce((sum, s) => sum + (s.saves ?? 0), 0)
+        : null,
+      totalGoalsConceded: gkStats.length > 0
+        ? gkStats.reduce((sum, s) => sum + (s.goalsConceded ?? 0), 0)
+        : null,
+      avgSaveSuccessRate: gkStats.length > 0
+        ? +(gkStats.reduce((sum, s) => sum + (s.saveSuccessRate ?? 0), 0) / gkStats.length).toFixed(2)
+        : null,
+      totalCleanSheets: gkStats.length > 0
+        ? gkStats.filter((s) => s.cleanSheet === true).length
+        : null,
+    };
+  }
+
+  async getPlayerCareerStats(playerId: string) {
+    const stats = await this.prisma.matchPlayerGameStats.findMany({
+      where: {
+        playerId,
+        status: { in: ['CONFIRMED', 'RESOLVED'] },
+      },
+    });
+
+    if (stats.length === 0) return null;
+
+    const count = stats.length;
+    const gkStats = stats.filter((s) => s.saves !== null);
+
+    return {
+      playerId,
+      matchesPlayed: count,
+      avgRating: +(stats.reduce((sum, s) => sum + s.rating, 0) / count).toFixed(2),
+      totalGoals: stats.reduce((sum, s) => sum + s.goals, 0),
+      totalAssists: stats.reduce((sum, s) => sum + s.assists, 0),
+      totalShots: stats.reduce((sum, s) => sum + s.shots, 0),
+      avgShotAccuracy: +(stats.reduce((sum, s) => sum + s.shotAccuracy, 0) / count).toFixed(2),
+      totalPasses: stats.reduce((sum, s) => sum + s.passes, 0),
+      avgPassAccuracy: +(stats.reduce((sum, s) => sum + s.passAccuracy, 0) / count).toFixed(2),
+      totalDribbles: stats.reduce((sum, s) => sum + s.dribbles, 0),
+      avgDribbleSuccessRate: +(stats.reduce((sum, s) => sum + s.dribbleSuccessRate, 0) / count).toFixed(2),
+      totalTackles: stats.reduce((sum, s) => sum + s.tackles, 0),
+      avgTackleSuccessRate: +(stats.reduce((sum, s) => sum + s.tackleSuccessRate, 0) / count).toFixed(2),
+      totalOffsides: stats.reduce((sum, s) => sum + s.offsides, 0),
+      totalFoulsCommitted: stats.reduce((sum, s) => sum + s.foulsCommitted, 0),
+      totalPossessionsWon: stats.reduce((sum, s) => sum + s.possessionsWon, 0),
+      totalPossessionsLost: stats.reduce((sum, s) => sum + s.possessionsLost, 0),
+      totalMinutesPlayed: stats.reduce((sum, s) => sum + s.minutesPlayed, 0),
+      totalYellowCards: stats.reduce((sum, s) => sum + s.yellowCards, 0),
+      totalRedCards: stats.reduce((sum, s) => sum + s.redCards, 0),
+      totalSaves: gkStats.length > 0
+        ? gkStats.reduce((sum, s) => sum + (s.saves ?? 0), 0)
+        : null,
+      totalGoalsConceded: gkStats.length > 0
+        ? gkStats.reduce((sum, s) => sum + (s.goalsConceded ?? 0), 0)
+        : null,
+      avgSaveSuccessRate: gkStats.length > 0
+        ? +(gkStats.reduce((sum, s) => sum + (s.saveSuccessRate ?? 0), 0) / gkStats.length).toFixed(2)
+        : null,
+      totalCleanSheets: gkStats.length > 0
+        ? gkStats.filter((s) => s.cleanSheet === true).length
+        : null,
+    };
+  }
+
+  async getCompetitionLeaders(competitionId: string) {
+    const allStats = await this.prisma.matchPlayerGameStats.findMany({
+      where: {
+        status: { in: ['CONFIRMED', 'RESOLVED'] },
+        match: { round: { competitionId } },
+      },
+      include: { player: true, team: true },
+    });
+
+    // Group by player
+    const byPlayer = new Map<string, typeof allStats>();
+    for (const stat of allStats) {
+      const existing = byPlayer.get(stat.playerId) ?? [];
+      existing.push(stat);
+      byPlayer.set(stat.playerId, existing);
+    }
+
+    const playerAggregates = Array.from(byPlayer.entries()).map(([playerId, stats]) => {
+      const count = stats.length;
+      return {
+        playerId,
+        player: stats[0].player,
+        team: stats[0].team,
+        matchesPlayed: count,
+        totalGoals: stats.reduce((s, st) => s + st.goals, 0),
+        totalAssists: stats.reduce((s, st) => s + st.assists, 0),
+        avgRating: +(stats.reduce((s, st) => s + st.rating, 0) / count).toFixed(2),
+        totalCleanSheets: stats.filter((s) => s.cleanSheet === true).length,
+      };
+    });
+
+    return {
+      topScorers: [...playerAggregates].sort((a, b) => b.totalGoals - a.totalGoals).slice(0, 10),
+      topAssists: [...playerAggregates].sort((a, b) => b.totalAssists - a.totalAssists).slice(0, 10),
+      topRated: [...playerAggregates].sort((a, b) => b.avgRating - a.avgRating).slice(0, 10),
+      topCleanSheets: [...playerAggregates]
+        .filter((p) => p.totalCleanSheets > 0)
+        .sort((a, b) => b.totalCleanSheets - a.totalCleanSheets)
+        .slice(0, 10),
+    };
+  }
+
   async findOpenDisputes() {
     return this.prisma.statDispute.findMany({
       where: { status: 'OPEN' },
