@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router';
 import { useMatchStats, useSaveLineup, useSaveSubstitutions, useSavePlayerStats } from '../../hooks/useGameStats';
+import { useMatchGameStats } from '../../hooks/usePlayerGameStats';
+import { GameStatsEntryForm } from '../../components/game-stats/GameStatsEntryForm';
+import { GameStatsReview } from '../../components/game-stats/GameStatsReview';
 import { usePlayers } from '../../hooks/usePlayers';
 import { useAuthStore } from '../../stores/auth.store';
 import { api } from '../../lib/api';
@@ -82,6 +85,15 @@ export function MatchStatsPage() {
           canEdit={canEditAway}
         />
       </div>
+
+      <DetailedGameStatsSection
+        matchId={matchId!}
+        match={match}
+        homeLineup={stats?.homeLineup ?? []}
+        awayLineup={stats?.awayLineup ?? []}
+        userId={user?.id}
+        isAdmin={isAdmin()}
+      />
 
       <PlayerStatsSection
         matchId={matchId!}
@@ -449,6 +461,143 @@ function LineupSection({
   );
 }
 
+function DetailedGameStatsSection({
+  matchId,
+  match,
+  homeLineup,
+  awayLineup,
+  userId,
+  isAdmin,
+}: {
+  matchId: string;
+  match: Match;
+  homeLineup: MatchLineupEntry[];
+  awayLineup: MatchLineupEntry[];
+  userId?: string;
+  isAdmin: boolean;
+}) {
+  const { data: gameStats, isLoading } = useMatchGameStats(matchId);
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow p-4 mb-8">
+        <p className="text-sm text-gray-400">Loading game stats...</p>
+      </div>
+    );
+  }
+
+  const userTeamId =
+    (match.homeTeam?.owner as any)?.id === userId
+      ? match.homeTeamId
+      : (match.awayTeam?.owner as any)?.id === userId
+        ? match.awayTeamId
+        : null;
+
+  const homeStats = gameStats?.filter((s) => s.teamId === match.homeTeamId) ?? [];
+  const awayStats = gameStats?.filter((s) => s.teamId === match.awayTeamId) ?? [];
+
+  const renderTeamStats = (
+    teamId: string,
+    teamName: string | undefined,
+    teamStats: typeof homeStats,
+    lineup: MatchLineupEntry[],
+    isUserTeam: boolean,
+  ) => {
+    const hasStats = teamStats.length > 0;
+    const isOpposingOwner = !isAdmin && userTeamId !== null && userTeamId !== teamId;
+
+    if (hasStats) {
+      const canConfirm =
+        isOpposingOwner && teamStats.some((s) => s.status === 'PENDING');
+      const canDispute =
+        isOpposingOwner &&
+        teamStats.some((s) => s.status === 'PENDING' || s.status === 'CONFIRMED');
+
+      return (
+        <div key={teamId}>
+          <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+            {teamName}
+          </p>
+          <GameStatsReview
+            matchId={matchId}
+            stats={teamStats}
+            canConfirm={canConfirm}
+            canDispute={canDispute}
+          />
+        </div>
+      );
+    }
+
+    if (isUserTeam || isAdmin) {
+      const players = lineup.map((entry) => ({
+        playerId: entry.playerId,
+        position: entry.position,
+        isStarter: entry.isStarter,
+        player: entry.player
+          ? { firstName: entry.player.firstName, lastName: entry.player.lastName }
+          : undefined,
+      }));
+
+      if (players.length === 0) {
+        return (
+          <div key={teamId} className="bg-white rounded-lg shadow p-4">
+            <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+              {teamName}
+            </p>
+            <p className="text-sm text-gray-400 italic">
+              Set up the lineup above before entering game stats.
+            </p>
+          </div>
+        );
+      }
+
+      return (
+        <div key={teamId}>
+          <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+            {teamName}
+          </p>
+          <GameStatsEntryForm
+            matchId={matchId}
+            teamId={teamId}
+            players={players}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div key={teamId} className="bg-white rounded-lg shadow p-4">
+        <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+          {teamName}
+        </p>
+        <p className="text-sm text-gray-400 italic">
+          Waiting for {teamName} to submit their game stats.
+        </p>
+      </div>
+    );
+  };
+
+  return (
+    <div className="mb-8 space-y-4">
+      <h2 className="text-lg font-semibold text-gray-900">Game Stats</h2>
+      {renderTeamStats(
+        match.homeTeamId,
+        match.homeTeam?.name,
+        homeStats,
+        homeLineup,
+        userTeamId === match.homeTeamId,
+      )}
+      {renderTeamStats(
+        match.awayTeamId,
+        match.awayTeam?.name,
+        awayStats,
+        awayLineup,
+        userTeamId === match.awayTeamId,
+      )}
+    </div>
+  );
+}
+
 function PlayerStatsSection({
   matchId,
   playerStats,
@@ -519,13 +668,13 @@ function PlayerStatsSection({
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-8">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-semibold text-gray-900">Player Stats</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Match Events</h2>
         {canEdit && !editing && (
           <button
             onClick={startEdit}
             className="text-xs text-indigo-600 hover:text-indigo-800"
           >
-            Edit Stats
+            Edit Events
           </button>
         )}
       </div>

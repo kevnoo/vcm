@@ -58,15 +58,13 @@ export function MatchHubPage() {
           ) : null}
 
           {/* Game Stats Section */}
-          {match.result &&
-            (match.result.status === 'CONFIRMED' || match.result.status === 'RESOLVED') &&
-            role !== 'VIEWER' && (
-              <GameStatsSection
-                matchId={matchId!}
-                hub={hub}
-                userId={user?.id}
-              />
-            )}
+          {match.result && role !== 'VIEWER' && (
+            <GameStatsSection
+              matchId={matchId!}
+              hub={hub}
+              userId={user?.id}
+            />
+          )}
 
           {/* Conversation */}
           {role !== 'VIEWER' ? (
