@@ -9,6 +9,10 @@ import {
   useAdminSetTime,
 } from '../../hooks/useMatchScheduling';
 import { useSubmitResult, useDisputeResult, useConfirmResult } from '../../hooks/useResults';
+import { useMatchGameStats } from '../../hooks/usePlayerGameStats';
+import { useMatchStats } from '../../hooks/useGameStats';
+import { GameStatsEntryForm } from '../../components/game-stats/GameStatsEntryForm';
+import { GameStatsReview } from '../../components/game-stats/GameStatsReview';
 import type { MatchMessage, TimeProposal, MatchHub } from '@vcm/shared';
 
 export function MatchHubPage() {
@@ -52,6 +56,17 @@ export function MatchHubPage() {
           ) : role !== 'VIEWER' ? (
             <ResultEntry hub={hub} matchId={matchId!} />
           ) : null}
+
+          {/* Game Stats Section */}
+          {match.result &&
+            (match.result.status === 'CONFIRMED' || match.result.status === 'RESOLVED') &&
+            role !== 'VIEWER' && (
+              <GameStatsSection
+                matchId={matchId!}
+                hub={hub}
+                userId={user?.id}
+              />
+            )}
 
           {/* Conversation */}
           {role !== 'VIEWER' ? (
@@ -718,6 +733,165 @@ function ResultEntry({ hub, matchId }: { hub: MatchHub; matchId: string }) {
         >
           + Enter match result
         </button>
+      )}
+    </div>
+  );
+}
+
+function GameStatsSection({
+  matchId,
+  hub,
+  userId,
+}: {
+  matchId: string;
+  hub: MatchHub;
+  userId?: string;
+}) {
+  const match = hub.match;
+  const { data: gameStats, isLoading: gameStatsLoading } = useMatchGameStats(matchId);
+  const { data: matchStatsData, isLoading: matchStatsLoading } = useMatchStats(matchId);
+
+  if (gameStatsLoading || matchStatsLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow p-4">
+        <p className="text-sm text-gray-400">Loading game stats...</p>
+      </div>
+    );
+  }
+
+  // Determine which team the current user owns
+  const userTeamId =
+    (match.homeTeam?.owner as any)?.id === userId
+      ? match.homeTeamId
+      : (match.awayTeam?.owner as any)?.id === userId
+        ? match.awayTeamId
+        : null;
+
+  const isAdmin = hub.role === 'ADMIN';
+
+  // Split game stats by team
+  const homeStats = gameStats?.filter((s) => s.teamId === match.homeTeamId) ?? [];
+  const awayStats = gameStats?.filter((s) => s.teamId === match.awayTeamId) ?? [];
+
+  // Get lineup data from matchStats
+  const homeLineup = matchStatsData?.homeLineup ?? [];
+  const awayLineup = matchStatsData?.awayLineup ?? [];
+
+  // Determine what to render for each team
+  const renderTeamStats = (
+    teamId: string,
+    teamName: string | undefined,
+    teamStats: typeof homeStats,
+    lineup: typeof homeLineup,
+    isUserTeam: boolean,
+  ) => {
+    const hasStats = teamStats.length > 0;
+    const opposingTeam = !isUserTeam && !isAdmin;
+    const isOpposingOwner =
+      hub.role === 'INVOLVED' &&
+      userTeamId !== null &&
+      userTeamId !== teamId;
+
+    if (hasStats) {
+      // Show review component
+      const canConfirm =
+        isOpposingOwner &&
+        teamStats.some((s) => s.status === 'PENDING');
+      const canDispute =
+        isOpposingOwner &&
+        teamStats.some(
+          (s) => s.status === 'PENDING' || s.status === 'CONFIRMED',
+        );
+
+      return (
+        <div key={teamId}>
+          <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+            {teamName} Stats
+          </p>
+          <GameStatsReview
+            matchId={matchId}
+            stats={teamStats}
+            canConfirm={canConfirm}
+            canDispute={canDispute}
+          />
+        </div>
+      );
+    }
+
+    // No stats yet — show entry form if this is the user's team or user is admin
+    if (isUserTeam || isAdmin) {
+      const players = lineup.map((entry) => ({
+        playerId: entry.playerId,
+        position: entry.position,
+        isStarter: entry.isStarter,
+        player: entry.player
+          ? { firstName: entry.player.firstName, lastName: entry.player.lastName }
+          : undefined,
+      }));
+
+      if (players.length === 0) {
+        return (
+          <div key={teamId} className="bg-white rounded-lg shadow p-4">
+            <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+              {teamName} Stats
+            </p>
+            <p className="text-sm text-gray-400 italic">
+              No lineup set for {teamName}. Please{' '}
+              <Link
+                to={`/matches/${matchId}/stats`}
+                className="text-indigo-600 hover:text-indigo-800"
+              >
+                set up the lineup
+              </Link>{' '}
+              first before entering game stats.
+            </p>
+          </div>
+        );
+      }
+
+      return (
+        <div key={teamId}>
+          <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+            {teamName} Stats
+          </p>
+          <GameStatsEntryForm
+            matchId={matchId}
+            teamId={teamId}
+            players={players}
+          />
+        </div>
+      );
+    }
+
+    // Not the user's team and no stats — show a placeholder
+    return (
+      <div key={teamId} className="bg-white rounded-lg shadow p-4">
+        <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+          {teamName} Stats
+        </p>
+        <p className="text-sm text-gray-400 italic">
+          Waiting for {teamName} to submit their game stats.
+        </p>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-sm font-semibold text-gray-900">Game Stats</h3>
+      {renderTeamStats(
+        match.homeTeamId,
+        match.homeTeam?.name,
+        homeStats,
+        homeLineup,
+        userTeamId === match.homeTeamId,
+      )}
+      {renderTeamStats(
+        match.awayTeamId,
+        match.awayTeam?.name,
+        awayStats,
+        awayLineup,
+        userTeamId === match.awayTeamId,
       )}
     </div>
   );
