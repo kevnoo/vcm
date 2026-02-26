@@ -22,6 +22,12 @@ const adminItems = [
   { to: '/admin/reference-data', label: 'Reference Data' },
 ];
 
+// Check if a nav item should be active for the current path
+function isNavActive(itemTo: string, pathname: string) {
+  if (itemTo === '/') return pathname === '/';
+  return pathname === itemTo || pathname.startsWith(itemTo + '/');
+}
+
 // Get the current page title from the path
 function usePageTitle() {
   const location = useLocation();
@@ -91,7 +97,7 @@ export function AppShell() {
             to={item.to}
             onClick={closeSidebar}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-              location.pathname === item.to
+              isNavActive(item.to, location.pathname)
                 ? 'bg-gray-700 text-white'
                 : 'text-gray-300 hover:bg-gray-800 hover:text-white'
             }`}
@@ -114,7 +120,7 @@ export function AppShell() {
                 to={item.to}
                 onClick={closeSidebar}
                 className={`block px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  location.pathname === item.to
+                  isNavActive(item.to, location.pathname)
                     ? 'bg-gray-700 text-white'
                     : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                 }`}

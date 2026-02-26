@@ -46,7 +46,7 @@ export function TradeDetailPage() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold text-gray-900">Trade Offer</h1>
           <span className={`text-sm font-medium px-3 py-1 rounded ${STATUS_COLORS[trade.status] ?? 'bg-gray-100 text-gray-800'}`}>
-            {trade.status.replace('_', ' ')}
+            {trade.status.replace(/_/g, ' ')}
           </span>
         </div>
 
@@ -126,7 +126,7 @@ export function TradeDetailPage() {
 
       {/* Actions */}
       {(trade.status === 'PENDING' && (isReceivingOwner || isInitiatingOwner)) && (
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <h3 className="text-sm font-medium text-gray-900 mb-3">Actions</h3>
           <textarea
             value={noteInput}
@@ -135,7 +135,7 @@ export function TradeDetailPage() {
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-3"
             rows={2}
           />
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {isReceivingOwner && (
               <>
                 <button

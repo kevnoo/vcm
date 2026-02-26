@@ -152,18 +152,18 @@ function SkillsTab() {
   return (
     <div className="space-y-4">
       {/* Add Group */}
-      <form onSubmit={handleAddGroup} className="flex gap-2">
+      <form onSubmit={handleAddGroup} className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
           value={newGroupName}
           onChange={(e) => setNewGroupName(e.target.value)}
           placeholder="New skill group name"
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-auto"
         />
         <button
           type="submit"
           disabled={createGroup.isPending}
-          className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto"
         >
           Add Group
         </button>
@@ -426,19 +426,19 @@ function RolesTab() {
           Add Role
         </button>
       ) : (
-        <form onSubmit={handleAdd} className="flex gap-2 items-end">
+        <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-2 sm:items-end flex-wrap">
           <input
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Role name"
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-auto"
           />
           <select
             value={newPosition}
             onChange={(e) => setNewPosition(e.target.value as Position)}
             required
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-auto"
           >
             <option value="">Position</option>
             {POSITIONS.map((pos) => (
@@ -450,14 +450,16 @@ function RolesTab() {
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}
             placeholder="Description (optional)"
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1"
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:flex-1"
           />
-          <button type="submit" disabled={createRole.isPending} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium">
-            Add
-          </button>
-          <button type="button" onClick={() => setAdding(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">
-            Cancel
-          </button>
+          <div className="flex gap-2">
+            <button type="submit" disabled={createRole.isPending} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex-1 sm:flex-none">
+              Add
+            </button>
+            <button type="button" onClick={() => setAdding(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium flex-1 sm:flex-none">
+              Cancel
+            </button>
+          </div>
         </form>
       )}
 
@@ -579,16 +581,18 @@ function PlayStylesTab() {
           Add Play Style
         </button>
       ) : (
-        <form onSubmit={handleAdd} className="flex gap-2 items-end flex-wrap">
-          <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Style name" className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          <select value={newPosition} onChange={(e) => setNewPosition(e.target.value as Position)} required className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-2 sm:items-end flex-wrap">
+          <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Style name" className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-auto" />
+          <select value={newPosition} onChange={(e) => setNewPosition(e.target.value as Position)} required className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-auto">
             <option value="">Position</option>
             {POSITIONS.map((pos) => <option key={pos} value={pos}>{pos}</option>)}
           </select>
-          <input type="text" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} placeholder="Description" className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1" />
-          <input type="url" value={newIconUrl} onChange={(e) => setNewIconUrl(e.target.value)} placeholder="Icon URL" className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          <button type="submit" disabled={createStyle.isPending} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium">Add</button>
-          <button type="button" onClick={() => setAdding(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">Cancel</button>
+          <input type="text" value={newDescription} onChange={(e) => setNewDescription(e.target.value)} placeholder="Description" className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:flex-1" />
+          <input type="url" value={newIconUrl} onChange={(e) => setNewIconUrl(e.target.value)} placeholder="Icon URL" className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-auto" />
+          <div className="flex gap-2">
+            <button type="submit" disabled={createStyle.isPending} className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex-1 sm:flex-none">Add</button>
+            <button type="button" onClick={() => setAdding(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium flex-1 sm:flex-none">Cancel</button>
+          </div>
         </form>
       )}
 

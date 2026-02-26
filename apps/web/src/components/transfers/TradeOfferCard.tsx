@@ -24,7 +24,7 @@ export function TradeOfferCard({ trade }: TradeOfferCardProps) {
     >
       <div className="flex items-center justify-between mb-3">
         <span className={`text-xs font-medium px-2 py-0.5 rounded ${STATUS_COLORS[trade.status] ?? 'bg-gray-100 text-gray-800'}`}>
-          {trade.status.replace('_', ' ')}
+          {trade.status.replace(/_/g, ' ')}
         </span>
         <span className="text-xs text-gray-500">
           {new Date(trade.createdAt).toLocaleDateString()}

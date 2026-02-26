@@ -65,11 +65,11 @@ export function InventoryPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
         <h1 className="text-2xl font-bold text-gray-900">Inventory</h1>
         <Link
           to="/shop"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto"
         >
           Visit Shop
         </Link>
@@ -194,8 +194,8 @@ export function InventoryPage() {
             <p className="text-gray-500 text-sm">No items used yet.</p>
           )}
           {history?.map((log) => (
-            <div key={log.id} className="bg-white rounded-lg shadow p-3 flex items-center justify-between">
-              <div>
+            <div key={log.id} className="bg-white rounded-lg shadow p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3">
+              <div className="min-w-0">
                 <span className="text-sm font-medium text-gray-900">
                   {log.itemDefinition?.name}
                 </span>
@@ -204,9 +204,9 @@ export function InventoryPage() {
                   {log.player?.firstName} {log.player?.lastName}
                 </span>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right shrink-0">
                 <span className="text-sm text-gray-500">
-                  {log.previousValue} → {log.newValue}
+                  {log.previousValue} &rarr; {log.newValue}
                 </span>
                 <p className="text-xs text-gray-400">
                   {new Date(log.usedAt).toLocaleDateString()}

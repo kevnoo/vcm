@@ -240,8 +240,8 @@ export function AdminDashboard({ user }: { user: User }) {
                     to={`/matches/${match.id}`}
                     className="block text-sm hover:bg-gray-50 rounded p-1 -m-1"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-medium text-gray-900 min-w-0 truncate">
                         {match.homeTeam?.name}{' '}
                         <span className="text-gray-700">
                           {match.result?.homeScore} - {match.result?.awayScore}
