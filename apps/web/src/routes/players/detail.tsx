@@ -99,24 +99,24 @@ export function PlayerDetailPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             {player.imageUrl ? (
               <img
                 src={player.imageUrl}
                 alt={`${player.firstName} ${player.lastName}`}
-                className="w-20 h-20 rounded-full object-cover"
+                className="w-14 h-14 sm:w-20 sm:h-20 rounded-full object-cover shrink-0"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl font-bold">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xl sm:text-2xl font-bold shrink-0">
                 {player.firstName.charAt(0)}
                 {player.lastName.charAt(0)}
               </div>
             )}
             {!editingInfo ? (
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
                   {player.firstName} {player.lastName}
                 </h1>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -307,9 +307,9 @@ export function PlayerDetailPage() {
 
       {/* Transaction Actions */}
       {userTeam && !editingInfo && (
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">Actions</h2>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {isOnAnotherTeam && (
               <Link
                 to={`/transfers/create-trade?teamId=${player.teamId}`}

@@ -166,7 +166,7 @@ export function PosPage() {
       </div>
 
       {selectedTeamId && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-16 lg:pb-0">
           {/* Product Catalog */}
           <div className="lg:col-span-2 space-y-6">
             {/* Items */}
@@ -387,6 +387,23 @@ export function PosPage() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Mobile cart summary bar */}
+      {selectedTeamId && cart.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center justify-between z-30 lg:hidden">
+          <div className="text-sm">
+            <span className="font-medium text-gray-900">{cart.reduce((sum, e) => sum + e.quantity, 0)} items</span>
+            <span className="text-gray-500 ml-2">Total: {cartTotal.toLocaleString()}</span>
+          </div>
+          <button
+            onClick={handleCheckout}
+            disabled={posCheckout.isPending || (selectedTeam ? selectedTeam.budget < cartTotal : true)}
+            className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg"
+          >
+            {posCheckout.isPending ? 'Processing...' : 'Checkout'}
+          </button>
         </div>
       )}
     </div>

@@ -195,7 +195,7 @@ export function CreateTradePage() {
         <button
           onClick={handleSubmit}
           disabled={!receivingTeamId || createTrade.isPending || counterTrade.isPending}
-          className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium px-6 py-2.5 rounded-lg"
+          className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium px-6 py-2.5 rounded-lg"
         >
           {counterId ? 'Send Counter Offer' : 'Send Trade Offer'}
         </button>

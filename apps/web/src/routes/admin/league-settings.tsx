@@ -57,22 +57,22 @@ export function LeagueSettingsPage() {
           ) : settings && settings.length > 0 ? (
             <div className="space-y-3">
               {settings.map((setting) => (
-                <div key={setting.key} className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded">
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-900 font-mono">{setting.key}</span>
+                <div key={setting.key} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-2.5 px-3 bg-gray-50 rounded">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 min-w-0">
+                    <span className="text-sm font-medium text-gray-900 font-mono truncate">{setting.key}</span>
                     {editingKey === setting.key ? (
                       <input
                         type="text"
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
-                        className="rounded border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="rounded border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-auto"
                         autoFocus
                       />
                     ) : (
-                      <span className="text-sm text-gray-600">{setting.value}</span>
+                      <span className="text-sm text-gray-600 break-all">{setting.value}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 shrink-0">
                     {editingKey === setting.key ? (
                       <>
                         <button
@@ -116,9 +116,9 @@ export function LeagueSettingsPage() {
       </div>
 
       {/* Add new setting */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
         <h3 className="text-sm font-medium text-gray-900 mb-3">Add Setting</h3>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
             value={newKey}
@@ -136,7 +136,7 @@ export function LeagueSettingsPage() {
           <button
             onClick={addNew}
             disabled={upsertSetting.isPending}
-            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg"
+            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg w-full sm:w-auto"
           >
             Add
           </button>
