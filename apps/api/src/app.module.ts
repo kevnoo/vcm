@@ -18,6 +18,7 @@ import { PosModule } from './pos/pos.module';
 import { GameStatsModule } from './game-stats/game-stats.module';
 import { StatDelegatesModule } from './stat-delegates/stat-delegates.module';
 import { PlayerGameStatsModule } from './player-game-stats/player-game-stats.module';
+import { CsvImportModule } from './csv-import/csv-import.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { PlayerGameStatsModule } from './player-game-stats/player-game-stats.mod
     GameStatsModule,
     StatDelegatesModule,
     PlayerGameStatsModule,
+    CsvImportModule,
   ],
 })
 export class AppModule {}
