@@ -19,6 +19,8 @@ import { GameStatsModule } from './game-stats/game-stats.module';
 import { StatDelegatesModule } from './stat-delegates/stat-delegates.module';
 import { PlayerGameStatsModule } from './player-game-stats/player-game-stats.module';
 import { CsvImportModule } from './csv-import/csv-import.module';
+import { DiscordModule } from './discord/discord.module';
+import { MatchMediaModule } from './match-media/match-media.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { CsvImportModule } from './csv-import/csv-import.module';
     StatDelegatesModule,
     PlayerGameStatsModule,
     CsvImportModule,
+    DiscordModule,
+    MatchMediaModule,
   ],
 })
 export class AppModule {}

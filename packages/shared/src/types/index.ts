@@ -112,3 +112,11 @@ export type {
   CsvImportResult,
   CsvImportError,
 } from './csv-import';
+export type {
+  MatchMedia,
+  DiscordChannelMapping,
+  CreateChannelMappingDto,
+  CreateMatchMediaDto,
+  WebhookPayload,
+  WebhookEvent,
+} from './discord';

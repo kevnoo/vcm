@@ -6,8 +6,10 @@
     "dev": "pnpm --parallel -r run dev",
     "dev:api": "pnpm --filter @vcm/api run dev",
     "dev:web": "pnpm --filter @vcm/web run dev",
+    "dev:bot": "pnpm --filter @vcm/bot run dev",
     "build": "pnpm -r run build",
     "build:shared": "pnpm --filter @vcm/shared run build",
+    "bot:deploy": "pnpm --filter @vcm/bot run deploy-commands",
     "db:migrate": "pnpm --filter @vcm/api run db:migrate",
     "db:seed": "pnpm --filter @vcm/api run db:seed",
     "db:generate": "pnpm --filter @vcm/api run db:generate"

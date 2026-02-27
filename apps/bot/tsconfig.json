@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "paths": {
+      "@vcm/prisma": ["../api/src/generated/prisma/client"]
+    }
+  },
+  "include": ["src", "../api/src/generated/prisma"]
+}
