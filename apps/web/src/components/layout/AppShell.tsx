@@ -20,6 +20,7 @@ const adminItems = [
   { to: '/admin/pos', label: 'Point of Sale' },
   { to: '/admin/league-settings', label: 'League Settings' },
   { to: '/admin/reference-data', label: 'Reference Data' },
+  { to: '/admin/csv-import', label: 'CSV Import' },
 ];
 
 // Check if a nav item should be active for the current path

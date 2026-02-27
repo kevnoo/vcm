@@ -106,3 +106,9 @@ export type {
   CreateTimeProposalDto,
   RespondTimeProposalDto,
 } from './match-scheduling';
+export type {
+  CsvTemplateType,
+  CsvTemplate,
+  CsvImportResult,
+  CsvImportError,
+} from './csv-import';
