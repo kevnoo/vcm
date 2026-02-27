@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from 'discord.js';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { PrismaClient } from '../../../api/src/generated/prisma/client.js';
 import { resultEmbed } from '../utils/embeds.js';
+import { scorePrediction } from './predict.js';
 import type { Command } from './index.js';
 
 export const submitResult: Command = {
@@ -88,6 +89,12 @@ export const submitResult: Command = {
         where: { id: matchId },
         data: { status: 'COMPLETED' },
       });
+
+      // Score predictions for this match
+      await scorePredictions(prisma, matchId, homeScore, awayScore);
+
+      // Settle bets for this match (friendly matches only)
+      await settleBets(prisma, matchId, homeScore, awayScore);
     }
 
     const embed = resultEmbed({
@@ -102,3 +109,70 @@ export const submitResult: Command = {
     await interaction.editReply({ embeds: [embed] });
   },
 };
+
+/** Score all predictions for a confirmed match result. */
+async function scorePredictions(
+  prisma: PrismaClient,
+  matchId: string,
+  homeScore: number,
+  awayScore: number,
+) {
+  const predictions = await prisma.prediction.findMany({
+    where: { matchId },
+  });
+
+  for (const pred of predictions) {
+    const points = scorePrediction(pred.homeScore, pred.awayScore, homeScore, awayScore);
+    await prisma.prediction.update({
+      where: { id: pred.id },
+      data: { points },
+    });
+  }
+}
+
+/** Settle all bets for a confirmed friendly match result. */
+async function settleBets(
+  prisma: PrismaClient,
+  matchId: string,
+  homeScore: number,
+  awayScore: number,
+) {
+  const match = await prisma.match.findUnique({
+    where: { id: matchId },
+    include: { round: { include: { competition: true } } },
+  });
+
+  // Only settle bets on friendly matches
+  if (!match || match.round.competition.type !== 'FRIENDLY') return;
+
+  const bets = await prisma.matchBet.findMany({
+    where: { matchId, status: 'PENDING' },
+  });
+
+  const actualOutcome: 'HOME' | 'AWAY' | 'DRAW' =
+    homeScore > awayScore ? 'HOME' : homeScore < awayScore ? 'AWAY' : 'DRAW';
+
+  for (const b of bets) {
+    const won = b.pick === actualOutcome;
+    const payout = won ? Math.floor(b.amount * b.odds) : 0;
+
+    await prisma.$transaction([
+      prisma.matchBet.update({
+        where: { id: b.id },
+        data: {
+          status: won ? 'WON' : 'LOST',
+          payout,
+        },
+      }),
+      // Credit winnings back to balance (wager was already deducted)
+      ...(won
+        ? [
+            prisma.bettingBalance.update({
+              where: { discordUserId: b.discordUserId },
+              data: { balance: { increment: payout } },
+            }),
+          ]
+        : []),
+    ]);
+  }
+}

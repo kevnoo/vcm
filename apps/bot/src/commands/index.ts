@@ -10,6 +10,9 @@ import { submitResult } from './submit-result.js';
 import { schedule } from './schedule.js';
 import { setup } from './setup.js';
 import { demo } from './demo.js';
+import { player } from './player.js';
+import { predict } from './predict.js';
+import { bet } from './bet.js';
 
 export interface Command {
   data: SharedSlashCommand;
@@ -26,4 +29,7 @@ export const commands: Command[] = [
   schedule,
   setup,
   demo,
+  player,
+  predict,
+  bet,
 ];
