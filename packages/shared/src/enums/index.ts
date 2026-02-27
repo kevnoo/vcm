@@ -14,3 +14,5 @@ export { MatchStatType } from './match-stat-type.enum';
 export { TimeProposalStatus } from './time-proposal-status.enum';
 export { GameStatsStatus } from './game-stats-status.enum';
 export { StatDisputeStatus } from './stat-dispute-status.enum';
+export { MediaType } from './media-type.enum';
+export { DiscordChannelType } from './discord-channel-type.enum';

@@ -30,6 +30,7 @@ model User {
   disputedStats      StatDispute[]          @relation("StatDisputedBy")
   resolvedStats      StatDispute[]          @relation("StatResolvedBy")
   statDelegations    StatDelegate[]         @relation("StatDelegateUser")
+  uploadedMedia      MatchMedia[]
 }
 
 enum Role {
@@ -76,8 +77,9 @@ model Competition {
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 
-  teams  CompetitionTeam[]
-  rounds Round[]
+  teams           CompetitionTeam[]
+  rounds          Round[]
+  discordChannels DiscordChannelMapping[]
 }
 
 enum CompetitionType {
@@ -128,9 +130,10 @@ model Match {
   awayTeamId  String
   matchNumber Int?
   scheduledAt DateTime?
-  status      MatchStatus @default(SCHEDULED)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  status          MatchStatus @default(SCHEDULED)
+  discordThreadId String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   round         Round                @relation(fields: [roundId], references: [id], onDelete: Cascade)
   homeTeam      Team                 @relation("HomeTeam", fields: [homeTeamId], references: [id])
@@ -142,6 +145,7 @@ model Match {
   messages      MatchMessage[]
   timeProposals TimeProposal[]
   playerGameStats MatchPlayerGameStats[]
+  media         MatchMedia[]
 }
 
 enum MatchStatus {
@@ -737,4 +741,49 @@ model Transaction {
   tradeOffer TradeOffer? @relation(fields: [tradeOfferId], references: [id])
   waiverWire WaiverWire? @relation(fields: [waiverWireId], references: [id])
   executedBy User?       @relation("ExecutedBy", fields: [executedById], references: [id])
+}
+
+// ─── Discord Integration ───────────────────────────────
+
+model MatchMedia {
+  id               String    @id @default(uuid())
+  matchId          String
+  discordMessageId String?
+  url              String
+  mediaType        MediaType
+  uploadedById     String?
+  caption          String?
+  createdAt        DateTime  @default(now())
+
+  match      Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  uploadedBy User? @relation(fields: [uploadedById], references: [id])
+
+  @@index([matchId])
+}
+
+enum MediaType {
+  SCREENSHOT
+  VIDEO
+  REPLAY
+}
+
+model DiscordChannelMapping {
+  id               String             @id @default(uuid())
+  competitionId    String
+  discordGuildId   String
+  discordChannelId String
+  channelType      DiscordChannelType
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@unique([competitionId, channelType])
+}
+
+enum DiscordChannelType {
+  SCHEDULE
+  RESULTS
+  TRANSACTIONS
+  MEDIA
 }
