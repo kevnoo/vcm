@@ -217,6 +217,8 @@ async function handleSeed(
           roundId: round.id,
           homeTeamId: teams[home].id,
           awayTeamId: teams[away].id,
+          homeOwnerId: owners[home].id,
+          awayOwnerId: owners[away].id,
           matchNumber: matchNumber++,
         },
       });

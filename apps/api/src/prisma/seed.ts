@@ -779,6 +779,12 @@ async function main() {
   // ─── Generate Schedules ───────────────────────────────────
   console.log('\nGenerating double round-robin schedules...');
 
+  // Build team → owner map for match owner snapshots
+  const teamOwnerMap = new Map<string, string>();
+  for (let i = 0; i < teams.length; i++) {
+    teamOwnerMap.set(teams[i].id, users[i].id);
+  }
+
   const competitions = [
     { comp: championsComp, teams: championsTeamIds },
     { comp: europaComp, teams: europaTeamIds },
@@ -821,6 +827,8 @@ async function main() {
         roundId: round.id,
         homeTeamId: compTeams[m.home].id,
         awayTeamId: compTeams[m.away].id,
+        homeOwnerId: teamOwnerMap.get(compTeams[m.home].id),
+        awayOwnerId: teamOwnerMap.get(compTeams[m.away].id),
         matchNumber: mIdx + 1,
         scheduledAt: scheduledDate,
         status: 'SCHEDULED' as const,

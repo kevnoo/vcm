@@ -31,6 +31,8 @@ model User {
   resolvedStats      StatDispute[]          @relation("StatResolvedBy")
   statDelegations    StatDelegate[]         @relation("StatDelegateUser")
   uploadedMedia      MatchMedia[]
+  homeOwnerMatches   Match[]                @relation("HomeOwner")
+  awayOwnerMatches   Match[]                @relation("AwayOwner")
 }
 
 enum Role {
@@ -129,6 +131,8 @@ model Match {
   roundId     String
   homeTeamId  String
   awayTeamId  String
+  homeOwnerId String?
+  awayOwnerId String?
   matchNumber Int?
   scheduledAt DateTime?
   status          MatchStatus @default(SCHEDULED)
@@ -139,6 +143,8 @@ model Match {
   round         Round                @relation(fields: [roundId], references: [id], onDelete: Cascade)
   homeTeam      Team                 @relation("HomeTeam", fields: [homeTeamId], references: [id])
   awayTeam      Team                 @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  homeOwner     User?                @relation("HomeOwner", fields: [homeOwnerId], references: [id])
+  awayOwner     User?                @relation("AwayOwner", fields: [awayOwnerId], references: [id])
   result        Result?
   lineupEntries MatchLineupEntry[]
   substitutions MatchSubstitution[]

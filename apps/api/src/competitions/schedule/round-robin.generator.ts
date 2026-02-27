@@ -68,6 +68,13 @@ export class RoundRobinGenerator {
       }
     }
 
+    // Build team → owner map for snapshot
+    const teams = await this.prisma.team.findMany({
+      where: { id: { in: teamIds } },
+      select: { id: true, ownerId: true },
+    });
+    const ownerMap = new Map(teams.map((t) => [t.id, t.ownerId]));
+
     // Bulk create rounds and matches
     for (const round of allRounds) {
       const createdRound = await this.prisma.round.create({
@@ -84,6 +91,8 @@ export class RoundRobinGenerator {
             roundId: createdRound.id,
             homeTeamId: homeId,
             awayTeamId: awayId,
+            homeOwnerId: ownerMap.get(homeId),
+            awayOwnerId: ownerMap.get(awayId),
             matchNumber: idx + 1,
           })),
         });

@@ -13,6 +13,7 @@ import { demo } from './demo.js';
 import { player } from './player.js';
 import { predict } from './predict.js';
 import { bet } from './bet.js';
+import { h2h } from './h2h.js';
 
 export interface Command {
   data: SharedSlashCommand;
@@ -32,4 +33,5 @@ export const commands: Command[] = [
   player,
   predict,
   bet,
+  h2h,
 ];

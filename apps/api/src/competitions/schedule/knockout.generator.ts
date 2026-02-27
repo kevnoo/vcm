@@ -13,6 +13,13 @@ export class KnockoutGenerator {
 
     const roundName = this.getRoundName(numRounds, 1, numRounds);
 
+    // Build team → owner map for snapshot
+    const teams = await this.prisma.team.findMany({
+      where: { id: { in: teamIds } },
+      select: { id: true, ownerId: true },
+    });
+    const ownerMap = new Map(teams.map((t) => [t.id, t.ownerId]));
+
     // Create Round 1 with seeded matchups
     const seeded = this.seedBracket(teamIds, bracketSize);
     const round = await this.prisma.round.create({
@@ -41,6 +48,8 @@ export class KnockoutGenerator {
           roundId: round.id,
           homeTeamId: p.homeTeamId,
           awayTeamId: p.awayTeamId,
+          homeOwnerId: ownerMap.get(p.homeTeamId),
+          awayOwnerId: ownerMap.get(p.awayTeamId),
           matchNumber: idx + 1,
         })),
       });
@@ -100,6 +109,13 @@ export class KnockoutGenerator {
       },
     });
 
+    // Build team → owner map for snapshot
+    const winnerTeams = await this.prisma.team.findMany({
+      where: { id: { in: winners } },
+      select: { id: true, ownerId: true },
+    });
+    const ownerMap = new Map(winnerTeams.map((t) => [t.id, t.ownerId]));
+
     const pairings: { homeTeamId: string; awayTeamId: string }[] = [];
     for (let i = 0; i < winners.length; i += 2) {
       if (i + 1 < winners.length) {
@@ -116,6 +132,8 @@ export class KnockoutGenerator {
           roundId: nextRound.id,
           homeTeamId: p.homeTeamId,
           awayTeamId: p.awayTeamId,
+          homeOwnerId: ownerMap.get(p.homeTeamId),
+          awayOwnerId: ownerMap.get(p.awayTeamId),
           matchNumber: idx + 1,
         })),
       });
