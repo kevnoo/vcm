@@ -13,6 +13,7 @@ import { SubmitGameStatsDto } from './dto/submit-game-stats.dto';
 import { ConfirmGameStatsDto } from './dto/confirm-game-stats.dto';
 import { DisputeStatFieldDto } from './dto/dispute-stat-field.dto';
 import { ResolveStatDisputeDto } from './dto/resolve-stat-dispute.dto';
+import { UpdateGameStatsDto } from './dto/update-game-stats.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -44,6 +45,15 @@ export class PlayerGameStatsController {
     @CurrentUser() user: any,
   ) {
     return this.service.confirm(matchId, dto, user);
+  }
+
+  @Patch('game-stats/:id')
+  updateGameStats(
+    @Param('id') id: string,
+    @Body() dto: UpdateGameStatsDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.service.updateGameStats(id, dto, user);
   }
 
   @Post('game-stats/:id/disputes')

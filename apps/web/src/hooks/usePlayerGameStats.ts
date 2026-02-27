@@ -41,6 +41,17 @@ export function useConfirmGameStats(matchId: string) {
   });
 }
 
+export function useUpdateGameStats() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ gameStatsId, ...data }: { gameStatsId: string; minutesPlayed?: number }) =>
+      api.patch(`/game-stats/${gameStatsId}`, data).then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['match-game-stats'] });
+    },
+  });
+}
+
 export function useDisputeStatField() {
   const queryClient = useQueryClient();
   return useMutation({

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useConfirmGameStats, useDisputeStatField } from '../../hooks/usePlayerGameStats';
+import { useConfirmGameStats, useDisputeStatField, useUpdateGameStats } from '../../hooks/usePlayerGameStats';
 import type { MatchPlayerGameStats } from '@vcm/shared';
 
 interface GameStatsReviewProps {
@@ -7,6 +7,7 @@ interface GameStatsReviewProps {
   stats: MatchPlayerGameStats[];
   canConfirm: boolean;
   canDispute: boolean;
+  canEdit?: boolean;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -181,10 +182,34 @@ export function GameStatsReview({
   stats,
   canConfirm,
   canDispute,
+  canEdit = false,
 }: GameStatsReviewProps) {
   const [expandedPlayer, setExpandedPlayer] = useState<string | null>(null);
+  const [editingMinutes, setEditingMinutes] = useState<Record<string, number>>({});
   const confirmGameStats = useConfirmGameStats(matchId);
   const disputeStatField = useDisputeStatField();
+  const updateGameStats = useUpdateGameStats();
+
+  const startEditMinutes = (statId: string, currentMinutes: number) => {
+    setEditingMinutes((prev) => ({ ...prev, [statId]: currentMinutes }));
+  };
+
+  const cancelEditMinutes = (statId: string) => {
+    setEditingMinutes((prev) => {
+      const next = { ...prev };
+      delete next[statId];
+      return next;
+    });
+  };
+
+  const saveMinutes = (statId: string) => {
+    const minutes = editingMinutes[statId];
+    if (minutes === undefined) return;
+    updateGameStats.mutate(
+      { gameStatsId: statId, minutesPlayed: minutes },
+      { onSuccess: () => cancelEditMinutes(statId) },
+    );
+  };
 
   if (stats.length === 0) {
     return (
@@ -275,18 +300,78 @@ export function GameStatsReview({
         {/* Expanded stat fields (read-only) */}
         {isExpanded && (
           <div className="px-3 sm:px-4 py-3 divide-y divide-gray-100">
-            {COMMON_FIELDS.map((field) => (
-              <StatValue
-                key={field}
-                label={STAT_LABELS[field]}
-                value={stat[field]}
-                fieldName={field}
-                canDispute={canDispute}
-                gameStatsId={stat.id}
-                hasDispute={disputedFields.has(field)}
-                disputeStatField={disputeStatField}
-              />
-            ))}
+            {COMMON_FIELDS.map((field) => {
+              if (field === 'minutesPlayed' && canEdit) {
+                const isEditing = stat.id in editingMinutes;
+                return (
+                  <div key={field} className="py-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-500">{STAT_LABELS[field]}</span>
+                      <div className="flex items-center gap-2">
+                        {isEditing ? (
+                          <>
+                            <input
+                              type="number"
+                              min={0}
+                              max={120}
+                              value={editingMinutes[stat.id]}
+                              onChange={(e) =>
+                                setEditingMinutes((prev) => ({
+                                  ...prev,
+                                  [stat.id]: parseInt(e.target.value) || 0,
+                                }))
+                              }
+                              className="w-16 rounded border border-gray-300 px-2 py-0.5 text-sm text-center"
+                            />
+                            <button
+                              onClick={() => saveMinutes(stat.id)}
+                              disabled={updateGameStats.isPending}
+                              className="text-xs text-green-600 hover:text-green-800 font-medium"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => cancelEditMinutes(stat.id)}
+                              className="text-xs text-gray-400 hover:text-gray-600"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <span className={`text-sm font-medium ${disputedFields.has(field) ? 'text-red-600' : 'text-gray-900'}`}>
+                              {stat[field]}
+                            </span>
+                            <button
+                              onClick={() => startEditMinutes(stat.id, stat.minutesPlayed)}
+                              className="text-gray-300 hover:text-indigo-500 transition-colors"
+                              title="Edit minutes played"
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                              </svg>
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <StatValue
+                  key={field}
+                  label={STAT_LABELS[field]}
+                  value={stat[field]}
+                  fieldName={field}
+                  canDispute={canDispute}
+                  gameStatsId={stat.id}
+                  hasDispute={disputedFields.has(field)}
+                  disputeStatField={disputeStatField}
+                />
+              );
+            })}
             {isGK &&
               GK_FIELDS.map((field) => (
                 <StatValue

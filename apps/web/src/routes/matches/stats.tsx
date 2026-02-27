@@ -512,6 +512,7 @@ function DetailedGameStatsSection({
       const canDispute =
         isOpposingOwner &&
         teamStats.some((s) => s.status === 'PENDING' || s.status === 'CONFIRMED');
+      const canEditStats = isAdmin || isUserTeam;
 
       return (
         <div key={teamId}>
@@ -523,6 +524,7 @@ function DetailedGameStatsSection({
             stats={teamStats}
             canConfirm={canConfirm}
             canDispute={canDispute}
+            canEdit={canEditStats}
           />
         </div>
       );

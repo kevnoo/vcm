@@ -10,6 +10,7 @@ import { SubmitGameStatsDto } from './dto/submit-game-stats.dto';
 import { ConfirmGameStatsDto } from './dto/confirm-game-stats.dto';
 import { DisputeStatFieldDto } from './dto/dispute-stat-field.dto';
 import { ResolveStatDisputeDto } from './dto/resolve-stat-dispute.dto';
+import { UpdateGameStatsDto } from './dto/update-game-stats.dto';
 
 interface AuthUser {
   id: string;
@@ -168,6 +169,43 @@ export class PlayerGameStatsService {
         status: 'PENDING',
       },
       data: { status: 'CONFIRMED' },
+    });
+  }
+
+  async updateGameStats(id: string, dto: UpdateGameStatsDto, user: AuthUser) {
+    const gameStats = await this.prisma.matchPlayerGameStats.findUniqueOrThrow({
+      where: { id },
+      include: {
+        match: { include: { homeTeam: true, awayTeam: true } },
+      },
+    });
+
+    const isAdmin = user.role === 'ADMIN';
+    const team =
+      gameStats.teamId === gameStats.match.homeTeamId
+        ? gameStats.match.homeTeam
+        : gameStats.match.awayTeam;
+    const isTeamOwner = team.ownerId === user.id;
+    const isDelegate = await this.statDelegatesService.isDelegate(
+      gameStats.teamId,
+      user.id,
+    );
+
+    if (!isAdmin && !isTeamOwner && !isDelegate) {
+      throw new ForbiddenException(
+        'Only admins, the team owner, or a delegate can update game stats',
+      );
+    }
+
+    const data: Record<string, unknown> = {};
+    if (dto.minutesPlayed !== undefined) {
+      data.minutesPlayed = dto.minutesPlayed;
+    }
+
+    return this.prisma.matchPlayerGameStats.update({
+      where: { id },
+      data,
+      include: { player: true },
     });
   }
 
