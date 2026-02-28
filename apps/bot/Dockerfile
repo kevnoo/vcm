@@ -13,6 +13,7 @@ RUN pnpm install --frozen-lockfile
 
 # ─── Build & Run ──────────────────────────────────────
 FROM deps AS production
+COPY tsconfig.base.json ./
 COPY packages/shared ./packages/shared
 COPY apps/api/src/prisma ./apps/api/src/prisma
 COPY apps/api/prisma.config.ts ./apps/api/prisma.config.ts
