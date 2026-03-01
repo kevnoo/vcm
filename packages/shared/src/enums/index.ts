@@ -16,3 +16,4 @@ export { GameStatsStatus } from './game-stats-status.enum';
 export { StatDisputeStatus } from './stat-dispute-status.enum';
 export { MediaType } from './media-type.enum';
 export { DiscordChannelType } from './discord-channel-type.enum';
+export { MessageSource } from './message-source.enum';

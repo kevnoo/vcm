@@ -1,13 +1,19 @@
-import { TimeProposalStatus } from '../enums';
+import { TimeProposalStatus, MessageSource } from '../enums';
 import { User } from './user';
 import { Match } from './match';
 
 export interface MatchMessage {
   id: string;
   matchId: string;
-  authorId: string;
+  authorId: string | null;
   content: string;
-  author?: User;
+  source: MessageSource;
+  discordMessageId?: string | null;
+  authorDiscordId?: string | null;
+  authorName?: string | null;
+  authorAvatarUrl?: string | null;
+  attachmentUrls?: string[] | null;
+  author?: User | null;
   createdAt: string;
 }
 
@@ -35,6 +41,7 @@ export interface MatchHub {
 
 export interface CreateMatchMessageDto {
   content: string;
+  attachmentUrls?: string[];
 }
 
 export interface CreateTimeProposalDto {

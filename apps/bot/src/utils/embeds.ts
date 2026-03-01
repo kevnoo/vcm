@@ -124,3 +124,73 @@ export function tradeEmbed(data: {
   embed.setTimestamp();
   return embed;
 }
+
+export function playerCardEmbed(data: {
+  firstName: string;
+  lastName: string;
+  position: string;
+  teamName: string | null;
+  imageUrl: string | null;
+  overall: number;
+  potential: number;
+  value: number;
+  weakFoot: number;
+  skillGroups: { name: string; average: number }[];
+  transferUrl: string | null;
+}) {
+  const color =
+    data.overall >= 85 ? 0xffd700 : data.overall >= 75 ? 0x5865f2 : 0xcd7f32;
+
+  const stars = '★'.repeat(data.weakFoot) + '☆'.repeat(5 - data.weakFoot);
+
+  const embed = new EmbedBuilder()
+    .setTitle(`${data.firstName} ${data.lastName}`)
+    .setDescription(`${data.position} • ${data.teamName ?? 'Free Agent'}`)
+    .setColor(color)
+    .addFields(
+      { name: 'OVR', value: `${data.overall}`, inline: true },
+      { name: 'POT', value: `${data.potential}`, inline: true },
+      { name: 'Value', value: `${data.value.toLocaleString()}`, inline: true },
+    );
+
+  if (data.skillGroups.length > 0) {
+    for (const group of data.skillGroups) {
+      embed.addFields({
+        name: abbreviateSkillGroup(group.name),
+        value: `${Math.round(group.average)}`,
+        inline: true,
+      });
+    }
+  } else {
+    embed.addFields({ name: 'Skills', value: 'No skill data', inline: false });
+  }
+
+  embed.addFields({ name: 'Weak Foot', value: stars, inline: false });
+
+  if (data.imageUrl) {
+    embed.setThumbnail(data.imageUrl);
+  }
+
+  if (data.transferUrl) {
+    embed.addFields({
+      name: '📋 Transfer List',
+      value: `[Propose Trade Offer](${data.transferUrl})`,
+      inline: false,
+    });
+  }
+
+  return embed;
+}
+
+const SKILL_GROUP_ABBREV: Record<string, string> = {
+  pace: 'PAC',
+  shooting: 'SHO',
+  passing: 'PAS',
+  dribbling: 'DRI',
+  defending: 'DEF',
+  physical: 'PHY',
+};
+
+function abbreviateSkillGroup(name: string): string {
+  return SKILL_GROUP_ABBREV[name.toLowerCase()] ?? name.substring(0, 3).toUpperCase();
+}

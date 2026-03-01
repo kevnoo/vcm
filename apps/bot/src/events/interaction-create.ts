@@ -5,6 +5,19 @@ export async function onInteractionCreate(
   interaction: Interaction,
   prisma: PrismaClient,
 ) {
+  // Handle autocomplete interactions
+  if (interaction.isAutocomplete()) {
+    const command = interaction.client.commands.get(interaction.commandName);
+    if (!command?.autocomplete) return;
+
+    try {
+      await command.autocomplete(interaction, prisma);
+    } catch (error) {
+      console.error(`Autocomplete error for /${interaction.commandName}:`, error);
+    }
+    return;
+  }
+
   if (!interaction.isChatInputCommand()) return;
 
   const command = interaction.client.commands.get(interaction.commandName);
