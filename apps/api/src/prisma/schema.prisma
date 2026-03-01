@@ -493,6 +493,7 @@ model Player {
   age             Int
   primaryPosition Position
   overall         Int      @default(50)
+  value           Int      @default(0)
   weakFoot        Int      @default(3)
   potential       Int      @default(50)
   teamId          String?
