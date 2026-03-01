@@ -7,6 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateMatchMessageDto } from './dto/create-match-message.dto';
 import { CreateTimeProposalDto } from './dto/create-time-proposal.dto';
 import { RespondTimeProposalDto } from './dto/respond-time-proposal.dto';
+import { DiscordThreadService } from './discord-thread.service';
 
 interface AuthUser {
   id: string;
@@ -15,7 +16,10 @@ interface AuthUser {
 
 @Injectable()
 export class MatchSchedulingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private discordThread: DiscordThreadService,
+  ) {}
 
   async getMatchHub(matchId: string, user: AuthUser) {
     const match = await this.prisma.match.findUniqueOrThrow({
@@ -71,14 +75,52 @@ export class MatchSchedulingService {
     const match = await this.getMatchWithOwners(matchId);
     this.assertInvolvedOrAdmin(match, user);
 
-    return this.prisma.matchMessage.create({
+    const fullUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+    });
+
+    const message = await this.prisma.matchMessage.create({
       data: {
         matchId,
         authorId: user.id,
         content: dto.content,
+        source: 'WEB',
+        authorDiscordId: fullUser?.discordId,
+        authorName: fullUser?.discordUsername,
+        authorAvatarUrl: fullUser?.discordAvatar
+          ? `https://cdn.discordapp.com/avatars/${fullUser.discordId}/${fullUser.discordAvatar}.png`
+          : undefined,
+        attachmentUrls: dto.attachmentUrls ?? undefined,
       },
       include: { author: true },
     });
+
+    // Post to Discord thread (fire-and-forget, don't block the response)
+    if (match.discordThreadId) {
+      this.discordThread
+        .postToThread(matchId, {
+          threadId: match.discordThreadId,
+          content: dto.content,
+          username: fullUser?.discordUsername ?? 'VCM User',
+          avatarURL: fullUser?.discordAvatar
+            ? `https://cdn.discordapp.com/avatars/${fullUser.discordId}/${fullUser.discordAvatar}.png`
+            : undefined,
+          attachmentUrls: dto.attachmentUrls,
+        })
+        .then((result) => {
+          if (result) {
+            this.prisma.matchMessage.update({
+              where: { id: message.id },
+              data: { discordMessageId: result.discordMessageId },
+            });
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to post to Discord thread:', err);
+        });
+    }
+
+    return message;
   }
 
   async getMessages(matchId: string, user: AuthUser) {
