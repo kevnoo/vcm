@@ -13,6 +13,7 @@ const navItems = [
 ];
 
 const adminItems = [
+  { to: '/admin/setup-guide', label: 'Setup Guide' },
   { to: '/admin/disputes', label: 'Disputes' },
   { to: '/admin/pending-trades', label: 'Pending Trades' },
   { to: '/admin/items', label: 'Item Management' },

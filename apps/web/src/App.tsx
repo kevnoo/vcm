@@ -25,6 +25,7 @@ import { ItemManagementPage } from './routes/admin/items';
 import { BundleManagementPage } from './routes/admin/bundles';
 import { PosPage } from './routes/admin/pos';
 import { CsvImportPage } from './routes/admin/csv-import';
+import { SetupGuidePage } from './routes/admin/setup-guide';
 import { ShopPage } from './routes/shop/index';
 import { InventoryPage } from './routes/shop/inventory';
 import { MatchStatsPage } from './routes/matches/stats';
@@ -155,6 +156,14 @@ export function App() {
           element={
             <AdminRoute>
               <CsvImportPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/setup-guide"
+          element={
+            <AdminRoute>
+              <SetupGuidePage />
             </AdminRoute>
           }
         />
