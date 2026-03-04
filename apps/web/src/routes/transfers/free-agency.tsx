@@ -25,19 +25,19 @@ export function FreeAgencyTab() {
   return (
     <div className="space-y-4">
       {userTeam && (
-        <div className="text-sm text-gray-500">
-          Your budget: <span className="font-medium text-gray-900">{userTeam.budget.toLocaleString()}</span>
+        <div className="text-sm text-[var(--text-secondary)]">
+          Your budget: <span className="font-medium text-[var(--text-primary)]">{userTeam.budget.toLocaleString()}</span>
         </div>
       )}
 
       {isLoading ? (
-        <p className="text-gray-500">Loading free agents...</p>
+        <p className="text-[var(--text-secondary)]">Loading free agents...</p>
       ) : freeAgents && freeAgents.length > 0 ? (
         <div className="grid gap-3">
           {freeAgents.map((player) => (
             <div
               key={player.id}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white rounded-lg shadow p-4"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-[var(--surface-card)] border border-[var(--border)] rounded-lg p-4"
             >
               <div className="flex items-center gap-3">
                 {player.imageUrl ? (
@@ -47,7 +47,7 @@ export function FreeAgencyTab() {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm font-bold">
+                  <div className="w-10 h-10 rounded-full bg-[var(--surface-elevated)] flex items-center justify-center text-[var(--text-secondary)] text-sm font-bold">
                     {player.firstName.charAt(0)}
                     {player.lastName.charAt(0)}
                   </div>
@@ -55,15 +55,15 @@ export function FreeAgencyTab() {
                 <div>
                   <Link
                     to={`/players/${player.id}`}
-                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                    className="text-sm font-medium text-[var(--accent-primary)] hover:brightness-110"
                   >
                     {player.firstName} {player.lastName}
                   </Link>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
+                    <span className="inline-block bg-[var(--accent-primary)]/20 text-[var(--accent-primary)] text-xs font-medium px-2 py-0.5 rounded">
                       {player.primaryPosition}
                     </span>
-                    <span className="text-xs text-gray-500">Age {player.age}</span>
+                    <span className="text-xs text-[var(--text-secondary)]">Age {player.age}</span>
                   </div>
                 </div>
               </div>
@@ -73,7 +73,7 @@ export function FreeAgencyTab() {
                 {userTeam && (
                   claimingPlayerId === player.id ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-amber-600">50% value deducted</span>
+                      <span className="text-xs text-amber-400">50% value deducted</span>
                       <button
                         onClick={() => handleClaim(player.id)}
                         disabled={claimFreeAgent.isPending}
@@ -83,7 +83,7 @@ export function FreeAgencyTab() {
                       </button>
                       <button
                         onClick={() => setClaimingPlayerId(null)}
-                        className="text-xs text-gray-500 hover:text-gray-700"
+                        className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                       >
                         Cancel
                       </button>
@@ -102,7 +102,7 @@ export function FreeAgencyTab() {
           ))}
         </div>
       ) : (
-        <p className="text-gray-500 text-sm">No free agents available.</p>
+        <p className="text-[var(--text-secondary)] text-sm">No free agents available.</p>
       )}
     </div>
   );

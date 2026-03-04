@@ -42,7 +42,9 @@ export function App() {
     <>
       <Toaster
         position="bottom-right"
+        theme="dark"
         toastOptions={{
+          duration: 4000,
           style: {
             background: 'var(--surface-card)',
             border: '1px solid var(--border)',

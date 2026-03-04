@@ -90,22 +90,7 @@ export function OwnerDashboard({ user }: { user: User }) {
     );
   }
 
-  // Compute record
-  const record = recentResults.reduce(
-    (acc, m) => {
-      if (!m.result) return acc;
-      const isHome = m.homeTeamId === myTeam.id;
-      const myGoals = isHome ? m.result.homeScore : m.result.awayScore;
-      const theirGoals = isHome ? m.result.awayScore : m.result.homeScore;
-      if (myGoals > theirGoals) acc.wins++;
-      else if (myGoals < theirGoals) acc.losses++;
-      else acc.draws++;
-      return acc;
-    },
-    { wins: 0, losses: 0, draws: 0 },
-  );
-
-  // Compute overall season record from ALL completed matches, not just recent 5
+  // Compute overall season record from ALL completed matches
   const seasonRecord = allMyMatches
     .filter((m) => m.status === 'COMPLETED' && m.result)
     .reduce(
@@ -174,19 +159,19 @@ export function OwnerDashboard({ user }: { user: User }) {
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <MiniCard label="Competitions" value={myCompetitions.length} accent="border-l-[var(--accent-primary)]" />
-        <MiniCard label="Upcoming Matches" value={upcomingMatches.length} accent="border-l-[var(--accent-win)]" />
+        <MiniCard label="Competitions" value={myCompetitions.length} accentColor="var(--accent-primary)" />
+        <MiniCard label="Upcoming Matches" value={upcomingMatches.length} accentColor="var(--accent-win)" />
         <MiniCard
           label="Needs Attention"
           value={pendingResultMatches.length}
           highlight={pendingResultMatches.length > 0}
-          accent="border-l-[var(--accent-loss)]"
+          accentColor="var(--accent-loss)"
         />
         <MiniCard
           label="Active Trades"
           value={activeTrades.length}
           highlight={activeTrades.length > 0}
-          accent="border-l-[var(--accent-highlight)]"
+          accentColor="var(--accent-highlight)"
         />
       </div>
 
@@ -395,15 +380,18 @@ function MiniCard({
   label,
   value,
   highlight = false,
-  accent,
+  accentColor,
 }: {
   label: string;
   value: number;
   highlight?: boolean;
-  accent?: string;
+  accentColor?: string;
 }) {
   return (
-    <div className={`bg-[var(--surface-card)] border border-[var(--border)] rounded-lg p-3 sm:p-4 ${accent ? `border-l-2 ${accent}` : ''}`}>
+    <div
+      className={`bg-[var(--surface-card)] border border-[var(--border)] rounded-lg p-3 sm:p-4 ${accentColor ? 'border-l-2' : ''}`}
+      style={accentColor ? { borderLeftColor: accentColor } : undefined}
+    >
       <h3 className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider leading-tight">{label}</h3>
       <p
         className={`text-2xl sm:text-3xl font-bold mt-1 ${

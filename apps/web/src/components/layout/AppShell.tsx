@@ -121,10 +121,10 @@ export function AppShell() {
                 key={item.to}
                 to={item.to}
                 onClick={closeSidebar}
-                className={`block px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                className={`block py-2.5 rounded-lg text-sm transition-colors ${
                   isNavActive(item.to, location.pathname)
-                    ? 'bg-[var(--surface-elevated)] text-white'
-                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-elevated)] hover:text-white'
+                    ? 'bg-[var(--surface-elevated)] text-white border-l-2 border-[var(--accent-primary)] pl-[10px] pr-3'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-elevated)] hover:text-white px-3'
                 }`}
               >
                 {item.label}
