@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type {
   MatchStats,
@@ -25,6 +26,10 @@ export function useSaveLineup(matchId: string, teamId: string) {
         .then((r) => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['match-stats', matchId] });
+      toast.success('Lineup saved');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -38,6 +43,10 @@ export function useSaveSubstitutions(matchId: string, teamId: string) {
         .then((r) => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['match-stats', matchId] });
+      toast.success('Substitutions saved');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -51,6 +60,10 @@ export function useSavePlayerStats(matchId: string) {
         .then((r) => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['match-stats', matchId] });
+      toast.success('Player stats saved');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }

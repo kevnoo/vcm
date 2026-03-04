@@ -75,15 +75,15 @@ export function AppShell() {
 
   const sidebarContent = (
     <>
-      <div className="p-4 border-b border-gray-700 flex items-center justify-between">
+      <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">VCM</h1>
-          <p className="text-sm text-gray-400">Virtual Career Mode</p>
+          <h1 className="text-xl font-bold tracking-tight"><span className="text-[var(--accent-primary)]">V</span>CM</h1>
+          <p className="text-sm text-[var(--text-secondary)]">Virtual Career Mode</p>
         </div>
         {/* Close button - visible on mobile only */}
         <button
           onClick={closeSidebar}
-          className="md:hidden p-2 -mr-2 text-gray-400 hover:text-white rounded-lg"
+          className="md:hidden p-2 -mr-2 text-[var(--text-secondary)] hover:text-white rounded-lg"
           aria-label="Close menu"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,8 +100,8 @@ export function AppShell() {
             onClick={closeSidebar}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
               isNavActive(item.to, location.pathname)
-                ? 'bg-gray-700 text-white'
-                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                ? 'bg-[var(--surface-elevated)] text-white border-l-2 border-[var(--accent-primary)] pl-[10px]'
+                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-elevated)] hover:text-white'
             }`}
           >
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +113,7 @@ export function AppShell() {
 
         {isInAdminView() && (
           <>
-            <div className="pt-4 pb-2 px-3 text-xs text-gray-500 uppercase tracking-wider">
+            <div className="pt-4 pb-2 px-3 text-xs text-[var(--text-secondary)] uppercase tracking-wider">
               Admin
             </div>
             {adminItems.map((item) => (
@@ -121,10 +121,10 @@ export function AppShell() {
                 key={item.to}
                 to={item.to}
                 onClick={closeSidebar}
-                className={`block px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                className={`block py-2.5 rounded-lg text-sm transition-colors ${
                   isNavActive(item.to, location.pathname)
-                    ? 'bg-gray-700 text-white'
-                    : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                    ? 'bg-[var(--surface-elevated)] text-white border-l-2 border-[var(--accent-primary)] pl-[10px] pr-3'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-elevated)] hover:text-white px-3'
                 }`}
               >
                 {item.label}
@@ -134,7 +134,7 @@ export function AppShell() {
         )}
       </nav>
 
-      <div className="p-4 border-t border-gray-700">
+      <div className="p-4 border-t border-[var(--border)]">
         <div className="flex items-center gap-3">
           {user?.discordAvatar && (
             <img
@@ -145,7 +145,7 @@ export function AppShell() {
           )}
           <div className="flex-1 min-w-0">
             <p className="text-sm truncate">{user?.discordUsername}</p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-[var(--text-secondary)]">
               {isAdmin() ? (isInAdminView() ? 'Admin View' : 'Owner View') : user?.role}
             </p>
           </div>
@@ -158,7 +158,7 @@ export function AppShell() {
               navigate('/');
               closeSidebar();
             }}
-            className="mt-2 w-full text-sm text-indigo-400 hover:text-indigo-300 text-left flex items-center gap-2 py-1.5"
+            className="mt-2 w-full text-sm text-[var(--accent-primary)] hover:brightness-125 text-left flex items-center gap-2 py-1.5"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -168,7 +168,7 @@ export function AppShell() {
         )}
         <button
           onClick={clearAuth}
-          className="mt-2 w-full text-sm text-gray-400 hover:text-white text-left py-1.5"
+          className="mt-2 w-full text-sm text-[var(--text-secondary)] hover:text-white text-left py-1.5"
         >
           Sign out
         </button>
@@ -177,13 +177,13 @@ export function AppShell() {
   );
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-[var(--surface-primary)]">
       {/* Mobile top bar */}
-      <header className="fixed top-0 left-0 right-0 z-30 md:hidden bg-gray-900 text-white">
+      <header className="fixed top-0 left-0 right-0 z-30 md:hidden bg-[var(--surface-primary)] text-white">
         <div className="flex items-center h-14 px-4">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 -ml-2 rounded-lg hover:bg-gray-800 active:bg-gray-700"
+            className="p-2 -ml-2 rounded-lg hover:bg-[var(--surface-elevated)] active:bg-[var(--surface-card)]"
             aria-label="Open menu"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +209,7 @@ export function AppShell() {
       >
         <div className="fixed inset-0 bg-black/50" onClick={closeSidebar} />
         <aside
-          className={`fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-gray-900 text-white flex flex-col z-50 transition-transform duration-300 ease-out ${
+          className={`fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-[var(--surface-primary)] text-white flex flex-col z-50 transition-transform duration-300 ease-out ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -218,7 +218,7 @@ export function AppShell() {
       </div>
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-64 bg-gray-900 text-white flex-col shrink-0">
+      <aside className="hidden md:flex w-64 bg-[var(--surface-primary)] text-white flex-col shrink-0">
         {sidebarContent}
       </aside>
 

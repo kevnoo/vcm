@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type {
   MatchPlayerGameStats,
@@ -26,6 +27,10 @@ export function useSubmitGameStats(matchId: string) {
       api.post(`/matches/${matchId}/game-stats`, data).then((r) => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['match-game-stats', matchId] });
+      toast.success('Game stats submitted');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -37,6 +42,10 @@ export function useConfirmGameStats(matchId: string) {
       api.patch(`/matches/${matchId}/game-stats/confirm`, data).then((r) => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['match-game-stats', matchId] });
+      toast.success('Game stats confirmed');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -60,6 +69,10 @@ export function useDisputeStatField() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['match-game-stats'] });
       queryClient.invalidateQueries({ queryKey: ['stat-disputes'] });
+      toast.success('Stat disputed');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }

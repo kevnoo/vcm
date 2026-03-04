@@ -4,6 +4,7 @@ import { useCompetitions } from '../../hooks/useCompetitions';
 import { useTrades } from '../../hooks/useTrades';
 import { usePlayers } from '../../hooks/usePlayers';
 import type { User, Match } from '@vcm/shared';
+import { DashboardSkeleton } from './DashboardSkeleton';
 
 export function OwnerDashboard({ user }: { user: User }) {
   const { data: teams, isLoading: teamsLoading } = useTeams();
@@ -68,20 +69,20 @@ export function OwnerDashboard({ user }: { user: User }) {
   const isLoading = teamsLoading || compsLoading;
 
   if (isLoading) {
-    return <p className="text-gray-500">Loading dashboard...</p>;
+    return <DashboardSkeleton />;
   }
 
   if (!myTeam) {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-6">
           Welcome, {user.discordUsername}
         </h1>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-          <p className="text-yellow-800 font-medium">
+        <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-6 text-center">
+          <p className="text-amber-400 font-medium">
             You don't have a team assigned yet.
           </p>
-          <p className="text-yellow-600 text-sm mt-1">
+          <p className="text-amber-500/70 text-sm mt-1">
             Contact a league admin to get your team set up.
           </p>
         </div>
@@ -89,22 +90,7 @@ export function OwnerDashboard({ user }: { user: User }) {
     );
   }
 
-  // Compute record
-  const record = recentResults.reduce(
-    (acc, m) => {
-      if (!m.result) return acc;
-      const isHome = m.homeTeamId === myTeam.id;
-      const myGoals = isHome ? m.result.homeScore : m.result.awayScore;
-      const theirGoals = isHome ? m.result.awayScore : m.result.homeScore;
-      if (myGoals > theirGoals) acc.wins++;
-      else if (myGoals < theirGoals) acc.losses++;
-      else acc.draws++;
-      return acc;
-    },
-    { wins: 0, losses: 0, draws: 0 },
-  );
-
-  // Compute overall season record from ALL completed matches, not just recent 5
+  // Compute overall season record from ALL completed matches
   const seasonRecord = allMyMatches
     .filter((m) => m.status === 'COMPLETED' && m.result)
     .reduce(
@@ -123,12 +109,14 @@ export function OwnerDashboard({ user }: { user: User }) {
 
   return (
     <div>
-      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
+      <h1 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] mb-4 sm:mb-6">
         Welcome, {user.discordUsername}
       </h1>
 
       {/* Team overview card */}
-      <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+      <div className="bg-[var(--surface-card)] border border-[var(--border)] rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 relative overflow-hidden">
+        {/* Gradient accent bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: 'linear-gradient(to right, var(--accent-primary), var(--accent-win))' }} />
         <div className="flex items-center gap-3 sm:gap-4">
           {myTeam.logoUrl ? (
             <img
@@ -137,27 +125,31 @@ export function OwnerDashboard({ user }: { user: User }) {
               className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover shrink-0"
             />
           ) : (
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-gray-200 flex items-center justify-center text-xl sm:text-2xl font-bold text-gray-400 shrink-0">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-[var(--surface-elevated)] flex items-center justify-center text-xl sm:text-2xl font-bold text-[var(--text-secondary)] shrink-0">
               {myTeam.name.charAt(0)}
             </div>
           )}
           <div className="flex-1 min-w-0">
             <Link
               to={`/teams/${myTeam.id}`}
-              className="text-lg sm:text-xl font-bold text-gray-900 hover:text-indigo-600"
+              className="text-lg sm:text-xl font-bold text-[var(--text-primary)] hover:text-[var(--accent-primary)]"
             >
               {myTeam.name}
             </Link>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 sm:mt-2 text-sm text-gray-600">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 sm:mt-2 text-sm text-[var(--text-secondary)]">
               <span>
-                Budget: <strong className="text-gray-900">${myTeam.budget.toLocaleString()}</strong>
+                Budget: <strong className="text-[var(--text-primary)]">${myTeam.budget.toLocaleString()}</strong>
               </span>
               <span>
-                Roster: <strong className="text-gray-900">{playersLoading ? '...' : (myPlayers?.length ?? 0)}</strong> players
+                Roster: <strong className="text-[var(--text-primary)]">{playersLoading ? '...' : (myPlayers?.length ?? 0)}</strong> players
               </span>
               <span>
-                Record: <strong className="text-gray-900">
-                  {seasonRecord.wins}W - {seasonRecord.draws}D - {seasonRecord.losses}L
+                Record: <strong className="text-[var(--text-primary)]">
+                  <span className="text-[var(--accent-win)]">{seasonRecord.wins}W</span>
+                  {' - '}
+                  <span className="text-[var(--accent-draw)]">{seasonRecord.draws}D</span>
+                  {' - '}
+                  <span className="text-[var(--accent-loss)]">{seasonRecord.losses}L</span>
                 </strong>
               </span>
             </div>
@@ -167,31 +159,33 @@ export function OwnerDashboard({ user }: { user: User }) {
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <MiniCard label="Competitions" value={myCompetitions.length} />
-        <MiniCard label="Upcoming Matches" value={upcomingMatches.length} />
+        <MiniCard label="Competitions" value={myCompetitions.length} accentColor="var(--accent-primary)" />
+        <MiniCard label="Upcoming Matches" value={upcomingMatches.length} accentColor="var(--accent-win)" />
         <MiniCard
           label="Needs Attention"
           value={pendingResultMatches.length}
           highlight={pendingResultMatches.length > 0}
+          accentColor="var(--accent-loss)"
         />
         <MiniCard
           label="Active Trades"
           value={activeTrades.length}
           highlight={activeTrades.length > 0}
+          accentColor="var(--accent-highlight)"
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Upcoming matches */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
+        <div className="bg-[var(--surface-card)] border border-[var(--border)] rounded-lg">
+          <div className="px-4 py-3 border-b border-[var(--border)]">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] uppercase tracking-wider">
               Upcoming Matches
             </h2>
           </div>
           <div className="p-4">
             {upcomingMatches.length === 0 ? (
-              <p className="text-sm text-gray-500">No upcoming matches.</p>
+              <p className="text-sm text-[var(--text-secondary)]">No upcoming matches.</p>
             ) : (
               <div className="space-y-3">
                 {upcomingMatches.map((match) => {
@@ -201,24 +195,24 @@ export function OwnerDashboard({ user }: { user: User }) {
                     <Link
                       key={match.id}
                       to={`/matches/${match.id}`}
-                      className="block text-sm hover:bg-gray-50 rounded p-1 -m-1"
+                      className="block text-sm hover:bg-[var(--surface-elevated)] rounded p-1 -m-1"
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-xs text-gray-500 uppercase">
+                          <span className="text-xs text-[var(--text-secondary)] uppercase">
                             {isHome ? 'Home' : 'Away'}
                           </span>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-[var(--text-primary)]">
                             vs {opponent?.name ?? 'TBD'}
                           </p>
                         </div>
                         {match.scheduledAt && (
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-[var(--text-secondary)]">
                             {new Date(match.scheduledAt).toLocaleDateString()}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-[var(--text-secondary)]">
                         {match.competitionName} &middot; {match.roundName}
                       </p>
                     </Link>
@@ -230,15 +224,15 @@ export function OwnerDashboard({ user }: { user: User }) {
         </div>
 
         {/* Recent results */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
+        <div className="bg-[var(--surface-card)] border border-[var(--border)] rounded-lg">
+          <div className="px-4 py-3 border-b border-[var(--border)]">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] uppercase tracking-wider">
               Recent Results
             </h2>
           </div>
           <div className="p-4">
             {recentResults.length === 0 ? (
-              <p className="text-sm text-gray-500">No results yet.</p>
+              <p className="text-sm text-[var(--text-secondary)]">No results yet.</p>
             ) : (
               <div className="space-y-3">
                 {recentResults.map((match) => {
@@ -254,22 +248,22 @@ export function OwnerDashboard({ user }: { user: User }) {
                     myGoals > theirGoals ? 'W' : myGoals < theirGoals ? 'L' : 'D';
                   const resultColor =
                     resultChar === 'W'
-                      ? 'bg-green-100 text-green-700'
+                      ? 'bg-emerald-900/40 text-emerald-400'
                       : resultChar === 'L'
-                        ? 'bg-red-100 text-red-700'
-                        : 'bg-gray-100 text-gray-600';
+                        ? 'bg-red-900/40 text-red-400'
+                        : 'bg-[var(--surface-elevated)] text-[var(--text-secondary)]';
                   return (
                     <Link
                       key={match.id}
                       to={`/matches/${match.id}`}
-                      className="block text-sm hover:bg-gray-50 rounded p-1 -m-1"
+                      className="block text-sm hover:bg-[var(--surface-elevated)] rounded p-1 -m-1"
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-[var(--text-primary)]">
                             vs {opponent?.name ?? 'TBD'}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-[var(--text-secondary)]">
                             {match.competitionName} &middot; {match.roundName}
                           </p>
                         </div>
@@ -277,7 +271,7 @@ export function OwnerDashboard({ user }: { user: User }) {
                           <span className={`text-xs font-bold px-2 py-0.5 rounded ${resultColor}`}>
                             {resultChar}
                           </span>
-                          <p className="text-sm font-medium text-gray-700 mt-0.5">
+                          <p className="text-sm font-medium text-[var(--text-primary)] mt-0.5">
                             {myGoals} - {theirGoals}
                           </p>
                         </div>
@@ -293,16 +287,16 @@ export function OwnerDashboard({ user }: { user: User }) {
 
       {/* Active trades */}
       {activeTrades.length > 0 && (
-        <div className="bg-white rounded-lg shadow mb-8">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
+        <div className="bg-[var(--surface-card)] border border-[var(--border)] rounded-lg mb-8">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] uppercase tracking-wider">
               Active Trades
             </h2>
-            <span className="bg-indigo-100 text-indigo-700 text-xs font-medium px-2 py-0.5 rounded-full">
+            <span className="bg-[var(--accent-primary)]/20 text-[var(--accent-primary)] text-xs font-medium px-2 py-0.5 rounded-full">
               {activeTrades.length}
             </span>
           </div>
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-[var(--border)]">
             {activeTrades.slice(0, 5).map((trade) => {
               const isInitiator = trade.initiatingTeamId === myTeam.id;
               const otherTeam = isInitiator ? trade.recvTeam : trade.initTeam;
@@ -310,13 +304,13 @@ export function OwnerDashboard({ user }: { user: User }) {
                 <Link
                   key={trade.id}
                   to={`/transfers/trades/${trade.id}`}
-                  className="flex items-center justify-between px-4 py-3 hover:bg-gray-50"
+                  className="flex items-center justify-between px-4 py-3 hover:bg-[var(--surface-elevated)]"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-[var(--text-primary)]">
                       Trade with {otherTeam?.name ?? 'Unknown'}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-[var(--text-secondary)]">
                       {isInitiator ? 'You initiated' : 'Received offer'} &middot;{' '}
                       {trade.offeredPlayers?.length ?? 0} offered,{' '}
                       {trade.requestedPlayers?.length ?? 0} requested
@@ -329,7 +323,7 @@ export function OwnerDashboard({ user }: { user: User }) {
           </div>
           <Link
             to="/transfers"
-            className="block px-4 py-3 text-sm text-indigo-600 hover:text-indigo-800 font-medium border-t border-gray-100"
+            className="block px-4 py-3 text-sm text-[var(--accent-primary)] hover:brightness-125 font-medium border-t border-[var(--border)]"
           >
             View all transfers &rarr;
           </Link>
@@ -338,13 +332,13 @@ export function OwnerDashboard({ user }: { user: User }) {
 
       {/* My competitions */}
       {myCompetitions.length > 0 && (
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
+        <div className="bg-[var(--surface-card)] border border-[var(--border)] rounded-lg">
+          <div className="px-4 py-3 border-b border-[var(--border)]">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)] uppercase tracking-wider">
               My Competitions
             </h2>
           </div>
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-[var(--border)]">
             {myCompetitions.map((comp) => {
               const myMatches = (comp.rounds ?? []).flatMap((r) =>
                 (r.matches ?? []).filter(
@@ -358,19 +352,19 @@ export function OwnerDashboard({ user }: { user: User }) {
                 <Link
                   key={comp.id}
                   to={`/competitions/${comp.id}`}
-                  className="flex items-center justify-between px-4 py-3 hover:bg-gray-50"
+                  className="flex items-center justify-between px-4 py-3 hover:bg-[var(--surface-elevated)]"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">{comp.name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="font-medium text-[var(--text-primary)]">{comp.name}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">
                       {comp.type.replace(/_/g, ' ')}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium text-[var(--text-primary)]">
                       {played}/{total}
                     </p>
-                    <p className="text-xs text-gray-500">matches played</p>
+                    <p className="text-xs text-[var(--text-secondary)]">matches played</p>
                   </div>
                 </Link>
               );
@@ -386,17 +380,22 @@ function MiniCard({
   label,
   value,
   highlight = false,
+  accentColor,
 }: {
   label: string;
   value: number;
   highlight?: boolean;
+  accentColor?: string;
 }) {
   return (
-    <div className="bg-white rounded-lg shadow p-3 sm:p-4">
-      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider leading-tight">{label}</h3>
+    <div
+      className={`bg-[var(--surface-card)] border border-[var(--border)] rounded-lg p-3 sm:p-4 ${accentColor ? 'border-l-2' : ''}`}
+      style={accentColor ? { borderLeftColor: accentColor } : undefined}
+    >
+      <h3 className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider leading-tight">{label}</h3>
       <p
         className={`text-2xl sm:text-3xl font-bold mt-1 ${
-          highlight ? 'text-indigo-600' : 'text-gray-900'
+          highlight ? 'text-[var(--accent-primary)]' : 'text-[var(--text-primary)]'
         }`}
       >
         {value}
@@ -407,9 +406,9 @@ function MiniCard({
 
 function TradeStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    PENDING: 'bg-yellow-100 text-yellow-700',
-    PENDING_APPROVAL: 'bg-blue-100 text-blue-700',
-    COUNTERED: 'bg-purple-100 text-purple-700',
+    PENDING: 'bg-amber-900/30 text-amber-400',
+    PENDING_APPROVAL: 'bg-blue-900/30 text-blue-400',
+    COUNTERED: 'bg-purple-900/30 text-purple-400',
   };
   const labels: Record<string, string> = {
     PENDING: 'Pending',
@@ -417,7 +416,7 @@ function TradeStatusBadge({ status }: { status: string }) {
     COUNTERED: 'Countered',
   };
   return (
-    <span className={`text-xs px-2 py-0.5 rounded ${styles[status] ?? 'bg-gray-100 text-gray-600'}`}>
+    <span className={`text-xs px-2 py-0.5 rounded ${styles[status] ?? 'bg-[var(--surface-elevated)] text-[var(--text-secondary)]'}`}>
       {labels[status] ?? status}
     </span>
   );

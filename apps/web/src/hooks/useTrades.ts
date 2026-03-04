@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type { TradeOffer, CreateTradeOfferDto, CounterTradeOfferDto } from '@vcm/shared';
 
@@ -36,7 +37,13 @@ export function useCreateTradeOffer() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateTradeOfferDto) => api.post('/trades', data).then((r) => r.data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['trades'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trades'] });
+      toast.success('Trade offer sent');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
+    },
   });
 }
 
@@ -45,7 +52,13 @@ export function useAcceptTrade() {
   return useMutation({
     mutationFn: ({ id, responseNote }: { id: string; responseNote?: string }) =>
       api.patch(`/trades/${id}/accept`, { responseNote }).then((r) => r.data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['trades'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trades'] });
+      toast.success('Trade accepted');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
+    },
   });
 }
 
@@ -54,7 +67,13 @@ export function useRejectTrade() {
   return useMutation({
     mutationFn: ({ id, responseNote }: { id: string; responseNote?: string }) =>
       api.patch(`/trades/${id}/reject`, { responseNote }).then((r) => r.data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['trades'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trades'] });
+      toast.success('Trade rejected');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
+    },
   });
 }
 
@@ -63,7 +82,13 @@ export function useCounterTrade() {
   return useMutation({
     mutationFn: ({ id, ...data }: CounterTradeOfferDto & { id: string }) =>
       api.post(`/trades/${id}/counter`, data).then((r) => r.data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['trades'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trades'] });
+      toast.success('Counter offer sent');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
+    },
   });
 }
 
@@ -71,7 +96,13 @@ export function useCancelTrade() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => api.patch(`/trades/${id}/cancel`).then((r) => r.data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['trades'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trades'] });
+      toast.success('Trade cancelled');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
+    },
   });
 }
 

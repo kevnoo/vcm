@@ -32,13 +32,28 @@ import { MatchStatsPage } from './routes/matches/stats';
 import { MatchHubPage } from './routes/matches/hub';
 import { ScheduleGeneratorPage } from './routes/tools/schedule-generator';
 import { useCurrentUser } from './hooks/useAuth';
+import { Toaster } from 'sonner';
 
 export function App() {
   // Fetch current user on app load if token exists
   useCurrentUser();
 
   return (
-    <Routes>
+    <>
+      <Toaster
+        position="bottom-right"
+        theme="dark"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: 'var(--surface-card)',
+            border: '1px solid var(--border)',
+            color: 'var(--text-primary)',
+            fontFamily: "'Outfit', system-ui, sans-serif",
+          },
+        }}
+      />
+      <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
       <Route path="/tools/schedule-generator" element={<ScheduleGeneratorPage />} />
@@ -171,6 +186,7 @@ export function App() {
         {/* Catch-all: redirect unknown routes to dashboard */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
-    </Routes>
+      </Routes>
+    </>
   );
 }

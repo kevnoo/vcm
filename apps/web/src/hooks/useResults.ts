@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type { SubmitResultDto, DisputeResultDto, ResolveResultDto } from '@vcm/shared';
 
@@ -10,6 +11,10 @@ export function useSubmitResult(matchId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
       queryClient.invalidateQueries({ queryKey: ['matches'] });
+      toast.success('Result submitted');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -22,6 +27,10 @@ export function useDisputeResult() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
       queryClient.invalidateQueries({ queryKey: ['disputes'] });
+      toast.success('Result disputed');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -34,6 +43,10 @@ export function useResolveResult() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
       queryClient.invalidateQueries({ queryKey: ['disputes'] });
+      toast.success('Dispute resolved');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -46,6 +59,10 @@ export function useConfirmResult() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
       queryClient.invalidateQueries({ queryKey: ['disputes'] });
+      toast.success('Result confirmed');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
