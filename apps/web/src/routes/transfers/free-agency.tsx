@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useFreeAgents, useClaimFreeAgent } from '../../hooks/useFreeAgency';
 import { useTeams } from '../../hooks/useTeams';
 import { useAuthStore } from '../../stores/auth.store';
@@ -11,11 +12,14 @@ export function FreeAgencyTab() {
   const claimFreeAgent = useClaimFreeAgent();
 
   const userTeam = teams?.find((t) => t.ownerId === user?.id);
+  const [claimingPlayerId, setClaimingPlayerId] = useState<string | null>(null);
 
   const handleClaim = (playerId: string) => {
     if (!userTeam) return;
-    if (!confirm('Are you sure you want to claim this free agent? 50% of their value will be deducted from your budget.')) return;
-    claimFreeAgent.mutate({ playerId, teamId: userTeam.id });
+    claimFreeAgent.mutate(
+      { playerId, teamId: userTeam.id },
+      { onSuccess: () => setClaimingPlayerId(null) },
+    );
   };
 
   return (
@@ -67,13 +71,31 @@ export function FreeAgencyTab() {
               <div className="flex items-center gap-3">
                 <PlayerValueBadge value={player.computedValue} size="md" />
                 {userTeam && (
-                  <button
-                    onClick={() => handleClaim(player.id)}
-                    disabled={claimFreeAgent.isPending}
-                    className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-xs font-medium px-3 py-1.5 rounded"
-                  >
-                    Claim
-                  </button>
+                  claimingPlayerId === player.id ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-amber-600">50% value deducted</span>
+                      <button
+                        onClick={() => handleClaim(player.id)}
+                        disabled={claimFreeAgent.isPending}
+                        className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-xs font-medium px-3 py-1.5 rounded"
+                      >
+                        {claimFreeAgent.isPending ? 'Claiming...' : 'Confirm'}
+                      </button>
+                      <button
+                        onClick={() => setClaimingPlayerId(null)}
+                        className="text-xs text-gray-500 hover:text-gray-700"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setClaimingPlayerId(player.id)}
+                      className="bg-green-600 hover:bg-green-700 text-white text-xs font-medium px-3 py-1.5 rounded"
+                    >
+                      Claim
+                    </button>
+                  )
                 )}
               </div>
             </div>
