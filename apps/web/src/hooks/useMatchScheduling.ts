@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type {
   MatchHub,
@@ -38,6 +39,10 @@ export function useProposeTime(matchId: string) {
         .then((r) => r.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['match-hub', matchId] });
+      toast.success('Time proposed');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -59,6 +64,10 @@ export function useRespondToProposal(matchId: string) {
       queryClient.invalidateQueries({ queryKey: ['match-hub', matchId] });
       queryClient.invalidateQueries({ queryKey: ['matches'] });
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
+      toast.success('Response sent');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }
@@ -74,6 +83,10 @@ export function useAdminSetTime(matchId: string) {
       queryClient.invalidateQueries({ queryKey: ['match-hub', matchId] });
       queryClient.invalidateQueries({ queryKey: ['matches'] });
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
+      toast.success('Time set');
+    },
+    onError: () => {
+      toast.error('Something went wrong');
     },
   });
 }

@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type {
   ItemDefinition,
@@ -82,6 +83,10 @@ export function useBuyItem(teamId: string) {
       queryClient.invalidateQueries({ queryKey: ['teams', teamId, 'items'] });
       queryClient.invalidateQueries({ queryKey: ['teams', teamId] });
       queryClient.invalidateQueries({ queryKey: ['teams'] });
+      toast.success('Item purchased');
+    },
+    onError: () => {
+      toast.error('Purchase failed');
     },
   });
 }
@@ -95,6 +100,10 @@ export function useUseItem(teamId: string) {
       queryClient.invalidateQueries({ queryKey: ['teams', teamId, 'items'] });
       queryClient.invalidateQueries({ queryKey: ['teams', teamId, 'items', 'history'] });
       queryClient.invalidateQueries({ queryKey: ['players'] });
+      toast.success('Item applied');
+    },
+    onError: () => {
+      toast.error('Failed to apply item');
     },
   });
 }
