@@ -67,7 +67,7 @@ export function TradeDetailPage() {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-400">No players offered</p>
+              <p className="text-sm text-gray-500">No players offered</p>
             )}
             {trade.currencyOffered > 0 && (
               <p className="text-sm text-green-600 mt-2">{trade.currencyOffered.toLocaleString()} currency</p>
@@ -90,7 +90,7 @@ export function TradeDetailPage() {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-400">No players requested</p>
+              <p className="text-sm text-gray-500">No players requested</p>
             )}
             {trade.currencyRequested > 0 && (
               <p className="text-sm text-green-600 mt-2">{trade.currencyRequested.toLocaleString()} currency</p>
@@ -118,7 +118,7 @@ export function TradeDetailPage() {
           </div>
         )}
 
-        <div className="mt-4 text-xs text-gray-400">
+        <div className="mt-4 text-xs text-gray-500">
           Created: {new Date(trade.createdAt).toLocaleString()}
           {trade.expiresAt && <> &middot; Expires: {new Date(trade.expiresAt).toLocaleString()}</>}
         </div>

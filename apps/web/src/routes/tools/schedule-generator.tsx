@@ -195,7 +195,7 @@ export function ScheduleGeneratorPage() {
           {/* Right panel: results */}
           <div className="lg:col-span-2">
             {!rounds && (
-              <div className="bg-white rounded-lg shadow p-8 text-center text-gray-400">
+              <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
                 <p className="text-lg">Add at least 2 teams and click Generate</p>
                 <p className="text-sm mt-1">
                   The schedule will appear here

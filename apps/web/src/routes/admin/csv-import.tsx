@@ -117,7 +117,7 @@ export function CsvImportPage() {
                   <tr key={i} className="border-b border-gray-100 last:border-b-0">
                     {row.map((cell, j) => (
                       <td key={j} className="px-3 py-1.5 text-gray-700 font-mono whitespace-nowrap">
-                        {cell || <span className="text-gray-300 italic">empty</span>}
+                        {cell || <span className="text-gray-400 italic">empty</span>}
                       </td>
                     ))}
                   </tr>

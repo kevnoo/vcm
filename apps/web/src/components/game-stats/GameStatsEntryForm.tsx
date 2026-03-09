@@ -241,7 +241,7 @@ export function GameStatsEntryForm({
   if (players.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-6 text-center">
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-500">
           No lineup data found. Please set up the lineup first.
         </p>
       </div>
@@ -254,7 +254,7 @@ export function GameStatsEntryForm({
       <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-900">Enter Game Stats</h3>
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-gray-500">
             {filledCount}/{players.length} players edited
           </span>
         </div>
@@ -311,7 +311,7 @@ export function GameStatsEntryForm({
                 <tr>
                   <td
                     colSpan={fields.length + 1}
-                    className="px-4 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider bg-gray-50/50"
+                    className="px-4 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50/50"
                   >
                     Starters
                   </td>
@@ -332,7 +332,7 @@ export function GameStatsEntryForm({
                 <tr>
                   <td
                     colSpan={fields.length + 1}
-                    className="px-4 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider bg-gray-50/50"
+                    className="px-4 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50/50"
                   >
                     Substitutes
                   </td>
@@ -418,7 +418,7 @@ function PlayerStatRow({
               className={`w-full max-w-[60px] mx-auto rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
                 stats[field.key]
                   ? 'bg-green-50 border-green-300 text-green-700'
-                  : 'bg-gray-50 border-gray-200 text-gray-400'
+                  : 'bg-gray-50 border-gray-200 text-gray-500'
               }`}
             >
               {stats[field.key] ? 'Yes' : 'No'}

@@ -143,7 +143,7 @@ export function CreateTradePage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-400">No players on your team</p>
+            <p className="text-sm text-gray-500">No players on your team</p>
           )}
         </div>
 
@@ -176,7 +176,7 @@ export function CreateTradePage() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-400">No players on this team</p>
+              <p className="text-sm text-gray-500">No players on this team</p>
             )}
           </div>
         )}

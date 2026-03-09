@@ -95,7 +95,7 @@ export function GameStatsReview({
   if (stats.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-6 text-center">
-        <p className="text-sm text-gray-400">No game stats submitted yet.</p>
+        <p className="text-sm text-gray-500">No game stats submitted yet.</p>
       </div>
     );
   }
@@ -318,7 +318,7 @@ export function GameStatsReview({
                 <tr>
                   <td
                     colSpan={fields.length + 1}
-                    className="px-4 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider bg-gray-50/50"
+                    className="px-4 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50/50"
                   >
                     Starters ({starters.length})
                   </td>
@@ -360,7 +360,7 @@ export function GameStatsReview({
                 <tr>
                   <td
                     colSpan={fields.length + 1}
-                    className="px-4 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider bg-gray-50/50"
+                    className="px-4 py-1.5 text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50/50"
                   >
                     Substitutes ({subs.length})
                   </td>

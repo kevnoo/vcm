@@ -93,7 +93,7 @@ export function AdminDashboard({ user }: { user: User }) {
           </div>
           <div className="p-4">
             {disputesLoading ? (
-              <p className="text-sm text-gray-400">Loading...</p>
+              <p className="text-sm text-gray-500">Loading...</p>
             ) : disputes?.length === 0 ? (
               <p className="text-sm text-gray-500">No open disputes.</p>
             ) : (
@@ -140,7 +140,7 @@ export function AdminDashboard({ user }: { user: User }) {
           </div>
           <div className="p-4">
             {tradesLoading ? (
-              <p className="text-sm text-gray-400">Loading...</p>
+              <p className="text-sm text-gray-500">Loading...</p>
             ) : pendingTrades?.length === 0 ? (
               <p className="text-sm text-gray-500">No trades awaiting approval.</p>
             ) : (
@@ -189,7 +189,7 @@ export function AdminDashboard({ user }: { user: User }) {
           </div>
           <div className="p-4">
             {isLoading ? (
-              <p className="text-sm text-gray-400">Loading...</p>
+              <p className="text-sm text-gray-500">Loading...</p>
             ) : upcomingMatches.length === 0 ? (
               <p className="text-sm text-gray-500">No upcoming matches.</p>
             ) : (
@@ -229,7 +229,7 @@ export function AdminDashboard({ user }: { user: User }) {
           </div>
           <div className="p-4">
             {isLoading ? (
-              <p className="text-sm text-gray-400">Loading...</p>
+              <p className="text-sm text-gray-500">Loading...</p>
             ) : recentResults.length === 0 ? (
               <p className="text-sm text-gray-500">No recent results.</p>
             ) : (
@@ -340,7 +340,7 @@ function StatCard({
       <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider leading-tight">{label}</h3>
       <p
         className={`text-2xl sm:text-3xl font-bold mt-1 ${
-          variant === 'muted' ? 'text-gray-400' : 'text-gray-900'
+          variant === 'muted' ? 'text-gray-500' : 'text-gray-900'
         }`}
       >
         {value}

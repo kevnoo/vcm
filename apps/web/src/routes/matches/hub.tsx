@@ -75,7 +75,7 @@ export function MatchHubPage() {
             />
           ) : (
             <div className="bg-white rounded-lg shadow p-6 text-center">
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-gray-500">
                 Conversation is only visible to involved team owners and admins.
               </p>
             </div>
@@ -253,7 +253,7 @@ function TimeProposalSection({
       <h3 className="text-sm font-semibold text-gray-900 mb-3">Scheduling</h3>
 
       {matchCompleted ? (
-        <p className="text-sm text-gray-400 italic">Match has concluded.</p>
+        <p className="text-sm text-gray-500 italic">Match has concluded.</p>
       ) : (
         <>
           {/* Pending proposal */}
@@ -473,7 +473,7 @@ function ConversationSection({
 
       <div className="h-80 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
-          <p className="text-sm text-gray-400 italic text-center mt-8">
+          <p className="text-sm text-gray-500 italic text-center mt-8">
             No messages yet. Start the conversation to coordinate your match.
           </p>
         )}
@@ -582,7 +582,7 @@ function ResultDisplay({ hub, userId }: { hub: MatchHub; userId?: string }) {
             <p className="text-3xl font-bold text-gray-900">{result.awayScore}</p>
           </div>
         </div>
-        <p className="text-xs text-gray-400 mt-2">
+        <p className="text-xs text-gray-500 mt-2">
           Submitted by {result.submittedBy?.discordUsername}
         </p>
         {result.disputeReason && (
@@ -751,7 +751,7 @@ function GameStatsSection({
   if (gameStatsLoading || matchStatsLoading) {
     return (
       <div className="bg-white rounded-lg shadow p-4">
-        <p className="text-sm text-gray-400">Loading game stats...</p>
+        <p className="text-sm text-gray-500">Loading game stats...</p>
       </div>
     );
   }
@@ -832,7 +832,7 @@ function GameStatsSection({
             <p className="text-xs font-medium text-gray-500 uppercase mb-2">
               {teamName} Stats
             </p>
-            <p className="text-sm text-gray-400 italic">
+            <p className="text-sm text-gray-500 italic">
               No lineup set for {teamName}. Please{' '}
               <Link
                 to={`/matches/${matchId}/stats`}
@@ -866,7 +866,7 @@ function GameStatsSection({
         <p className="text-xs font-medium text-gray-500 uppercase mb-2">
           {teamName} Stats
         </p>
-        <p className="text-sm text-gray-400 italic">
+        <p className="text-sm text-gray-500 italic">
           Waiting for {teamName} to submit their game stats.
         </p>
       </div>

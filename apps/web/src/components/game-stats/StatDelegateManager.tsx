@@ -39,7 +39,7 @@ export function StatDelegateManager({ teamId }: StatDelegateManagerProps) {
 
       {/* Delegate list */}
       {isLoading ? (
-        <p className="text-sm text-gray-400">Loading delegates...</p>
+        <p className="text-sm text-gray-500">Loading delegates...</p>
       ) : delegates && delegates.length > 0 ? (
         <div className="space-y-2 mb-4">
           {delegates.map((d) => (
@@ -51,7 +51,7 @@ export function StatDelegateManager({ teamId }: StatDelegateManagerProps) {
                 <span className="text-sm font-medium text-gray-900 truncate block sm:inline">
                   {d.delegate?.discordUsername ?? d.delegateUserId}
                 </span>
-                <span className="text-xs text-gray-400 sm:ml-2 block sm:inline">
+                <span className="text-xs text-gray-500 sm:ml-2 block sm:inline">
                   Added {new Date(d.createdAt).toLocaleDateString()}
                 </span>
               </div>
@@ -66,7 +66,7 @@ export function StatDelegateManager({ teamId }: StatDelegateManagerProps) {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-gray-400 italic mb-4">No delegates added yet.</p>
+        <p className="text-sm text-gray-500 italic mb-4">No delegates added yet.</p>
       )}
 
       {/* Add delegate */}

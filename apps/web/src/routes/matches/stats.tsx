@@ -31,7 +31,7 @@ export function MatchStatsPage() {
   if (matchLoading || statsLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-pulse text-gray-400 text-sm">Loading match stats...</div>
+        <div className="animate-pulse text-gray-500 text-sm">Loading match stats...</div>
       </div>
     );
   }
@@ -379,7 +379,7 @@ function LineupSection({
           <div>
             {starters.length > 0 && (
               <div className="mb-4">
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
                   Starting XI
                 </h3>
                 <div className="space-y-1.5">
@@ -403,7 +403,7 @@ function LineupSection({
             )}
             {bench.length > 0 && (
               <div className="mb-3">
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
                   Bench
                 </h3>
                 <div className="space-y-1.5">
@@ -426,7 +426,7 @@ function LineupSection({
               </div>
             )}
             {lineup.length === 0 && (
-              <p className="text-sm text-gray-400 italic py-2">No lineup set</p>
+              <p className="text-sm text-gray-500 italic py-2">No lineup set</p>
             )}
           </div>
         )}
@@ -434,7 +434,7 @@ function LineupSection({
         {/* Substitutions */}
         {editingSubs ? (
           <div className="mt-4 pt-4 border-t border-gray-100">
-            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
               Substitutions
             </h3>
             {subs.map((sub, i) => (
@@ -522,7 +522,7 @@ function LineupSection({
         ) : (
           substitutions.length > 0 && (
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
                 Substitutions
               </h3>
               <div className="space-y-2">
@@ -569,7 +569,7 @@ function DetailedGameStatsSection({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-pulse text-gray-400 text-sm">Loading game stats...</div>
+        <div className="animate-pulse text-gray-500 text-sm">Loading game stats...</div>
       </div>
     );
   }
@@ -645,7 +645,7 @@ function DetailedGameStatsSection({
               </svg>
             </div>
             <p className="text-sm font-medium text-gray-700 mb-1">{teamName}</p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-500">
               Set up the lineup in the Lineups tab before entering game stats.
             </p>
           </div>
@@ -672,7 +672,7 @@ function DetailedGameStatsSection({
           </svg>
         </div>
         <p className="text-sm font-medium text-gray-700 mb-1">{teamName}</p>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-500">
           Waiting for stats to be submitted.
         </p>
       </div>
@@ -888,7 +888,7 @@ function PlayerStatsSection({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {STAT_TYPES.map((type) => (
               <div key={type} className="rounded-lg border border-gray-100 p-3">
-                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
                   {type}s
                 </h3>
                 {statsByType[type]?.length > 0 ? (
@@ -912,14 +912,14 @@ function PlayerStatsSection({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-300 italic">None</p>
+                  <p className="text-sm text-gray-400 italic">None</p>
                 )}
               </div>
             ))}
           </div>
         ) : (
           <div className="text-center py-6">
-            <p className="text-sm text-gray-400">No events recorded</p>
+            <p className="text-sm text-gray-500">No events recorded</p>
           </div>
         )}
       </div>
@@ -986,7 +986,7 @@ function MinutesPlayedSection({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {homeMinutes.length > 0 && (
             <div>
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
                 Home
               </h3>
               {renderList(homeMinutes)}
@@ -994,7 +994,7 @@ function MinutesPlayedSection({
           )}
           {awayMinutes.length > 0 && (
             <div>
-              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">
                 Away
               </h3>
               {renderList(awayMinutes)}
