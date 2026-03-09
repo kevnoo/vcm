@@ -22,6 +22,16 @@ body {
   color: var(--text-primary);
 }
 
+/* Ensure form elements have visible dark text on white card backgrounds.
+   The body uses light text for the dark theme, but form inputs sit inside
+   bg-white cards and inherit that light color — making text invisible. */
+input, select, textarea, option {
+  color: #111827;
+}
+input::placeholder, textarea::placeholder {
+  color: #9ca3af;
+}
+
 /* Skeleton pulse animation */
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 0.4; }
