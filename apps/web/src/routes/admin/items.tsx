@@ -29,6 +29,10 @@ export function ItemManagementPage() {
   const [newEffectType, setNewEffectType] = useState<ItemEffectType | ''>('');
   const [newEffectValue, setNewEffectValue] = useState('1');
   const [newPrice, setNewPrice] = useState('');
+  const [newMinOverall, setNewMinOverall] = useState('');
+  const [newMaxOverall, setNewMaxOverall] = useState('');
+  const [newMinPotential, setNewMinPotential] = useState('');
+  const [newMaxPotential, setNewMaxPotential] = useState('');
 
   const [editing, setEditing] = useState<ItemDefinition | null>(null);
   const [editName, setEditName] = useState('');
@@ -36,6 +40,10 @@ export function ItemManagementPage() {
   const [editEffectType, setEditEffectType] = useState<ItemEffectType | ''>('');
   const [editEffectValue, setEditEffectValue] = useState('');
   const [editPrice, setEditPrice] = useState('');
+  const [editMinOverall, setEditMinOverall] = useState('');
+  const [editMaxOverall, setEditMaxOverall] = useState('');
+  const [editMinPotential, setEditMinPotential] = useState('');
+  const [editMaxPotential, setEditMaxPotential] = useState('');
   const [editActive, setEditActive] = useState(true);
 
   if (isLoading) return <p className="text-gray-500">Loading...</p>;
@@ -50,6 +58,10 @@ export function ItemManagementPage() {
         effectType: newEffectType,
         effectValue: parseInt(newEffectValue, 10),
         price: parseInt(newPrice, 10),
+        minOverall: newMinOverall ? parseInt(newMinOverall, 10) : undefined,
+        maxOverall: newMaxOverall ? parseInt(newMaxOverall, 10) : undefined,
+        minPotential: newMinPotential ? parseInt(newMinPotential, 10) : undefined,
+        maxPotential: newMaxPotential ? parseInt(newMaxPotential, 10) : undefined,
       },
       {
         onSuccess: () => {
@@ -58,6 +70,10 @@ export function ItemManagementPage() {
           setNewEffectType('');
           setNewEffectValue('1');
           setNewPrice('');
+          setNewMinOverall('');
+          setNewMaxOverall('');
+          setNewMinPotential('');
+          setNewMaxPotential('');
           setAdding(false);
         },
       },
@@ -71,6 +87,10 @@ export function ItemManagementPage() {
     setEditEffectType(item.effectType);
     setEditEffectValue(String(item.effectValue));
     setEditPrice(String(item.price));
+    setEditMinOverall(item.minOverall != null ? String(item.minOverall) : '');
+    setEditMaxOverall(item.maxOverall != null ? String(item.maxOverall) : '');
+    setEditMinPotential(item.minPotential != null ? String(item.minPotential) : '');
+    setEditMaxPotential(item.maxPotential != null ? String(item.maxPotential) : '');
     setEditActive(item.isActive);
   };
 
@@ -84,6 +104,10 @@ export function ItemManagementPage() {
         effectType: editEffectType,
         effectValue: parseInt(editEffectValue, 10),
         price: parseInt(editPrice, 10),
+        minOverall: editMinOverall ? parseInt(editMinOverall, 10) : null,
+        maxOverall: editMaxOverall ? parseInt(editMaxOverall, 10) : null,
+        minPotential: editMinPotential ? parseInt(editMinPotential, 10) : null,
+        maxPotential: editMaxPotential ? parseInt(editMaxPotential, 10) : null,
         isActive: editActive,
       },
       { onSuccess: () => setEditing(null) },
@@ -157,6 +181,45 @@ export function ItemManagementPage() {
               placeholder="Price"
               min={0}
               required
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <p className="text-xs text-gray-500 font-medium mt-1">Player Requirements (optional)</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <input
+              type="number"
+              value={newMinOverall}
+              onChange={(e) => setNewMinOverall(e.target.value)}
+              placeholder="Min Overall"
+              min={0}
+              max={99}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              value={newMaxOverall}
+              onChange={(e) => setNewMaxOverall(e.target.value)}
+              placeholder="Max Overall"
+              min={0}
+              max={99}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              value={newMinPotential}
+              onChange={(e) => setNewMinPotential(e.target.value)}
+              placeholder="Min Potential"
+              min={0}
+              max={99}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              value={newMaxPotential}
+              onChange={(e) => setNewMaxPotential(e.target.value)}
+              placeholder="Max Potential"
+              min={0}
+              max={99}
               className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -237,6 +300,45 @@ export function ItemManagementPage() {
                     Active
                   </label>
                 </div>
+                <p className="text-xs text-gray-500 font-medium">Player Requirements (optional)</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <input
+                    type="number"
+                    value={editMinOverall}
+                    onChange={(e) => setEditMinOverall(e.target.value)}
+                    placeholder="Min Overall"
+                    min={0}
+                    max={99}
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    value={editMaxOverall}
+                    onChange={(e) => setEditMaxOverall(e.target.value)}
+                    placeholder="Max Overall"
+                    min={0}
+                    max={99}
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    value={editMinPotential}
+                    onChange={(e) => setEditMinPotential(e.target.value)}
+                    placeholder="Min Potential"
+                    min={0}
+                    max={99}
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    value={editMaxPotential}
+                    onChange={(e) => setEditMaxPotential(e.target.value)}
+                    placeholder="Max Potential"
+                    min={0}
+                    max={99}
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  />
+                </div>
                 <div className="flex gap-2">
                   <button
                     onClick={handleSave}
@@ -270,9 +372,19 @@ export function ItemManagementPage() {
                   {item.description && (
                     <p className="text-sm text-gray-500 mt-0.5">{item.description}</p>
                   )}
-                  <div className="flex gap-4 mt-1 text-xs text-gray-400">
+                  <div className="flex flex-wrap gap-4 mt-1 text-xs text-gray-400">
                     <span>Effect: {EFFECT_TYPE_LABELS[item.effectType]} ({item.effectValue})</span>
                     <span>Price: {item.price.toLocaleString()}</span>
+                    {(item.minOverall != null || item.maxOverall != null) && (
+                      <span>
+                        OVR: {item.minOverall ?? 0}–{item.maxOverall ?? 99}
+                      </span>
+                    )}
+                    {(item.minPotential != null || item.maxPotential != null) && (
+                      <span>
+                        POT: {item.minPotential ?? 0}–{item.maxPotential ?? 99}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-2">

@@ -582,10 +582,14 @@ model ItemDefinition {
   id          String         @id @default(uuid())
   name        String         @unique
   description String?
-  effectType  ItemEffectType
-  effectValue Int
-  price       Int
-  isActive    Boolean        @default(true)
+  effectType   ItemEffectType
+  effectValue  Int
+  price        Int
+  minOverall   Int?
+  maxOverall   Int?
+  minPotential Int?
+  maxPotential Int?
+  isActive     Boolean        @default(true)
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 

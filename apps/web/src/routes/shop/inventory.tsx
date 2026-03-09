@@ -23,6 +23,29 @@ function formatEffect(item: TeamItem): string {
   }
 }
 
+function formatRequirements(item: TeamItem): string | null {
+  const def = item.itemDefinition;
+  if (!def) return null;
+  const parts: string[] = [];
+  if (def.minOverall != null || def.maxOverall != null) {
+    parts.push(`OVR ${def.minOverall ?? 0}–${def.maxOverall ?? 99}`);
+  }
+  if (def.minPotential != null || def.maxPotential != null) {
+    parts.push(`POT ${def.minPotential ?? 0}–${def.maxPotential ?? 99}`);
+  }
+  return parts.length > 0 ? parts.join(', ') : null;
+}
+
+function isPlayerEligible(player: Player, item: TeamItem): boolean {
+  const def = item.itemDefinition;
+  if (!def) return true;
+  if (def.minOverall != null && player.overall < def.minOverall) return false;
+  if (def.maxOverall != null && player.overall > def.maxOverall) return false;
+  if (def.minPotential != null && player.potential < def.minPotential) return false;
+  if (def.maxPotential != null && player.potential > def.maxPotential) return false;
+  return true;
+}
+
 export function InventoryPage() {
   const { data: teams } = useTeams();
   const { user } = useAuthStore();
@@ -120,13 +143,18 @@ export function InventoryPage() {
             <div key={teamItem.id} className="bg-white rounded-lg shadow p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-medium text-gray-900">
                       {teamItem.itemDefinition?.name}
                     </span>
                     <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-medium">
                       {formatEffect(teamItem)}
                     </span>
+                    {formatRequirements(teamItem) && (
+                      <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium">
+                        Requires: {formatRequirements(teamItem)}
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-gray-500 mt-0.5">
                     Quantity: <span className="font-medium">{teamItem.quantity}</span>
@@ -156,11 +184,13 @@ export function InventoryPage() {
                       className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
                     >
                       <option value="">Select a player</option>
-                      {players?.map((p: Player) => (
-                        <option key={p.id} value={p.id}>
-                          {p.firstName} {p.lastName} (OVR: {p.overall}, WF: {p.weakFoot}, POT: {p.potential})
-                        </option>
-                      ))}
+                      {players
+                        ?.filter((p: Player) => isPlayerEligible(p, teamItem))
+                        .map((p: Player) => (
+                          <option key={p.id} value={p.id}>
+                            {p.firstName} {p.lastName} (OVR: {p.overall}, WF: {p.weakFoot}, POT: {p.potential})
+                          </option>
+                        ))}
                     </select>
                     <button
                       onClick={handleUse}

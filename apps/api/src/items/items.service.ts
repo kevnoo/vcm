@@ -138,6 +138,29 @@ export class ItemsService {
       throw new BadRequestException('Player does not belong to your team');
     }
 
+    const { minOverall, maxOverall, minPotential, maxPotential } = teamItem.itemDefinition;
+
+    if (minOverall !== null && player.overall < minOverall) {
+      throw new BadRequestException(
+        `Player overall (${player.overall}) is below the minimum required (${minOverall})`,
+      );
+    }
+    if (maxOverall !== null && player.overall > maxOverall) {
+      throw new BadRequestException(
+        `Player overall (${player.overall}) is above the maximum allowed (${maxOverall})`,
+      );
+    }
+    if (minPotential !== null && player.potential < minPotential) {
+      throw new BadRequestException(
+        `Player potential (${player.potential}) is below the minimum required (${minPotential})`,
+      );
+    }
+    if (maxPotential !== null && player.potential > maxPotential) {
+      throw new BadRequestException(
+        `Player potential (${player.potential}) is above the maximum allowed (${maxPotential})`,
+      );
+    }
+
     const { effectType, effectValue } = teamItem.itemDefinition;
     let previousValue: number;
     let newValue: number;
