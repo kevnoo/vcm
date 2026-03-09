@@ -103,7 +103,7 @@ export function LeagueSettingsPage() {
   const [newKey, setNewKey] = useState('');
   const [newValue, setNewValue] = useState('');
 
-  const webhookKeySet = new Set(WEBHOOK_KEYS.map((w) => w.key));
+  const webhookKeySet = new Set<string>(WEBHOOK_KEYS.map((w) => w.key));
   const otherSettings = settings?.filter((s) => !webhookKeySet.has(s.key)) ?? [];
 
   const getSettingValue = (key: string) =>
