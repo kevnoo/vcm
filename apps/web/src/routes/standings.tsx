@@ -24,12 +24,12 @@ export function StandingsPage() {
     useCompetitionLeaders(activeId);
 
   if (loadingCompetitions) {
-    return <p className="text-[var(--text-secondary)]">Loading...</p>;
+    return <div className="-m-4 md:-m-8 p-4 md:p-8 min-h-full bg-[var(--surface-primary)]"><p className="text-[var(--text-secondary)]">Loading...</p></div>;
   }
 
   if (!leagueCompetitions?.length) {
     return (
-      <div>
+      <div className="-m-4 md:-m-8 p-4 md:p-8 min-h-full bg-[var(--surface-primary)] text-[var(--text-primary)]">
         <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-4">
           Standings
         </h1>
@@ -41,7 +41,7 @@ export function StandingsPage() {
   }
 
   return (
-    <div>
+    <div className="-m-4 md:-m-8 p-4 md:p-8 min-h-full bg-[var(--surface-primary)] text-[var(--text-primary)]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-bold text-[var(--text-primary)]">
           Standings

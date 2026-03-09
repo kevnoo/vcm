@@ -272,7 +272,7 @@ function MatchRow({
 
       {/* Meta row: date + action links */}
       <div className="flex items-center justify-between mt-1.5">
-        <div className="text-xs text-gray-400">
+        <div className="text-xs text-gray-500">
           {match.scheduledAt && !showEditForm && (
             <span>
               {new Date(match.scheduledAt).toLocaleDateString(undefined, {

@@ -2,7 +2,7 @@ import { Skeleton } from '../ui/Skeleton';
 
 export function DashboardSkeleton() {
   return (
-    <div>
+    <div className="-m-4 md:-m-8 p-4 md:p-8 min-h-full bg-[var(--surface-primary)]">
       {/* Title skeleton */}
       <Skeleton className="h-8 w-64 mb-6" />
 

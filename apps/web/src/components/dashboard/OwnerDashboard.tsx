@@ -74,7 +74,7 @@ export function OwnerDashboard({ user }: { user: User }) {
 
   if (!myTeam) {
     return (
-      <div>
+      <div className="-m-4 md:-m-8 p-4 md:p-8 min-h-full bg-[var(--surface-primary)] text-[var(--text-primary)]">
         <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-6">
           Welcome, {user.discordUsername}
         </h1>
@@ -108,7 +108,7 @@ export function OwnerDashboard({ user }: { user: User }) {
     );
 
   return (
-    <div>
+    <div className="-m-4 md:-m-8 p-4 md:p-8 min-h-full bg-[var(--surface-primary)] text-[var(--text-primary)]">
       <h1 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] mb-4 sm:mb-6">
         Welcome, {user.discordUsername}
       </h1>

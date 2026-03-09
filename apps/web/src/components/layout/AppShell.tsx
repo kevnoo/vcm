@@ -225,7 +225,7 @@ export function AppShell() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto pt-14 md:pt-0">
+      <main className="flex-1 overflow-auto pt-14 md:pt-0 bg-gray-50 text-gray-900">
         <div className="p-4 md:p-8">
           <Outlet />
         </div>
