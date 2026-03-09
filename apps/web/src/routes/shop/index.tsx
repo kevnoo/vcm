@@ -27,6 +27,17 @@ function formatEffect(item: ItemDefinition): string {
   }
 }
 
+function formatRequirements(item: ItemDefinition): string | null {
+  const parts: string[] = [];
+  if (item.minOverall != null || item.maxOverall != null) {
+    parts.push(`OVR ${item.minOverall ?? 0}–${item.maxOverall ?? 99}`);
+  }
+  if (item.minPotential != null || item.maxPotential != null) {
+    parts.push(`POT ${item.minPotential ?? 0}–${item.maxPotential ?? 99}`);
+  }
+  return parts.length > 0 ? parts.join(', ') : null;
+}
+
 export function ShopPage() {
   const { data: items, isLoading: itemsLoading } = useShopItems();
   const { data: bundles, isLoading: bundlesLoading } = useShopBundles();
@@ -129,10 +140,15 @@ export function ShopPage() {
                 {item.description && (
                   <p className="text-sm text-gray-500 mt-1">{item.description}</p>
                 )}
-                <div className="mt-2 text-sm text-gray-600">
+                <div className="mt-2 flex flex-wrap gap-1.5 text-sm text-gray-600">
                   <span className="inline-block bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-xs font-medium">
                     {formatEffect(item)}
                   </span>
+                  {formatRequirements(item) && (
+                    <span className="inline-block bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-xs font-medium">
+                      Requires: {formatRequirements(item)}
+                    </span>
+                  )}
                 </div>
                 <div className="mt-auto pt-4">
                   <div className="flex items-center justify-between">

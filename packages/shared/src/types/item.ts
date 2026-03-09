@@ -9,6 +9,10 @@ export interface ItemDefinition {
   effectType: ItemEffectType;
   effectValue: number;
   price: number;
+  minOverall: number | null;
+  maxOverall: number | null;
+  minPotential: number | null;
+  maxPotential: number | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -45,6 +49,10 @@ export interface CreateItemDefinitionDto {
   effectType: ItemEffectType;
   effectValue: number;
   price: number;
+  minOverall?: number | null;
+  maxOverall?: number | null;
+  minPotential?: number | null;
+  maxPotential?: number | null;
 }
 
 export interface UpdateItemDefinitionDto {
@@ -53,6 +61,10 @@ export interface UpdateItemDefinitionDto {
   effectType?: ItemEffectType;
   effectValue?: number;
   price?: number;
+  minOverall?: number | null;
+  maxOverall?: number | null;
+  minPotential?: number | null;
+  maxPotential?: number | null;
   isActive?: boolean;
 }
 

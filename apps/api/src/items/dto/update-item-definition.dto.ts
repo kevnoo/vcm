@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { ItemEffectType } from '../../generated/prisma/client';
 
 export class UpdateItemDefinitionDto {
@@ -23,6 +23,30 @@ export class UpdateItemDefinitionDto {
   @Min(0)
   @IsOptional()
   price?: number;
+
+  @IsInt()
+  @Min(0)
+  @Max(99)
+  @IsOptional()
+  minOverall?: number | null;
+
+  @IsInt()
+  @Min(0)
+  @Max(99)
+  @IsOptional()
+  maxOverall?: number | null;
+
+  @IsInt()
+  @Min(0)
+  @Max(99)
+  @IsOptional()
+  minPotential?: number | null;
+
+  @IsInt()
+  @Min(0)
+  @Max(99)
+  @IsOptional()
+  maxPotential?: number | null;
 
   @IsBoolean()
   @IsOptional()
