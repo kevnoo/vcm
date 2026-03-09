@@ -12,6 +12,7 @@ import { schedule } from './schedule.js';
 import { setup } from './setup.js';
 import { demo } from './demo.js';
 import { playerCard } from './player-card.js';
+import { funds } from './funds.js';
 
 export interface Command {
   data: SharedSlashCommand;
@@ -33,4 +34,5 @@ export const commands: Command[] = [
   setup,
   demo,
   playerCard,
+  funds,
 ];
