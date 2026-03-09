@@ -38,7 +38,6 @@ interface PlayerStatForm {
   minutesPlayed: number;
   yellowCards: number;
   redCards: number;
-  // GK-only
   shotsAgainst: number;
   shotsOnTarget: number;
   saves: number;
@@ -79,38 +78,68 @@ function createDefaultStats(player: LineupPlayer): PlayerStatForm {
   };
 }
 
-function StatField({
-  label,
-  value,
-  onChange,
-  type = 'number',
-  min = 0,
-  max,
-  step,
-}: {
+type StatCategory = 'key' | 'shooting' | 'passing' | 'dribbling' | 'defending' | 'discipline' | 'goalkeeper';
+
+const CATEGORIES: { key: StatCategory; label: string; gkOnly?: boolean }[] = [
+  { key: 'key', label: 'Key Stats' },
+  { key: 'shooting', label: 'Shooting' },
+  { key: 'passing', label: 'Passing' },
+  { key: 'dribbling', label: 'Dribbling' },
+  { key: 'defending', label: 'Defending' },
+  { key: 'discipline', label: 'Discipline' },
+  { key: 'goalkeeper', label: 'GK Stats', gkOnly: true },
+];
+
+interface StatFieldDef {
+  key: keyof PlayerStatForm;
   label: string;
-  value: number;
-  onChange: (v: number) => void;
-  type?: string;
+  shortLabel: string;
   min?: number;
   max?: number;
   step?: number;
-}) {
-  return (
-    <div>
-      <label className="block text-xs text-gray-500 mb-1">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-        min={min}
-        max={max}
-        step={step}
-        className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm text-center"
-      />
-    </div>
-  );
+  type?: 'number' | 'toggle';
 }
+
+const CATEGORY_FIELDS: Record<StatCategory, StatFieldDef[]> = {
+  key: [
+    { key: 'rating', label: 'Rating', shortLabel: 'RTG', min: 1, max: 10, step: 0.1 },
+    { key: 'goals', label: 'Goals', shortLabel: 'G' },
+    { key: 'assists', label: 'Assists', shortLabel: 'A' },
+    { key: 'minutesPlayed', label: 'Minutes', shortLabel: 'MIN', max: 120 },
+  ],
+  shooting: [
+    { key: 'shots', label: 'Shots', shortLabel: 'SH' },
+    { key: 'shotAccuracy', label: 'Shot Accuracy %', shortLabel: 'SA%', max: 100 },
+  ],
+  passing: [
+    { key: 'passes', label: 'Passes', shortLabel: 'PAS' },
+    { key: 'passAccuracy', label: 'Pass Accuracy %', shortLabel: 'PA%', max: 100 },
+  ],
+  dribbling: [
+    { key: 'dribbles', label: 'Dribbles', shortLabel: 'DRB' },
+    { key: 'dribbleSuccessRate', label: 'Dribble Success %', shortLabel: 'DS%', max: 100 },
+  ],
+  defending: [
+    { key: 'tackles', label: 'Tackles', shortLabel: 'TKL' },
+    { key: 'tackleSuccessRate', label: 'Tackle Success %', shortLabel: 'TS%', max: 100 },
+    { key: 'possessionsWon', label: 'Poss. Won', shortLabel: 'PW' },
+    { key: 'possessionsLost', label: 'Poss. Lost', shortLabel: 'PL' },
+  ],
+  discipline: [
+    { key: 'offsides', label: 'Offsides', shortLabel: 'OFF' },
+    { key: 'foulsCommitted', label: 'Fouls', shortLabel: 'FLS' },
+    { key: 'yellowCards', label: 'Yellow Cards', shortLabel: 'YC', max: 2 },
+    { key: 'redCards', label: 'Red Cards', shortLabel: 'RC', max: 1 },
+  ],
+  goalkeeper: [
+    { key: 'shotsAgainst', label: 'Shots Against', shortLabel: 'SHA' },
+    { key: 'shotsOnTarget', label: 'Shots on Target', shortLabel: 'SOT' },
+    { key: 'saves', label: 'Saves', shortLabel: 'SAV' },
+    { key: 'goalsConceded', label: 'Goals Conceded', shortLabel: 'GC' },
+    { key: 'saveSuccessRate', label: 'Save Success %', shortLabel: 'SS%', max: 100 },
+    { key: 'cleanSheet', label: 'Clean Sheet', shortLabel: 'CS', type: 'toggle' },
+  ],
+};
 
 export function GameStatsEntryForm({
   matchId,
@@ -118,7 +147,7 @@ export function GameStatsEntryForm({
   players,
   onSubmitted,
 }: GameStatsEntryFormProps) {
-  const [expandedPlayer, setExpandedPlayer] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<StatCategory>('key');
   const [playerStats, setPlayerStats] = useState<Record<string, PlayerStatForm>>(() => {
     const initial: Record<string, PlayerStatForm> = {};
     for (const p of players) {
@@ -128,6 +157,9 @@ export function GameStatsEntryForm({
   });
 
   const submitGameStats = useSubmitGameStats(matchId);
+
+  const hasGK = players.some((p) => p.position === 'GK');
+  const visibleCategories = CATEGORIES.filter((c) => !c.gkOnly || hasGK);
 
   const updateStat = useCallback(
     (playerId: string, field: keyof PlayerStatForm, value: number | boolean) => {
@@ -188,300 +220,228 @@ export function GameStatsEntryForm({
     );
   };
 
-  const togglePlayer = (playerId: string) => {
-    setExpandedPlayer((prev) => (prev === playerId ? null : playerId));
-  };
-
-  // Separate starters and subs for display
   const starters = players.filter((p) => p.isStarter);
   const subs = players.filter((p) => !p.isStarter);
+  const fields = CATEGORY_FIELDS[activeCategory];
+  const isGKCategory = activeCategory === 'goalkeeper';
 
-  const renderPlayerRow = (p: LineupPlayer) => {
-    const isExpanded = expandedPlayer === p.playerId;
-    const stats = playerStats[p.playerId];
-    const isGK = p.position === 'GK';
-    const playerName = p.player
-      ? `${p.player.firstName} ${p.player.lastName}`
-      : p.playerId;
+  const playersToShow = isGKCategory
+    ? players.filter((p) => p.position === 'GK')
+    : players;
 
+  const startersToShow = playersToShow.filter((p) => p.isStarter);
+  const subsToShow = playersToShow.filter((p) => !p.isStarter);
+
+  // Count how many players have non-default ratings (a rough progress indicator)
+  const filledCount = players.filter((p) => {
+    const s = playerStats[p.playerId];
+    return s && s.rating !== 6.0;
+  }).length;
+
+  if (players.length === 0) {
     return (
-      <div key={p.playerId} className="border border-gray-200 rounded-lg overflow-hidden">
-        {/* Header row */}
-        <button
-          type="button"
-          onClick={() => togglePlayer(p.playerId)}
-          className="w-full flex items-center justify-between px-3 sm:px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left gap-2"
-        >
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <span className="inline-flex items-center justify-center w-8 h-8 shrink-0 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
-              {p.position}
-            </span>
-            <span className="text-sm font-medium text-gray-900 truncate">{playerName}</span>
-            {!p.isStarter && (
-              <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded shrink-0">
-                SUB
-              </span>
-            )}
-          </div>
-          <svg
-            className={`w-5 h-5 text-gray-400 shrink-0 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {/* Expanded stat fields */}
-        {isExpanded && stats && (
-          <div className="px-3 sm:px-4 py-4 space-y-4">
-            {/* Key stats row */}
-            <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Key Stats</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                <StatField
-                  label="Rating (1-10)"
-                  value={stats.rating}
-                  onChange={(v) => updateStat(p.playerId, 'rating', v)}
-                  min={1}
-                  max={10}
-                  step={0.1}
-                />
-                <StatField
-                  label="Goals"
-                  value={stats.goals}
-                  onChange={(v) => updateStat(p.playerId, 'goals', v)}
-                />
-                <StatField
-                  label="Assists"
-                  value={stats.assists}
-                  onChange={(v) => updateStat(p.playerId, 'assists', v)}
-                />
-                <StatField
-                  label="Minutes"
-                  value={stats.minutesPlayed}
-                  onChange={(v) => updateStat(p.playerId, 'minutesPlayed', v)}
-                  max={120}
-                />
-              </div>
-            </div>
-
-            {/* Shooting */}
-            <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Shooting</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                <StatField
-                  label="Shots"
-                  value={stats.shots}
-                  onChange={(v) => updateStat(p.playerId, 'shots', v)}
-                />
-                <StatField
-                  label="Shot Accuracy %"
-                  value={stats.shotAccuracy}
-                  onChange={(v) => updateStat(p.playerId, 'shotAccuracy', v)}
-                  max={100}
-                />
-              </div>
-            </div>
-
-            {/* Passing */}
-            <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Passing</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                <StatField
-                  label="Passes"
-                  value={stats.passes}
-                  onChange={(v) => updateStat(p.playerId, 'passes', v)}
-                />
-                <StatField
-                  label="Pass Accuracy %"
-                  value={stats.passAccuracy}
-                  onChange={(v) => updateStat(p.playerId, 'passAccuracy', v)}
-                  max={100}
-                />
-              </div>
-            </div>
-
-            {/* Dribbling */}
-            <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Dribbling</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                <StatField
-                  label="Dribbles"
-                  value={stats.dribbles}
-                  onChange={(v) => updateStat(p.playerId, 'dribbles', v)}
-                />
-                <StatField
-                  label="Dribble Success %"
-                  value={stats.dribbleSuccessRate}
-                  onChange={(v) => updateStat(p.playerId, 'dribbleSuccessRate', v)}
-                  max={100}
-                />
-              </div>
-            </div>
-
-            {/* Defending */}
-            <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Defending</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                <StatField
-                  label="Tackles"
-                  value={stats.tackles}
-                  onChange={(v) => updateStat(p.playerId, 'tackles', v)}
-                />
-                <StatField
-                  label="Tackle Success %"
-                  value={stats.tackleSuccessRate}
-                  onChange={(v) => updateStat(p.playerId, 'tackleSuccessRate', v)}
-                  max={100}
-                />
-                <StatField
-                  label="Poss. Won"
-                  value={stats.possessionsWon}
-                  onChange={(v) => updateStat(p.playerId, 'possessionsWon', v)}
-                />
-                <StatField
-                  label="Poss. Lost"
-                  value={stats.possessionsLost}
-                  onChange={(v) => updateStat(p.playerId, 'possessionsLost', v)}
-                />
-              </div>
-            </div>
-
-            {/* Discipline */}
-            <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Discipline</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                <StatField
-                  label="Offsides"
-                  value={stats.offsides}
-                  onChange={(v) => updateStat(p.playerId, 'offsides', v)}
-                />
-                <StatField
-                  label="Fouls"
-                  value={stats.foulsCommitted}
-                  onChange={(v) => updateStat(p.playerId, 'foulsCommitted', v)}
-                />
-                <StatField
-                  label="Yellow Cards"
-                  value={stats.yellowCards}
-                  onChange={(v) => updateStat(p.playerId, 'yellowCards', v)}
-                  max={2}
-                />
-                <StatField
-                  label="Red Cards"
-                  value={stats.redCards}
-                  onChange={(v) => updateStat(p.playerId, 'redCards', v)}
-                  max={1}
-                />
-              </div>
-            </div>
-
-            {/* GK-only fields */}
-            {isGK && (
-              <div>
-                <p className="text-xs font-semibold text-gray-600 uppercase mb-2">
-                  Goalkeeper Stats
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                  <StatField
-                    label="Shots Against"
-                    value={stats.shotsAgainst}
-                    onChange={(v) => updateStat(p.playerId, 'shotsAgainst', v)}
-                  />
-                  <StatField
-                    label="Shots on Target"
-                    value={stats.shotsOnTarget}
-                    onChange={(v) => updateStat(p.playerId, 'shotsOnTarget', v)}
-                  />
-                  <StatField
-                    label="Saves"
-                    value={stats.saves}
-                    onChange={(v) => updateStat(p.playerId, 'saves', v)}
-                  />
-                  <StatField
-                    label="Goals Conceded"
-                    value={stats.goalsConceded}
-                    onChange={(v) => updateStat(p.playerId, 'goalsConceded', v)}
-                  />
-                  <StatField
-                    label="Save Success %"
-                    value={stats.saveSuccessRate}
-                    onChange={(v) => updateStat(p.playerId, 'saveSuccessRate', v)}
-                    max={100}
-                  />
-                  <div>
-                    <label className="block text-xs text-gray-500 mb-1">Clean Sheet</label>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        updateStat(p.playerId, 'cleanSheet', !stats.cleanSheet)
-                      }
-                      className={`w-full rounded border px-2 py-1 text-sm font-medium ${
-                        stats.cleanSheet
-                          ? 'bg-green-100 border-green-300 text-green-700'
-                          : 'bg-gray-50 border-gray-300 text-gray-500'
-                      }`}
-                    >
-                      {stats.cleanSheet ? 'Yes' : 'No'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 text-center">
+        <p className="text-sm text-gray-400">
+          No lineup data found. Please set up the lineup first.
+        </p>
       </div>
     );
-  };
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow p-3 sm:p-4 overflow-hidden">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">Enter Game Stats</h3>
-
-      {/* Starters */}
-      {starters.length > 0 && (
-        <div className="mb-4">
-          <p className="text-xs font-medium text-gray-500 uppercase mb-2">
-            Starters ({starters.length})
-          </p>
-          <div className="space-y-2">{starters.map(renderPlayerRow)}</div>
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      {/* Header with progress */}
+      <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-gray-900">Enter Game Stats</h3>
+          <span className="text-xs text-gray-400">
+            {filledCount}/{players.length} players edited
+          </span>
         </div>
-      )}
-
-      {/* Substitutes */}
-      {subs.length > 0 && (
-        <div className="mb-4">
-          <p className="text-xs font-medium text-gray-500 uppercase mb-2">
-            Substitutes ({subs.length})
-          </p>
-          <div className="space-y-2">{subs.map(renderPlayerRow)}</div>
+        <div className="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-indigo-500 rounded-full transition-all duration-300"
+            style={{ width: `${(filledCount / players.length) * 100}%` }}
+          />
         </div>
-      )}
+      </div>
 
-      {players.length === 0 && (
-        <p className="text-sm text-gray-400 italic">
-          No lineup data found. Please set up the lineup in the Match Stats page first.
-        </p>
-      )}
+      {/* Category Tabs */}
+      <div className="border-b border-gray-100 overflow-x-auto">
+        <div className="flex px-2 min-w-max">
+          {visibleCategories.map((cat) => (
+            <button
+              key={cat.key}
+              onClick={() => setActiveCategory(cat.key)}
+              className={`px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors ${
+                activeCategory === cat.key
+                  ? 'text-indigo-600 border-b-2 border-indigo-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      {players.length > 0 && (
-        <div className="mt-4 pt-4 border-t">
-          <button
-            onClick={handleSubmitAll}
-            disabled={submitGameStats.isPending}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2 rounded text-sm font-medium"
-          >
-            {submitGameStats.isPending ? 'Submitting...' : 'Submit All Stats'}
-          </button>
-          {submitGameStats.isError && (
-            <p className="text-sm text-red-600 mt-2">
-              Failed to submit stats. Please try again.
-            </p>
+      {/* Table-based stat entry */}
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="text-left text-xs font-medium text-gray-500 px-4 py-2.5 sticky left-0 bg-gray-50 min-w-[160px]">
+                Player
+              </th>
+              {fields.map((field) => (
+                <th
+                  key={field.key}
+                  className="text-center text-xs font-medium text-gray-500 px-2 py-2.5 min-w-[70px]"
+                  title={field.label}
+                >
+                  <span className="hidden sm:inline">{field.label}</span>
+                  <span className="sm:hidden">{field.shortLabel}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {startersToShow.length > 0 && (
+              <>
+                <tr>
+                  <td
+                    colSpan={fields.length + 1}
+                    className="px-4 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider bg-gray-50/50"
+                  >
+                    Starters
+                  </td>
+                </tr>
+                {startersToShow.map((p) => (
+                  <PlayerStatRow
+                    key={p.playerId}
+                    player={p}
+                    stats={playerStats[p.playerId]}
+                    fields={fields}
+                    updateStat={updateStat}
+                  />
+                ))}
+              </>
+            )}
+            {subsToShow.length > 0 && (
+              <>
+                <tr>
+                  <td
+                    colSpan={fields.length + 1}
+                    className="px-4 py-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider bg-gray-50/50"
+                  >
+                    Substitutes
+                  </td>
+                </tr>
+                {subsToShow.map((p) => (
+                  <PlayerStatRow
+                    key={p.playerId}
+                    player={p}
+                    stats={playerStats[p.playerId]}
+                    fields={fields}
+                    updateStat={updateStat}
+                  />
+                ))}
+              </>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Submit button */}
+      <div className="px-5 py-4 border-t border-gray-100 bg-gray-50/50">
+        <button
+          onClick={handleSubmitAll}
+          disabled={submitGameStats.isPending}
+          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+        >
+          {submitGameStats.isPending ? 'Submitting...' : 'Submit All Stats'}
+        </button>
+        {submitGameStats.isError && (
+          <p className="text-sm text-red-600 mt-2 text-center">
+            Failed to submit stats. Please try again.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PlayerStatRow({
+  player,
+  stats,
+  fields,
+  updateStat,
+}: {
+  player: LineupPlayer;
+  stats: PlayerStatForm;
+  fields: StatFieldDef[];
+  updateStat: (playerId: string, field: keyof PlayerStatForm, value: number | boolean) => void;
+}) {
+  if (!stats) return null;
+
+  const playerName = player.player
+    ? `${player.player.firstName} ${player.player.lastName}`
+    : player.playerId;
+
+  return (
+    <tr className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+      <td className="px-4 py-2 sticky left-0 bg-white">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold shrink-0">
+            {player.position}
+          </span>
+          <span className="text-sm text-gray-800 truncate">{playerName}</span>
+          {!player.isStarter && (
+            <span className="text-[10px] bg-amber-100 text-amber-700 px-1 py-0.5 rounded shrink-0">
+              SUB
+            </span>
           )}
         </div>
-      )}
-    </div>
+      </td>
+      {fields.map((field) => (
+        <td key={field.key} className="px-1 py-2 text-center">
+          {field.type === 'toggle' ? (
+            <button
+              type="button"
+              onClick={() =>
+                updateStat(
+                  player.playerId,
+                  field.key,
+                  !(stats[field.key] as boolean),
+                )
+              }
+              className={`w-full max-w-[60px] mx-auto rounded-md border px-2 py-1 text-xs font-medium transition-colors ${
+                stats[field.key]
+                  ? 'bg-green-50 border-green-300 text-green-700'
+                  : 'bg-gray-50 border-gray-200 text-gray-400'
+              }`}
+            >
+              {stats[field.key] ? 'Yes' : 'No'}
+            </button>
+          ) : (
+            <input
+              type="number"
+              value={stats[field.key] as number}
+              onChange={(e) =>
+                updateStat(
+                  player.playerId,
+                  field.key,
+                  parseFloat(e.target.value) || 0,
+                )
+              }
+              min={field.min ?? 0}
+              max={field.max}
+              step={field.step}
+              className="w-full max-w-[60px] mx-auto rounded-md border border-gray-200 px-1.5 py-1 text-sm text-center tabular-nums focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
+            />
+          )}
+        </td>
+      ))}
+    </tr>
   );
 }
