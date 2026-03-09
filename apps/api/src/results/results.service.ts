@@ -5,6 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { DiscordWebhookService } from '../discord/discord-webhook.service';
 import { SubmitResultDto } from './dto/submit-result.dto';
 import { DisputeResultDto } from './dto/dispute-result.dto';
 import { ResolveResultDto } from './dto/resolve-result.dto';
@@ -16,7 +17,10 @@ interface AuthUser {
 
 @Injectable()
 export class ResultsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private webhooks: DiscordWebhookService,
+  ) {}
 
   async submit(matchId: string, dto: SubmitResultDto, submitter: AuthUser) {
     const match = await this.prisma.match.findUniqueOrThrow({
@@ -63,6 +67,16 @@ export class ResultsService {
       });
     }
 
+    this.webhooks.notifyResultSubmitted({
+      homeTeam: match.homeTeam.name,
+      awayTeam: match.awayTeam.name,
+      homeScore: dto.homeScore,
+      awayScore: dto.awayScore,
+      submittedBy: result.submittedBy.displayName,
+      status,
+      matchId,
+    });
+
     return result;
   }
 
@@ -92,7 +106,7 @@ export class ResultsService {
       );
     }
 
-    return this.prisma.result.update({
+    const updated = await this.prisma.result.update({
       where: { id: resultId },
       data: {
         status: 'DISPUTED',
@@ -101,6 +115,14 @@ export class ResultsService {
       },
       include: { submittedBy: true, disputedBy: true },
     });
+
+    this.webhooks.notifyDispute({
+      matchInfo: `${result.match.homeTeam.name} vs ${result.match.awayTeam.name}`,
+      disputedBy: updated.disputedBy!.displayName,
+      reason: dto.reason,
+    });
+
+    return updated;
   }
 
   async resolve(resultId: string, dto: ResolveResultDto) {

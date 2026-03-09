@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits, ChannelType } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, ChannelType, TextChannel } from 'discord.js';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { PrismaClient } from '../../../api/src/generated/prisma/client.js';
 import type { Command } from './index.js';
@@ -97,6 +97,21 @@ export const setup: Command = {
         return;
       }
 
+      // Auto-create a webhook in the channel for thread messaging
+      let webhookUrl: string | undefined;
+      try {
+        const textChannel = await interaction.guild!.channels.fetch(channel.id);
+        if (textChannel instanceof TextChannel) {
+          const webhook = await textChannel.createWebhook({
+            name: `VCM ${competition.name} (${channelType})`,
+            reason: `Auto-created by VCM bot for ${channelType} channel mapping`,
+          });
+          webhookUrl = webhook.url;
+        }
+      } catch (err) {
+        console.error('Failed to auto-create webhook:', err);
+      }
+
       await prisma.discordChannelMapping.upsert({
         where: {
           competitionId_channelType: { competitionId, channelType },
@@ -104,17 +119,23 @@ export const setup: Command = {
         update: {
           discordGuildId: interaction.guildId,
           discordChannelId: channel.id,
+          ...(webhookUrl && { webhookUrl }),
         },
         create: {
           competitionId,
           discordGuildId: interaction.guildId,
           discordChannelId: channel.id,
           channelType,
+          webhookUrl,
         },
       });
 
+      const webhookStatus = webhookUrl
+        ? '✅ Webhook auto-created.'
+        : '⚠️ Could not create webhook — make sure the bot has **Manage Webhooks** permission.';
+
       await interaction.editReply(
-        `Mapped <#${channel.id}> as **${channelType}** channel for **${competition.name}**.`,
+        `Mapped <#${channel.id}> as **${channelType}** channel for **${competition.name}**.\n${webhookStatus}`,
       );
     }
 
