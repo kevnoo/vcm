@@ -30,6 +30,7 @@ import { ShopPage } from './routes/shop/index';
 import { InventoryPage } from './routes/shop/inventory';
 import { MatchStatsPage } from './routes/matches/stats';
 import { MatchHubPage } from './routes/matches/hub';
+import { StandingsPage } from './routes/standings';
 import { ScheduleGeneratorPage } from './routes/tools/schedule-generator';
 import { useCurrentUser } from './hooks/useAuth';
 import { Toaster } from 'sonner';
@@ -92,6 +93,8 @@ export function App() {
         <Route path="transfers" element={<TransfersPage />} />
         <Route path="transfers/create-trade" element={<CreateTradePage />} />
         <Route path="transfers/trades/:id" element={<TradeDetailPage />} />
+
+        <Route path="standings" element={<StandingsPage />} />
 
         <Route path="competitions" element={<CompetitionsPage />} />
         <Route

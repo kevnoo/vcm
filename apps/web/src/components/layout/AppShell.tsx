@@ -8,6 +8,7 @@ const navItems = [
   { to: '/players', label: 'Players', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
   { to: '/transfers', label: 'Transfers', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4' },
   { to: '/competitions', label: 'Competitions', icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' },
+  { to: '/standings', label: 'Standings', icon: 'M3 10h18M3 14h18M3 18h18M3 6h18' },
   { to: '/shop', label: 'Shop', icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' },
   { to: '/shop/inventory', label: 'Inventory', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4' },
 ];
@@ -42,6 +43,7 @@ function usePageTitle() {
   if (location.pathname.startsWith('/players')) return 'Players';
   if (location.pathname.startsWith('/transfers')) return 'Transfers';
   if (location.pathname.startsWith('/competitions')) return 'Competitions';
+  if (location.pathname.startsWith('/standings')) return 'Standings';
   if (location.pathname.startsWith('/matches')) return 'Match';
   if (location.pathname.startsWith('/shop')) return 'Shop';
   return 'VCM';

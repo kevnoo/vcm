@@ -58,4 +58,9 @@ export class CompetitionsController {
   activate(@Param('id') id: string) {
     return this.competitionsService.activate(id);
   }
+
+  @Get(':id/standings')
+  getStandings(@Param('id') id: string) {
+    return this.competitionsService.getStandings(id);
+  }
 }
