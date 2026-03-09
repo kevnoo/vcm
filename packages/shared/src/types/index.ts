@@ -6,6 +6,7 @@ export type {
   Round,
   CreateCompetitionDto,
   AddTeamsDto,
+  StandingsEntry,
 } from './competition';
 export type { Match, UpdateMatchDto } from './match';
 export type {

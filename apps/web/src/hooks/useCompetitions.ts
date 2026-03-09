@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
-import type { Competition, CreateCompetitionDto, AddTeamsDto } from '@vcm/shared';
+import type { Competition, CreateCompetitionDto, AddTeamsDto, StandingsEntry } from '@vcm/shared';
 
 export function useCompetitions() {
   return useQuery<Competition[]>({
@@ -44,6 +44,15 @@ export function useGenerateSchedule(competitionId: string) {
       api.post(`/competitions/${competitionId}/generate-schedule`).then((r) => r.data),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ['competitions', competitionId] }),
+  });
+}
+
+export function useCompetitionStandings(competitionId: string) {
+  return useQuery<StandingsEntry[]>({
+    queryKey: ['competition-standings', competitionId],
+    queryFn: () =>
+      api.get(`/competitions/${competitionId}/standings`).then((r) => r.data),
+    enabled: !!competitionId,
   });
 }
 
