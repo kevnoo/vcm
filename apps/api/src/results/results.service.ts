@@ -72,7 +72,7 @@ export class ResultsService {
       awayTeam: match.awayTeam.name,
       homeScore: dto.homeScore,
       awayScore: dto.awayScore,
-      submittedBy: result.submittedBy.displayName,
+      submittedBy: result.submittedBy.discordUsername,
       status,
       matchId,
     });
@@ -118,8 +118,8 @@ export class ResultsService {
 
     this.webhooks.notifyDispute({
       matchInfo: `${result.match.homeTeam.name} vs ${result.match.awayTeam.name}`,
-      disputedBy: updated.disputedBy!.displayName,
-      reason: dto.reason,
+      disputedBy: updated.disputedBy!.discordUsername,
+      reason: dto.reason ?? 'No reason provided',
     });
 
     return updated;
